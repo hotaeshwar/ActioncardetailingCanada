@@ -42,6 +42,16 @@ function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
   
+  // Handle GitHub Pages redirect parameter - ADDED CODE
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectParam = urlParams.get('p');
+    if (redirectParam) {
+      const path = redirectParam.replace(/~and~/g, '&');
+      window.history.replaceState(null, null, path);
+    }
+  }, []);
+
   // Handle path-based routing (clean URLs)
   useEffect(() => {
     const path = location.pathname.substring(1); // Remove leading slash
