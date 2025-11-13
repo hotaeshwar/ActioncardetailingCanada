@@ -42,9 +42,10 @@ function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
   
-  // Sync currentView with URL path for backward compatibility
+  // Handle path-based routing (clean URLs)
   useEffect(() => {
     const path = location.pathname.substring(1); // Remove leading slash
+    
     if (path === '') {
       setCurrentView('home');
     } else {
@@ -52,7 +53,7 @@ function AppContent() {
     }
   }, [location.pathname]);
 
-  // Handle view changes with both state and navigation
+  // Handle view changes with clean URLs
   const handleViewChange = (view) => {
     setCurrentView(view);
     if (view === 'home') {
@@ -62,7 +63,7 @@ function AppContent() {
     }
   };
 
-  // Check URL hash on mount for backward compatibility (#admin)
+  // Check URL on mount for backward compatibility
   useEffect(() => {
     const hash = window.location.hash;
     if (hash === '#admin' || hash === '#/admin') {
@@ -152,7 +153,7 @@ function AppContent() {
   );
 }
 
-// Main App component with Router
+// Main App component with BrowserRouter (clean URLs)
 function App() {
   return (
     <BrowserRouter>
