@@ -22,6 +22,9 @@ const Quote = () => {
   const [selectedPackage, setSelectedPackage] = useState('');
   const [selectedWarranty, setSelectedWarranty] = useState('');
   const [openDropdown, setOpenDropdown] = useState(null);
+  
+  // New state for AM/PM selection
+  const [timePeriod, setTimePeriod] = useState('AM');
 
   // Refs for scrolling
   const timeSectionRef = useRef(null);
@@ -80,6 +83,18 @@ const Quote = () => {
     }
   ];
 
+  // Time slots data - 8 AM to 6 PM (client availability)
+  const timeSlots = {
+    AM: [
+      '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
+      '11:00', '11:30'
+    ],
+    PM: [
+      '12:00', '12:30', '13:00', '13:30', '14:00', '14:30',
+      '15:00', '15:30', '16:00', '16:30', '17:00', '17:30'
+    ]
+  };
+
   // Load blocked dates from Firebase
   useEffect(() => {
     loadBlockedDates();
@@ -126,7 +141,8 @@ const Quote = () => {
     
     // If it's a partial block, check if all time slots are blocked
     if (blockInfo.type === 'partial' && blockInfo.blockedSlots) {
-      return blockInfo.blockedSlots.length === timeSlots.length;
+      const allTimeSlots = [...timeSlots.AM, ...timeSlots.PM];
+      return blockInfo.blockedSlots.length === allTimeSlots.length;
     }
     
     return false;
@@ -160,12 +176,6 @@ const Quote = () => {
     
     return false;
   };
-
-  const timeSlots = [
-    '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
-    '11:00', '11:30', '12:00', '12:30', '13:00', '13:30',
-    '14:00', '14:30', '15:00', '15:30', '16:00', '16:30'
-  ];
 
   const months = [
     'January', 'February', 'March', 'April', 'May', 'June',
@@ -247,6 +257,15 @@ const Quote = () => {
   // Toggle dropdown
   const toggleDropdown = (dropdown) => {
     setOpenDropdown(openDropdown === dropdown ? null : dropdown);
+  };
+
+  // Handle time period change (AM/PM)
+  const handleTimePeriodChange = (period) => {
+    setTimePeriod(period);
+    // Keep the selected time if it exists in the new period
+    if (selectedTime && !timeSlots[period].includes(selectedTime)) {
+      setSelectedTime('');
+    }
   };
 
   // Generate quote ID like "QUOTEA1B2C3"
@@ -388,6 +407,7 @@ Passion for Detail
         setSelectedTime('');
         setSelectedPackage('');
         setSelectedWarranty('');
+        setTimePeriod('AM');
 
       } else {
         throw new Error('Email sending failed');
@@ -693,11 +713,47 @@ Passion for Detail
                 <div className="text-center mb-3 sm:mb-4">
                   <p className="text-[#1393c4] font-semibold text-sm sm:text-base md:text-lg">Selected: {selectedDate}</p>
                 </div>
-                <h3 className="text-base sm:text-lg md:text-xl font-semibold text-[#1393c4] mb-3 sm:mb-4 text-center">Available Times</h3>
+                <h3 className="text-base sm:text-lg md:text-xl font-semibold text-[#1393c4] mb-3 sm:mb-4 text-center">Available Times (8 AM - 6 PM)</h3>
+                
+                {/* AM/PM Selection - Made more visible */}
+                <div className="flex justify-center mb-6">
+                  <div className="bg-white rounded-lg p-2 border-2 border-gray-300 shadow-sm">
+                    <div className="flex space-x-2">
+                      <button
+                        onClick={() => handleTimePeriodChange('AM')}
+                        className={`px-6 py-3 text-base font-semibold rounded-lg transition-all duration-200 ${
+                          timePeriod === 'AM' 
+                            ? 'bg-[#1393c4] text-white shadow-md' 
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+                        }`}
+                      >
+                        AM 
+                        <div className="text-xs font-normal mt-1">8:00 AM - 11:30 AM</div>
+                      </button>
+                      <button
+                        onClick={() => handleTimePeriodChange('PM')}
+                        className={`px-6 py-3 text-base font-semibold rounded-lg transition-all duration-200 ${
+                          timePeriod === 'PM' 
+                            ? 'bg-[#1393c4] text-white shadow-md' 
+                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300'
+                        }`}
+                      >
+                        PM
+                        <div className="text-xs font-normal mt-1">12:00 PM - 5:30 PM</div>
+                      </button>
+                    </div>
+                  </div>
+                </div>
                 
                 {/* Clean Time Slots - No borders, no backgrounds, just text */}
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-                  {timeSlots.map(time => {
+                <div className="text-center mb-2">
+                  <p className="text-sm text-gray-600">
+                    Currently showing: <span className="font-semibold text-[#1393c4]">{timePeriod} Times</span>
+                  </p>
+                </div>
+                
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  {timeSlots[timePeriod].map(time => {
                     const isBlocked = isTimeSlotBlocked(time);
                     return (
                       <button
@@ -705,12 +761,12 @@ Passion for Detail
                         onClick={() => handleTimeSelect(time)}
                         disabled={isBlocked}
                         className={`
-                          py-2 text-sm font-medium transition-colors duration-200
+                          py-3 text-sm font-medium transition-colors duration-200 rounded-lg
                           ${isBlocked
-                            ? 'text-gray-400 cursor-not-allowed line-through'
+                            ? 'text-gray-400 cursor-not-allowed line-through bg-gray-100'
                             : selectedTime === time
-                            ? 'text-[#1393c4] font-bold underline'
-                            : 'text-gray-700 hover:text-[#1393c4]'
+                            ? 'text-[#1393c4] font-bold underline bg-blue-50'
+                            : 'text-gray-700 hover:text-[#1393c4] hover:bg-gray-50'
                           }
                         `}
                         title={isBlocked ? 'This time slot is blocked' : ''}
