@@ -279,7 +279,7 @@ const Quote = () => {
     return result;
   };
 
-  // FIXED: Send only ONE email to the customer with the new format including package selections
+  // FIXED: Send only ONE email to the customer with the new format including package selections AND time period
   const sendEmail = async (quoteId) => {
     const emailFormData = new FormData();
     
@@ -294,7 +294,17 @@ const Quote = () => {
     const selectedPackageDetails = servicePackages.find(pkg => pkg.id === selectedPackage);
     const selectedWarrantyDetails = warrantyPackages.find(warranty => warranty.id === selectedWarranty);
 
-    // Single email with the desired format including package selections
+    // Format time with AM/PM for email
+    const formatTimeForEmail = (time) => {
+      if (!time) return 'Not selected';
+      const [hours, minutes] = time.split(':');
+      const hour = parseInt(hours);
+      const period = hour >= 12 ? 'PM' : 'AM';
+      const displayHour = hour % 12 || 12;
+      return `${displayHour}:${minutes} ${period}`;
+    };
+
+    // Single email with the desired format including package selections AND time period
     emailFormData.append('message', `
 ✅ ACTION CAR DETAILING – AUTOMATED QUOTE REQUEST CONFIRMATION
 
@@ -331,7 +341,11 @@ ${selectedWarrantyDetails ? `${selectedWarrantyDetails.title} - ${selectedWarran
 
 PREFERRED APPOINTMENT
 
-${selectedDate && selectedTime ? `${selectedDate} at ${selectedTime}` : 'No preferred time selected'}
+${selectedDate && selectedTime ? `${selectedDate} at ${formatTimeForEmail(selectedTime)}` : 'No preferred time selected'}
+
+TIME PREFERENCE
+
+${selectedTime ? `Preferred Time Period: ${timePeriod}` : 'No time period selected'}
 
 ADDITIONAL MESSAGE
 
