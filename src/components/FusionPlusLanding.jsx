@@ -122,9 +122,13 @@ const FusionPlusLanding = () => {
       <div className="py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         {/* Description Section */}
         <div className="mb-16">
-          <h2 className="text-3xl sm:text-4xl font-bold text-[#1393c4] mb-8 text-center">
-            Ultimate Paint Protection Technology
-          </h2>
+          {/* Warranty Box - Like the reference image */}
+          <div className="border-2 border-[#1393c4] rounded-lg p-6 mb-8 text-center bg-white shadow-lg">
+            <h2 className="text-3xl sm:text-4xl font-bold text-[#1393c4]">
+              FUSION PLUS PAINT & PPF: 4 year warranty
+            </h2>
+          </div>
+          
           <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed">
             <p className="text-lg sm:text-xl mb-6">
               Fusion plus Paint & PPF is a Permanent Ceramic Paint Coating that features a High Gloss finish, 
