@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { User, Phone, Mail, Car, Calendar, MessageSquare, ChevronLeft, ChevronRight, Clock } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { User, Phone, Mail, Car, Calendar, MessageSquare, ChevronLeft, ChevronRight, Clock, ChevronDown, ChevronUp } from 'lucide-react';
 import { db } from '../firebase';
 import { collection, getDocs, query } from 'firebase/firestore';
 
@@ -17,11 +17,87 @@ const Quote = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [blockedDates, setBlockedDates] = useState({});
+  
+  // New state for dropdown sections
+  const [selectedPackage, setSelectedPackage] = useState('');
+  const [selectedWarranty, setSelectedWarranty] = useState('');
+  const [openDropdown, setOpenDropdown] = useState(null);
+
+  // Refs for scrolling
+  const timeSectionRef = useRef(null);
+
+  // Service packages data
+  const servicePackages = [
+    {
+      id: 'bumper-only',
+      title: 'BUMPER ONLY',
+      price: 'Starting at $599',
+      serviceTime: 'Service Time 1 Day',
+      description: 'Professional bumper detailing and restoration'
+    },
+    {
+      id: 'economy-kit',
+      title: 'ECONOMY KIT',
+      price: 'Starting at $999',
+      serviceTime: 'Service Time 1.5 Day',
+      description: 'Basic exterior and interior cleaning package'
+    },
+    {
+      id: 'full-front',
+      title: 'FULL FRONT',
+      price: 'Starting at $1499',
+      serviceTime: 'Service Time 1.5 Day',
+      description: 'Complete front-end detailing and protection'
+    },
+    {
+      id: 'offset-tire-package',
+      title: 'OFFSET TIRE PACKAGE',
+      price: 'Starting at $1999',
+      serviceTime: 'Service Time 2 Days',
+      description: 'Premium tire and wheel package with offset detailing'
+    }
+  ];
+
+  // Warranty packages data
+  const warrantyPackages = [
+    {
+      id: 'fusion-plus-lite',
+      title: 'FUSION PLUS LITE',
+      warranty: '1 year warranty',
+      description: 'Basic protection with 1-year coverage'
+    },
+    {
+      id: 'fusion-plus-paint-ppf',
+      title: 'FUSION PLUS PAINT & PPF',
+      warranty: '4 years warranty',
+      description: 'Premium paint protection film with 4-year warranty'
+    },
+    {
+      id: 'fusion-plus-premium',
+      title: 'FUSION PLUS PREMIUM',
+      warranty: '8 years warranty',
+      description: 'Ultimate protection with 8-year comprehensive warranty'
+    }
+  ];
 
   // Load blocked dates from Firebase
   useEffect(() => {
     loadBlockedDates();
   }, []);
+
+  // Auto-scroll to time section when date is selected
+  useEffect(() => {
+    if (selectedDate && timeSectionRef.current) {
+      const timer = setTimeout(() => {
+        timeSectionRef.current.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'start'
+        });
+      }, 100);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [selectedDate]);
 
   const loadBlockedDates = async () => {
     try {
@@ -156,6 +232,23 @@ const Quote = () => {
     }
   };
 
+  // Handle package selection
+  const handlePackageSelect = (packageId) => {
+    setSelectedPackage(packageId);
+    setOpenDropdown(null);
+  };
+
+  // Handle warranty selection
+  const handleWarrantySelect = (warrantyId) => {
+    setSelectedWarranty(warrantyId);
+    setOpenDropdown(null);
+  };
+
+  // Toggle dropdown
+  const toggleDropdown = (dropdown) => {
+    setOpenDropdown(openDropdown === dropdown ? null : dropdown);
+  };
+
   // Generate quote ID like "QUOTEA1B2C3"
   const generateQuoteId = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -167,18 +260,22 @@ const Quote = () => {
     return result;
   };
 
-  // FIXED: Send only ONE email to the customer with the new format
+  // FIXED: Send only ONE email to the customer with the new format including package selections
   const sendEmail = async (quoteId) => {
-    const emailFormData = new FormData(); // Changed variable name to avoid conflict
+    const emailFormData = new FormData();
     
     emailFormData.append('access_key', 'ba99ae3b-60cc-404c-b207-2a42e86aafb6');
-    emailFormData.append('autoresponse', 'false'); // Prevent auto-replies
+    emailFormData.append('autoresponse', 'false');
     emailFormData.append('subject', `Quote Request Received – Confirmation Pending`);
     emailFormData.append('from_name', 'Action Car Detailing');
-    emailFormData.append('email', formData.email); // Send to customer only
+    emailFormData.append('email', formData.email);
     emailFormData.append('reply_to', 'actioncardetailing@gmail.com');
 
-    // Single email with the desired format
+    // Get selected package details
+    const selectedPackageDetails = servicePackages.find(pkg => pkg.id === selectedPackage);
+    const selectedWarrantyDetails = warrantyPackages.find(warranty => warranty.id === selectedWarranty);
+
+    // Single email with the desired format including package selections
     emailFormData.append('message', `
 ✅ ACTION CAR DETAILING – AUTOMATED QUOTE REQUEST CONFIRMATION
 
@@ -204,6 +301,14 @@ Phone: ${formData.phone}
 VEHICLE INFORMATION
 
 Make/Model: ${formData.makeModel}
+
+SERVICE PACKAGE SELECTED
+
+${selectedPackageDetails ? `${selectedPackageDetails.title} - ${selectedPackageDetails.price}` : 'No package selected'}
+
+WARRANTY PACKAGE SELECTED
+
+${selectedWarrantyDetails ? `${selectedWarrantyDetails.title} - ${selectedWarrantyDetails.warranty}` : 'No warranty package selected'}
 
 PREFERRED APPOINTMENT
 
@@ -281,6 +386,8 @@ Passion for Detail
         });
         setSelectedDate('');
         setSelectedTime('');
+        setSelectedPackage('');
+        setSelectedWarranty('');
 
       } else {
         throw new Error('Email sending failed');
@@ -401,10 +508,121 @@ Passion for Detail
           </div>
         </div>
 
+        {/* Service Packages Section */}
+        <div className="bg-white rounded-lg sm:rounded-xl shadow-md sm:shadow-lg p-4 sm:p-6 md:p-8 border border-gray-200 mb-6 sm:mb-8">
+          <div className="text-center mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-[#1393c4] mb-2 sm:mb-4">2. SELECT SERVICE PACKAGE</h2>
+            <p className="text-[#1393c4] text-sm sm:text-base">Choose the service package that fits your needs.</p>
+          </div>
+
+          {/* Service Packages Dropdown */}
+          <div className="mb-6">
+            <button
+              onClick={() => toggleDropdown('services')}
+              className="w-full bg-gray-50 border-2 border-gray-300 rounded-lg p-4 flex justify-between items-center hover:border-[#1393c4] transition-colors duration-200"
+            >
+              <span className="text-[#1393c4] font-semibold text-lg">
+                {selectedPackage 
+                  ? servicePackages.find(pkg => pkg.id === selectedPackage)?.title
+                  : 'Select Service Package'}
+              </span>
+              {openDropdown === 'services' ? <ChevronUp className="text-[#1393c4]" /> : <ChevronDown className="text-[#1393c4]" />}
+            </button>
+            
+            {openDropdown === 'services' && (
+              <div className="mt-2 border border-gray-200 rounded-lg overflow-hidden">
+                {servicePackages.map((pkg) => (
+                  <div
+                    key={pkg.id}
+                    onClick={() => handlePackageSelect(pkg.id)}
+                    className={`p-4 border-b border-gray-200 last:border-b-0 cursor-pointer transition-colors duration-200 ${
+                      selectedPackage === pkg.id 
+                        ? 'bg-[#1393c4] text-white' 
+                        : 'bg-white hover:bg-gray-50'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className={`font-bold text-lg ${
+                        selectedPackage === pkg.id ? 'text-white' : 'text-[#1393c4]'
+                      }`}>
+                        {pkg.title}
+                      </h3>
+                      <span className={`font-semibold ${
+                        selectedPackage === pkg.id ? 'text-white' : 'text-gray-700'
+                      }`}>
+                        {pkg.price}
+                      </span>
+                    </div>
+                    <p className={`text-sm mb-2 ${
+                      selectedPackage === pkg.id ? 'text-blue-100' : 'text-gray-600'
+                    }`}>
+                      {pkg.description}
+                    </p>
+                    <p className={`text-sm font-medium ${
+                      selectedPackage === pkg.id ? 'text-blue-100' : 'text-[#1393c4]'
+                    }`}>
+                      {pkg.serviceTime}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Warranty Packages Dropdown */}
+          <div>
+            <button
+              onClick={() => toggleDropdown('warranty')}
+              className="w-full bg-gray-50 border-2 border-gray-300 rounded-lg p-4 flex justify-between items-center hover:border-[#1393c4] transition-colors duration-200"
+            >
+              <span className="text-[#1393c4] font-semibold text-lg">
+                {selectedWarranty 
+                  ? warrantyPackages.find(warranty => warranty.id === selectedWarranty)?.title
+                  : 'Select Warranty Package'}
+              </span>
+              {openDropdown === 'warranty' ? <ChevronUp className="text-[#1393c4]" /> : <ChevronDown className="text-[#1393c4]" />}
+            </button>
+            
+            {openDropdown === 'warranty' && (
+              <div className="mt-2 border border-gray-200 rounded-lg overflow-hidden">
+                {warrantyPackages.map((warranty) => (
+                  <div
+                    key={warranty.id}
+                    onClick={() => handleWarrantySelect(warranty.id)}
+                    className={`p-4 border-b border-gray-200 last:border-b-0 cursor-pointer transition-colors duration-200 ${
+                      selectedWarranty === warranty.id 
+                        ? 'bg-[#1393c4] text-white' 
+                        : 'bg-white hover:bg-gray-50'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <h3 className={`font-bold text-lg ${
+                        selectedWarranty === warranty.id ? 'text-white' : 'text-[#1393c4]'
+                      }`}>
+                        {warranty.title}
+                      </h3>
+                      <span className={`font-semibold ${
+                        selectedWarranty === warranty.id ? 'text-white' : 'text-gray-700'
+                      }`}>
+                        {warranty.warranty}
+                      </span>
+                    </div>
+                    <p className={`text-sm ${
+                      selectedWarranty === warranty.id ? 'text-blue-100' : 'text-gray-600'
+                    }`}>
+                      {warranty.description}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Date and Time Section */}
         <div className="bg-white rounded-lg sm:rounded-xl shadow-md sm:shadow-lg p-4 sm:p-6 md:p-8 border border-gray-200 mb-6 sm:mb-8">
           <div className="text-center mb-4 sm:mb-6">
-            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-[#1393c4] mb-2 sm:mb-4">2. PREFERRED DATE AND TIME</h2>
+            <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-[#1393c4] mb-2 sm:mb-4">3. PREFERRED DATE AND TIME</h2>
             <p className="text-[#1393c4] text-sm sm:text-base">Choose your preferred appointment time (optional).</p>
           </div>
 
@@ -468,12 +686,17 @@ Passion for Detail
             </div>
 
             {selectedDate && (
-              <div className="border-t border-gray-200 pt-3 sm:pt-4 md:pt-6">
+              <div 
+                ref={timeSectionRef}
+                className="border-t border-gray-200 pt-3 sm:pt-4 md:pt-6"
+              >
                 <div className="text-center mb-3 sm:mb-4">
                   <p className="text-[#1393c4] font-semibold text-sm sm:text-base md:text-lg">Selected: {selectedDate}</p>
                 </div>
                 <h3 className="text-base sm:text-lg md:text-xl font-semibold text-[#1393c4] mb-3 sm:mb-4 text-center">Available Times</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-1 sm:gap-2">
+                
+                {/* Clean Time Slots - No borders, no backgrounds, just text */}
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
                   {timeSlots.map(time => {
                     const isBlocked = isTimeSlotBlocked(time);
                     return (
@@ -481,13 +704,15 @@ Passion for Detail
                         key={time}
                         onClick={() => handleTimeSelect(time)}
                         disabled={isBlocked}
-                        className={`py-1 sm:py-2 px-1 sm:px-2 text-xs font-medium rounded border transition-colors duration-200 ${
-                          isBlocked
-                            ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed line-through'
+                        className={`
+                          py-2 text-sm font-medium transition-colors duration-200
+                          ${isBlocked
+                            ? 'text-gray-400 cursor-not-allowed line-through'
                             : selectedTime === time
-                            ? 'bg-[#1393c4] text-white border-[#1393c4]'
-                            : 'bg-white text-[#1393c4] border-[#1393c4] hover:bg-blue-50'
-                        }`}
+                            ? 'text-[#1393c4] font-bold underline'
+                            : 'text-gray-700 hover:text-[#1393c4]'
+                          }
+                        `}
                         title={isBlocked ? 'This time slot is blocked' : ''}
                       >
                         {time}
