@@ -6,28 +6,55 @@ const FusionPlusLite = () => {
   const [visibleElements, setVisibleElements] = useState(new Set());
   const [titleVisible, setTitleVisible] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [showCursor, setShowCursor] = useState(true);
+  const [typingComplete, setTypingComplete] = useState(false);
   const fullText = 'FUSION PLUS LITE';
   
+  // Fixed typewriter effect - runs only once
   useEffect(() => {
-    if (titleVisible && !isTyping && currentIndex === 0) {
+    if (titleVisible && !isTyping && currentIndex === 0 && !typingComplete) {
       setIsTyping(true);
       setDisplayText('');
+      setShowCursor(true);
+      setTypingComplete(false);
     }
     
     if (isTyping && currentIndex < fullText.length) {
       const timeout = setTimeout(() => {
         setDisplayText(prev => prev + fullText[currentIndex]);
         setCurrentIndex(prev => prev + 1);
-      }, 120);
+      }, 150);
       
       return () => clearTimeout(timeout);
     } else if (isTyping && currentIndex >= fullText.length) {
-      setIsTyping(false);
+      // Typing complete
+      const cursorTimeout = setTimeout(() => {
+        setShowCursor(false);
+        setIsTyping(false);
+        setTypingComplete(true);
+      }, 1000);
+      
+      return () => clearTimeout(cursorTimeout);
     }
-  }, [currentIndex, fullText, titleVisible, isTyping]);
+  }, [currentIndex, fullText, titleVisible, isTyping, typingComplete]);
 
+  // Cursor blink effect only when typing
   useEffect(() => {
+    if (showCursor && isTyping) {
+      const cursorInterval = setInterval(() => {
+        setShowCursor(prev => !prev);
+      }, 500);
+      return () => clearInterval(cursorInterval);
+    }
+  }, [showCursor, isTyping]);
+
+  // Scroll effect - fixed to run only once
+  useEffect(() => {
+    let scrollEnabled = true;
+
     const handleScroll = () => {
+      if (!scrollEnabled) return;
+
       // Check for title visibility
       const heroSection = document.querySelector('.hero-section');
       if (heroSection) {
@@ -36,12 +63,13 @@ const FusionPlusLite = () => {
         
         if (isHeroVisible && !titleVisible) {
           setTitleVisible(true);
+          scrollEnabled = false; // Disable further title visibility checks
         }
       }
       
       // Check for other elements
       const elements = document.querySelectorAll('.scroll-reveal, .scroll-reveal-left, .scroll-reveal-right, .scroll-reveal-scale');
-      elements.forEach((element, index) => {
+      elements.forEach((element) => {
         const rect = element.getBoundingClientRect();
         const isVisible = rect.top < window.innerHeight - 100 && rect.bottom > 0;
         
@@ -54,44 +82,43 @@ const FusionPlusLite = () => {
     window.addEventListener('scroll', handleScroll);
     handleScroll(); // Check initial visibility
     
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [titleVisible]);
 
   const features = [
     'Anti-Graffiti',
-    'Scratch Resistance',
-    'Fusion plus Paint & PPF can only be applied by Approved Applicators.',
-    'Permanent Protection',
-    'Oxidation & Corrosion Resistant',
+    'Chemical Resistance',
+    'UV Resistance',
+    'Thermal Resistance',
     'High Gloss Finish',
     'Super Hydrophobic Effect',
-    'Weather & UV Resistance',
-    'Thermal Resistance (up to 750°C)',
-    'Advanced Chemical Resistance'
+    'Durability up to 12 months',
+    'Can be layered up to 2 times',
+    'Compatible with Fusion plus paint & PPF coating',
+    'Keeps surfaces cleaner for longer'
   ];
 
   return (
     <div className="min-h-screen bg-white">
       <style jsx>{`
-        /* Typewriter animations */
+        /* Enhanced Typewriter animations */
         @keyframes blink {
           0%, 50% { opacity: 1; }
           51%, 100% { opacity: 0; }
         }
         
         .typewriter-cursor {
+          display: inline-block;
+          width: 3px;
+          background-color: #1393c4;
+          margin-left: 4px;
           animation: blink 1s infinite;
         }
         
         .typewriter-text {
-          opacity: 0;
-          animation: fadeInText 0.5s ease-in-out forwards;
-        }
-        
-        @keyframes fadeInText {
-          to {
-            opacity: 1;
-          }
+          display: inline-block;
         }
         
         /* Title reveal animation */
@@ -106,50 +133,6 @@ const FusionPlusLite = () => {
           transform: translateY(0);
         }
         
-        @keyframes fadeInUp {
-          from {
-            opacity: 0;
-            transform: translateY(50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-        
-        @keyframes fadeInLeft {
-          from {
-            opacity: 0;
-            transform: translateX(-50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        
-        @keyframes fadeInRight {
-          from {
-            opacity: 0;
-            transform: translateX(50px);
-          }
-          to {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
-        
-        @keyframes fadeIn {
-          from {
-            opacity: 0;
-            transform: scale(0.9);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        
         /* Scroll reveal animations */
         .scroll-reveal {
           opacity: 0;
@@ -160,28 +143,6 @@ const FusionPlusLite = () => {
         .scroll-reveal.visible {
           opacity: 1;
           transform: translateY(0);
-        }
-        
-        .scroll-reveal-left {
-          opacity: 0;
-          transform: translateX(-30px);
-          transition: all 0.6s ease-out;
-        }
-        
-        .scroll-reveal-left.visible {
-          opacity: 1;
-          transform: translateX(0);
-        }
-        
-        .scroll-reveal-right {
-          opacity: 0;
-          transform: translateX(30px);
-          transition: all 0.6s ease-out;
-        }
-        
-        .scroll-reveal-right.visible {
-          opacity: 1;
-          transform: translateX(0);
         }
         
         .scroll-reveal-scale {
@@ -208,7 +169,7 @@ const FusionPlusLite = () => {
         .scroll-reveal[data-index="feature-10"].visible { transition-delay: 1.0s; }
       `}</style>
 
-      {/* Hero Image Section with Title - Removed black overlays */}
+      {/* Hero Image Section with Fixed Typewriter */}
       <section 
         className="hero-section relative h-screen flex items-center justify-center overflow-hidden"
         style={{
@@ -218,79 +179,81 @@ const FusionPlusLite = () => {
           backgroundRepeat: 'no-repeat'
         }}
       >
-        {/* Removed the black overlay div completely */}
-        
-        <div className="relative z-20 text-center px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
-          <div className={`title-container text-center max-w-7xl mx-auto ${titleVisible ? 'visible' : ''}`}>
-            {/* Typewriter Title - Added text shadow for better readability */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 text-white" 
-                style={{ textShadow: '2px 2px 4px rgba(0,0,0,0.5)' }}>
-              <span style={{ color: '#1393c4' }} className="inline-block typewriter-text">
+        <div className="relative z-20 text-center px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto w-full">
+          <div className={`title-container text-center max-w-7xl mx-auto w-full ${titleVisible ? 'visible' : ''}`}>
+            {/* Fixed Typewriter Title - Only types once */}
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold mb-6 sm:mb-8 text-white leading-tight" 
+                style={{ textShadow: '2px 2px 8px rgba(0,0,0,0.7)' }}>
+              <span style={{ color: '#1393c4' }} className="typewriter-text inline-block">
                 {displayText}
-                <span className={`typewriter-cursor ${isTyping ? 'animate-pulse' : ''}`}>|</span>
+                {showCursor && <span className="typewriter-cursor">|</span>}
               </span>
             </h1>
-            <div className="h-1 sm:h-2 w-20 sm:w-24 md:w-32 bg-[#1393c4] mx-auto rounded-full shadow-lg mb-6 sm:mb-8"></div>
+            <div className="h-1.5 sm:h-2 w-24 sm:w-32 md:w-40 bg-[#1393c4] mx-auto rounded-full shadow-lg"></div>
+            
+            {/* Subtitle REMOVED as requested */}
           </div>
         </div>
-        
-        {/* Removed the gradient overlay as well */}
       </section>
 
-      {/* Content Section */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-7xl mx-auto">
+      {/* Content Section with Enhanced Spacing */}
+      <section className="py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
           
-          {/* Warranty Badge */}
-          <div className={`mb-8 sm:mb-12 scroll-reveal ${visibleElements.has('warranty') ? 'visible' : ''}`} data-index="warranty">
-            <span 
-              className="text-lg sm:text-xl md:text-2xl font-bold border-2 px-4 sm:px-6 py-2 sm:py-3 rounded-lg inline-block"
-              style={{ borderColor: '#1393c4', color: '#1393c4' }}
-            >
-              FUSION PLUS LITE: 1 year warranty
-            </span>
+          {/* Warranty Badge with Better Spacing */}
+          <div className={`mb-12 sm:mb-16 md:mb-20 scroll-reveal ${visibleElements.has('warranty') ? 'visible' : ''}`} data-index="warranty">
+            <div className="text-center">
+              <span 
+                className="text-xl sm:text-2xl md:text-3xl font-bold border-3 px-6 sm:px-8 py-3 sm:py-4 rounded-xl inline-block transform hover:scale-105 transition-transform duration-300"
+                style={{ borderColor: '#1393c4', color: '#1393c4', backgroundColor: 'rgba(19, 147, 196, 0.1)' }}
+              >
+                FUSION PLUS LITE: 1 Year Warranty
+              </span>
+            </div>
           </div>
           
-          {/* Main Description */}
-          <div className={`max-w-5xl mx-auto mb-8 sm:mb-12 scroll-reveal ${visibleElements.has('description') ? 'visible' : ''}`} data-index="description">
-            <p 
-              style={{ color: '#1393c4' }} 
-              className="text-sm sm:text-base md:text-lg lg:text-xl leading-relaxed text-justify px-4"
-            >
-              Fusion plus Paint & PPF is a Permanent Ceramic Paint Coating that features a High Gloss finish, unmatched Super Hydrophobic Effect, Scratch Resistance, Chemical Resistance, UV Resistance, Thermal Resistance and Anti-Graffiti. Both the Super Hydrophobic and Anti-Graffiti effect combined mean the surface coated with Fusion plus Paint & PPF coating will stay cleaner for longer as dirt and grime will not stick to the surface and the super hydrophobic effect of the coating will cause water to bead up and roll of the surface with any dirt and grime, the hard ceramic film also offers superior protection from damaging contamination and harsh chemicals. Coating forms a permanent bond to the paint work and will not wash away or break down, Coating can only be removed by abrasion making it a highly durable protective coating to protect your paint work from damaging contaminants. The unique formulation of the coating has enabled it to be multi-layered which means the thickness of the coating can be increased with additional layers allowing a thicker / harder film that will increase its scratch resistance.
-            </p>
+          {/* Main Description with Improved Typography */}
+          <div className={`max-w-6xl mx-auto mb-16 sm:mb-20 md:mb-24 scroll-reveal ${visibleElements.has('description') ? 'visible' : ''}`} data-index="description">
+            <div className="bg-gradient-to-br from-blue-50 to-white rounded-3xl p-6 sm:p-8 md:p-10 lg:p-12 shadow-lg border border-[#1393c4]/20">
+              <p 
+                style={{ color: '#1393c4' }} 
+                className="text-base sm:text-lg md:text-xl lg:text-2xl leading-relaxed sm:leading-loose md:leading-loose text-justify font-medium"
+              >
+                Fusion plus lite ceramic coating is a protective coating with a durability of up to 12 months that features a High Gloss finish, superior Super Hydrophobic Effect, Chemical Resistance, UV Resistance, Thermal Resistance and Anti-Graffiti. Both the Super Hydrophobic and Anti-Graffiti effect combined mean the surface coated with Lite will stay cleaner for longer as dirt and grime will not stick to the surface and the super hydrophobic effect of the coating will cause water to bead up and roll of the surface with any dirt and grime. The unique formulation of Light enables it to be layered up to 2 times for even more gloss and protection, for best results Fusion plus lite can be applied over Fusion plus paint & ppf coating to increase gloss and super hydrophobic effect.
+              </p>
+            </div>
           </div>
           
           {/* Features Section Header */}
-          <div className={`text-center mb-12 sm:mb-16 scroll-reveal ${visibleElements.has('features-header') ? 'visible' : ''}`} data-index="features-header">
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-[#1393c4] mb-4">
+          <div className={`text-center mb-16 sm:mb-20 md:mb-24 scroll-reveal ${visibleElements.has('features-header') ? 'visible' : ''}`} data-index="features-header">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-[#1393c4] mb-6 sm:mb-8">
               Premium Features & Benefits
             </h2>
-            <div className="w-16 sm:w-20 md:w-24 h-1 bg-[#1393c4] mx-auto mb-4 sm:mb-6"></div>
-            <p className="text-lg sm:text-xl text-[#1393c4] max-w-3xl mx-auto px-4">
-              Advanced ceramic coating technology with unmatched protection and performance
+            <div className="w-20 sm:w-24 md:w-28 h-1.5 bg-[#1393c4] mx-auto mb-6 sm:mb-8 rounded-full"></div>
+            <p className="text-xl sm:text-2xl md:text-3xl text-[#1393c4] max-w-4xl mx-auto px-4 font-light leading-relaxed">
+              Advanced ceramic coating technology with 12 months of protection and performance
             </p>
           </div>
           
-          {/* Features Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 max-w-6xl mx-auto mb-16">
+          {/* Enhanced Features Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:gap-8 lg:gap-10 max-w-7xl mx-auto mb-20 sm:mb-24 md:mb-28">
             {features.map((feature, index) => {
               const dataIndex = `feature-${index + 1}`;
               return (
                 <div 
                   key={index}
-                  className={`group bg-gradient-to-br from-blue-50 to-[#1393c4]/10 rounded-2xl p-4 sm:p-6 border shadow-lg hover:shadow-xl transition-all duration-300 hover:bg-gradient-to-br hover:from-[#1393c4]/10 hover:to-[#1393c4]/20 hover:-translate-y-2 border-[#1393c4]/20 scroll-reveal ${visibleElements.has(dataIndex) ? 'visible' : ''}`}
+                  className={`group bg-gradient-to-br from-white to-blue-50 rounded-3xl p-6 sm:p-7 border-2 shadow-xl hover:shadow-2xl transition-all duration-500 hover:bg-gradient-to-br hover:from-[#1393c4]/5 hover:to-[#1393c4]/15 hover:-translate-y-3 border-[#1393c4]/30 scroll-reveal ${visibleElements.has(dataIndex) ? 'visible' : ''}`}
                   style={{ borderColor: '#1393c4' }}
                   data-index={dataIndex}
                 >
-                  <div className="flex items-start space-x-2">
+                  <div className="flex items-start space-x-3 sm:space-x-4">
                     <div 
-                      className="w-2 h-2 rounded-full mt-2 flex-shrink-0 group-hover:scale-125 transition-transform duration-300"
+                      className="w-3 h-3 rounded-full mt-2 flex-shrink-0 group-hover:scale-150 transition-transform duration-300 group-hover:bg-[#0f7ba3]"
                       style={{ backgroundColor: '#1393c4' }}
                     ></div>
                     <p 
                       style={{ color: '#1393c4' }} 
-                      className="text-sm sm:text-base font-medium leading-tight group-hover:text-[#0f7ba3] transition-colors duration-300"
+                      className="text-base sm:text-lg font-semibold leading-relaxed group-hover:text-[#0f7ba3] transition-colors duration-300 flex-1"
                     >
                       {feature}
                     </p>
@@ -300,31 +263,30 @@ const FusionPlusLite = () => {
             })}
           </div>
 
-          {/* Professional Application Notice */}
-          <div className={`bg-gradient-to-r from-[#1393c4] to-blue-600 rounded-2xl p-8 sm:p-12 text-center text-white mb-16 scroll-reveal-scale ${visibleElements.has('application-notice') ? 'visible' : ''}`} data-index="application-notice">
-            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4">
-              Professional Application Required
+          {/* Enhanced Application Notice */}
+          <div className={`bg-gradient-to-r from-[#1393c4] to-blue-600 rounded-3xl p-8 sm:p-10 md:p-12 lg:p-14 text-center text-white mb-20 sm:mb-24 scroll-reveal-scale ${visibleElements.has('application-notice') ? 'visible' : ''}`} data-index="application-notice">
+            <h3 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-6 sm:mb-8 leading-tight">
+              Enhanced Protection & Gloss
             </h3>
-            <p className="text-lg sm:text-xl opacity-90 max-w-3xl mx-auto mb-6">
-              Fusion plus Paint & PPF can only be applied by our network of Approved Applicators, 
-              ensuring the highest quality installation and optimal performance.
+            <p className="text-lg sm:text-xl md:text-2xl opacity-95 max-w-4xl mx-auto mb-8 sm:mb-10 leading-relaxed font-light">
+              For optimal results, Fusion Plus Lite can be layered up to 2 times and applied over 
+              Fusion Plus paint & PPF coating to significantly increase gloss and super hydrophobic effect.
             </p>
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/20 mb-4">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/20 mb-6 transform hover:scale-110 transition-transform duration-300">
               <div 
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: 'white' }}
+                className="w-4 h-4 rounded-full bg-white"
               ></div>
             </div>
           </div>
 
-          {/* Warranty Highlight */}
-          <div className={`bg-white border-2 rounded-2xl p-8 sm:p-12 text-center scroll-reveal-scale ${visibleElements.has('warranty-highlight') ? 'visible' : ''}`} style={{ borderColor: '#1393c4' }} data-index="warranty-highlight">
-            <h3 className="text-3xl sm:text-4xl font-bold mb-4 text-[#1393c4]">
-              4 Years Warranty
+          {/* Enhanced Durability Highlight */}
+          <div className={`bg-white border-3 rounded-3xl p-8 sm:p-10 md:p-12 lg:p-14 text-center scroll-reveal-scale ${visibleElements.has('warranty-highlight') ? 'visible' : ''}`} style={{ borderColor: '#1393c4' }} data-index="warranty-highlight">
+            <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 sm:mb-8 text-[#1393c4] leading-tight">
+              12 Months Durability
             </h3>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-3xl mx-auto">
-              Your investment is protected with our comprehensive 4-year warranty, 
-              ensuring long-lasting performance and peace of mind.
+            <p className="text-xl sm:text-2xl md:text-3xl text-gray-700 max-w-4xl mx-auto leading-relaxed font-light">
+              With up to 12 months of reliable protection, Fusion Plus Lite ensures your surfaces 
+              stay cleaner and more protected with superior hydrophobic and anti-graffiti properties.
             </p>
           </div>
         </div>
