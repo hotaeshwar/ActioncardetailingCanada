@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Loader2 } from 'lucide-react'; // Import the loader icon from Lucide
 import formImage from '../assets/images/form1.png';
 
 const ContactForm = () => {
@@ -6,6 +7,7 @@ const ContactForm = () => {
         name: '',
         email: '',
         phone: '',
+        service: '', // New service field
         message: '',
         photo: null
     });
@@ -13,6 +15,22 @@ const ContactForm = () => {
     const [isHovered, setIsHovered] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [photoPreview, setPhotoPreview] = useState(null);
+
+    // Service options from the images
+    const serviceOptions = [
+        { value: '', label: 'Select a Service *', disabled: true },
+        
+        // Fusion Plus Packages
+        { value: 'fusion-plus-lite', label: 'FUSION PLUS LITE - 1 year warranty' },
+        { value: 'fusion-plus-paint-ppf', label: 'FUSION PLUS PAINT & PPF - 4 years warranty' },
+        { value: 'fusion-plus-premium', label: 'FUSION PLUS PREMIUM - 8 years warranty' },
+        
+        // Service Packages
+        { value: 'bumper-only', label: 'BUMPER ONLY - Starting at $599 - Service Time 1 Day' },
+        { value: 'economy-kit', label: 'ECONOMY KIT - Starting at $999 - Service Time 1.5 Day' },
+        { value: 'full-front', label: 'FULL FRONT - Starting at $1499 - Service Time 1.5 Day' },
+        { value: 'offset-tire-package', label: 'OFFSET TIRE PACKAGE - Starting at $1999 - Service Time 2 Days' }
+    ];
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
@@ -50,6 +68,12 @@ const ContactForm = () => {
             result += chars.charAt(Math.floor(Math.random() * chars.length));
         }
         return result;
+    };
+
+    // Get service display name for emails
+    const getServiceDisplayName = (serviceValue) => {
+        const service = serviceOptions.find(opt => opt.value === serviceValue);
+        return service ? service.label : 'Not Selected';
     };
 
     // Web3Forms implementation with better attachment handling
@@ -92,6 +116,10 @@ NEW CONTACT FORM SUBMISSION RECEIVED
 • Email: ${formData.email || 'N/A'}
 • Phone: ${formData.phone || 'N/A'}
 
+🎯 SERVICE REQUESTED
+--------------------
+${formData.service ? getServiceDisplayName(formData.service) : 'N/A'}
+
 💬 MESSAGE DETAILS
 ------------------
 ${formData.message || 'N/A'}
@@ -120,6 +148,10 @@ Status: Received
 
 We have received your message and will get back to you within 24 hours.
 
+📋 YOUR SERVICE REQUEST
+-----------------------
+Service: ${formData.service ? getServiceDisplayName(formData.service) : 'Not Specified'}
+
 📋 YOUR MESSAGE DETAILS
 -----------------------
 ${formData.message || 'N/A'}
@@ -131,7 +163,7 @@ We have received your photo and will review it along with your message.`
 
 ⏰ WHAT HAPPENS NEXT
 -------------------
-• Our team will review your message${formData.photo ? ' and attached photo' : ''}
+• Our team will review your service request${formData.photo ? ' and attached photo' : ''}
 • We'll respond to your inquiry within 24 hours
 • We'll provide you with the information or assistance you need
 
@@ -192,8 +224,8 @@ For inquiries, please contact us at actioncardetailing@gmail.com
         e.preventDefault();
         
         // Basic validation
-        if (!formData.name || !formData.email || !formData.phone || !formData.message) {
-            alert('❌ Please fill in all required fields.');
+        if (!formData.name || !formData.email || !formData.phone || !formData.message || !formData.service) {
+            alert('❌ Please fill in all required fields including service selection.');
             return;
         }
 
@@ -207,6 +239,12 @@ For inquiries, please contact us at actioncardetailing@gmail.com
         // Phone validation (basic)
         if (formData.phone.length < 10) {
             alert('❌ Please enter a valid phone number.');
+            return;
+        }
+
+        // Service validation
+        if (!formData.service) {
+            alert('❌ Please select a service from the dropdown.');
             return;
         }
 
@@ -246,6 +284,7 @@ For inquiries, please contact us at actioncardetailing@gmail.com
                     name: '',
                     email: '',
                     phone: '',
+                    service: '',
                     message: '',
                     photo: null
                 });
@@ -347,6 +386,28 @@ For inquiries, please contact us at actioncardetailing@gmail.com
                                 />
                             </div>
 
+                            {/* Service Dropdown */}
+                            <div className="mb-3 sm:mb-4">
+                                <select
+                                    name="service"
+                                    value={formData.service}
+                                    onChange={handleChange}
+                                    required
+                                    className="w-full p-2 sm:p-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 bg-white"
+                                    disabled={isSubmitting}
+                                >
+                                    {serviceOptions.map((option) => (
+                                        <option 
+                                            key={option.value} 
+                                            value={option.value}
+                                            disabled={option.disabled}
+                                        >
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
+
                             <div className="mb-3 sm:mb-4">
                                 <textarea
                                     name="message"
@@ -441,10 +502,7 @@ For inquiries, please contact us at actioncardetailing@gmail.com
                             >
                                 {isSubmitting ? (
                                     <span className="flex items-center justify-center">
-                                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                        </svg>
+                                        <Loader2 className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" />
                                         SENDING...
                                     </span>
                                 ) : (
