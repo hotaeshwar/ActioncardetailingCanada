@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Play, Check, Shield, Star, Droplets, Settings, HardHat, Sun, Atom, Beaker, X } from 'lucide-react';
+import { Play, Check, Shield, Star, Droplets, Settings, HardHat, Sun, Atom, Beaker, X, User, Phone, Mail, Car, ChevronDown, ChevronUp } from 'lucide-react';
 import Footer from '../components/Footer';
-import Quote from '../components/Quote';
 import ContactForm from '../components/ContactForm';
 import References from '../components/Reference1';
 
@@ -16,17 +15,424 @@ import fusionPlusPremium from '../assets/images/XPEL FUSION PLUS PREMIUM COATING
 import protectVehicleLogo from '../assets/images/PROTECT YOUR VEHICLE WITH XPEL FUSION PLUS CERAMIC COATING.webp';
 import fusionPlusProcess from '../assets/images/FUSION PLUS ceamic coating.webp';
 
+// Ceramic Coating Quote Modal Component
+const CeramicCoatingQuoteModal = ({ isOpen, onClose, selectedPackage }) => {
+  const [formData, setFormData] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    makeModel: '',
+    message: ''
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(null);
+  const [selectedProtectionLevel, setSelectedProtectionLevel] = useState('');
+
+  // Ceramic Coating Packages
+  const protectionLevels = [
+    {
+      id: 'fusion-plus-lite',
+      title: 'FUSION PLUS LITE',
+      warranty: '1 year warranty',
+      description: 'Basic protection with 1-year coverage',
+      features: [
+        "Professional-Grade 9H Ceramic Coating",
+        "1-year warranty protection",
+        "Enhanced gloss & hydrophobic properties",
+        "Basic paint protection",
+        "Professional application"
+      ]
+    },
+    {
+      id: 'fusion-plus-paint-ppf',
+      title: 'FUSION PLUS PAINT & PPF',
+      warranty: '4 years warranty',
+      description: 'Premium paint protection film with 4-year warranty',
+      features: [
+        "Professional-Grade 9H Ceramic Coating",
+        "4-year warranty coverage",
+        "PPF-safe formula",
+        "Superior chemical resistance",
+        "Maximum gloss enhancement",
+        "Paint correction included"
+      ]
+    },
+    {
+      id: 'fusion-plus-premium',
+      title: 'FUSION PLUS PREMIUM',
+      warranty: '8 years warranty',
+      description: 'Ultimate protection with 8-year comprehensive warranty',
+      features: [
+        "Professional-Grade 9H Ceramic Coating",
+        "8-year warranty protection",
+        "Ultimate scratch resistance",
+        "Premium hydrophobic coating",
+        "Complete paint correction",
+        "Full vehicle coverage",
+        "Complimentary maintenance kit"
+      ]
+    }
+  ];
+
+  useEffect(() => {
+    // Set the selected package when modal opens
+    if (selectedPackage && isOpen) {
+      setSelectedProtectionLevel(selectedPackage);
+    }
+  }, [selectedPackage, isOpen]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleProtectionLevelSelect = (levelId) => {
+    setSelectedProtectionLevel(levelId);
+    setOpenDropdown(null);
+  };
+
+  const toggleDropdown = () => {
+    setOpenDropdown(openDropdown === 'protection' ? null : 'protection');
+  };
+
+  const generateQuoteId = () => {
+    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = 'CERAMIC';
+    for (let i = 0; i < 6; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
+
+  const sendEmail = async (quoteId) => {
+    const emailFormData = new FormData();
+    
+    emailFormData.append('access_key', 'ba99ae3b-60cc-404c-b207-2a42e86aafb6');
+    emailFormData.append('autoresponse', 'false');
+    emailFormData.append('subject', `Ceramic Coating Quote Request – Confirmation Pending`);
+    emailFormData.append('from_name', 'Action Car Detailing');
+    emailFormData.append('email', formData.email);
+    emailFormData.append('reply_to', 'actioncardetailing@gmail.com');
+
+    const selectedProtectionDetails = protectionLevels.find(level => level.id === selectedProtectionLevel);
+
+    emailFormData.append('message', `
+✅ ACTION CAR DETAILING – CERAMIC COATING QUOTE REQUEST
+
+Subject: Ceramic Coating Quote Request Received – Confirmation Pending
+
+Dear ${formData.name},
+
+Thank you for your interest in our XPEL FUSION PLUS Ceramic Coating services!
+
+We have successfully received your quote request. Our team will review your vehicle details and get back to you within 24 hours with a customized quote.
+
+QUOTE SUMMARY
+
+Quote ID: ${quoteId}
+Service: Ceramic Coating
+Status: Pending Review
+
+CUSTOMER INFORMATION
+
+Name: ${formData.name}
+Email: ${formData.email}
+Phone: ${formData.phone}
+
+VEHICLE INFORMATION
+
+Make/Model: ${formData.makeModel}
+
+PROTECTION LEVEL SELECTED
+
+${selectedProtectionDetails ? `${selectedProtectionDetails.title} - ${selectedProtectionDetails.warranty}` : 'No protection level selected'}
+
+ADDITIONAL MESSAGE
+
+${formData.message || 'No additional message provided'}
+
+IMPORTANT INFORMATION
+
+• We will review your ceramic coating quote request within 24 hours
+• You'll receive a customized quote based on your vehicle and selected protection level
+• Our team will contact you to discuss appointment scheduling
+• Contact us if you need to modify your request
+
+CONTACT DETAILS
+
+Email: actioncardetailing@gmail.com
+Phone: (204) 775-0005
+Quote Reference: ${quoteId}
+
+Thank you for choosing Action Car Detailing for your ceramic coating needs!
+We look forward to protecting your vehicle.
+
+Best regards,
+Action Car Detailing Team
+Passion for Detail
+    `);
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        body: emailFormData
+      });
+
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error('Error sending email:', error);
+      throw error;
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!isFormValid) {
+      alert('❌ Please fill in all required fields.');
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const quoteId = generateQuoteId();
+      const emailResult = await sendEmail(quoteId);
+
+      if (emailResult.success) {
+        alert(`✅ Ceramic Coating Quote Request Submitted Successfully!\n\nYour Quote ID: ${quoteId}\n\nThank you for your interest! We'll review your information and get back to you within 24 hours with a customized quote.\n\nConfirmation email has been sent to: ${formData.email}`);
+        
+        // Reset form
+        setFormData({
+          name: '',
+          phone: '',
+          email: '',
+          makeModel: '',
+          message: ''
+        });
+        setSelectedProtectionLevel('');
+        onClose();
+      } else {
+        throw new Error('Email sending failed');
+      }
+    } catch (error) {
+      console.error('Error submitting quote request:', error);
+      alert('❌ Submission Error\n\nThere was an error submitting your request. Please try again or contact us directly at actioncardetailing@gmail.com');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const isFormValid = formData.name && formData.phone && formData.email && formData.makeModel && selectedProtectionLevel;
+
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto relative shadow-2xl">
+        <button
+          onClick={onClose}
+          className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors shadow-sm"
+        >
+          <X className="w-5 h-5" style={{ color: '#1393c4' }} />
+        </button>
+        
+        <div className="p-6">
+          {/* Header */}
+          <div className="text-center mb-6">
+            <h2 className="text-2xl font-bold text-[#1393c4] mb-2">GET CERAMIC COATING QUOTE</h2>
+            <p className="text-[#1393c4]">Fill out the form below to receive a customized quote for ceramic coating.</p>
+          </div>
+
+          {/* Contact Information */}
+          <div className="mb-6">
+            <h3 className="text-lg font-bold text-[#1393c4] mb-4">1. CONTACT INFORMATION</h3>
+            
+            <div className="space-y-4">
+              {/* Name Field */}
+              <div>
+                <label className="block text-sm font-medium text-[#1393c4] mb-2">Name *</label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Enter your full name"
+                    className="w-full pl-10 px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              {/* Phone Field */}
+              <div>
+                <label className="block text-sm font-medium text-[#1393c4] mb-2">Phone *</label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Enter your phone number"
+                    className="w-full pl-10 px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              {/* Email Field */}
+              <div>
+                <label className="block text-sm font-medium text-[#1393c4] mb-2">Email *</label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="Enter your email address"
+                    className="w-full pl-10 px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
+                  />
+                </div>
+              </div>
+
+              {/* Make and Model Field */}
+              <div>
+                <label className="block text-sm font-medium text-[#1393c4] mb-2">Vehicle Make and Model *</label>
+                <div className="relative">
+                  <Car className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <input
+                    type="text"
+                    name="makeModel"
+                    value={formData.makeModel}
+                    onChange={handleInputChange}
+                    required
+                    placeholder="e.g., Toyota Camry 2020"
+                    className="w-full pl-10 px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Protection Level Selection */}
+          <div className="mb-6">
+            <h3 className="text-lg font-bold text-[#1393c4] mb-4">2. CHOOSE YOUR PROTECTION LEVEL *</h3>
+            
+            <div className="mb-4">
+              <button
+                onClick={toggleDropdown}
+                className="w-full bg-gray-50 border-2 border-gray-300 rounded-lg p-4 flex justify-between items-center hover:border-[#1393c4] transition-colors duration-200"
+              >
+                <span className="text-[#1393c4] font-semibold text-lg">
+                  {selectedProtectionLevel 
+                    ? protectionLevels.find(level => level.id === selectedProtectionLevel)?.title
+                    : 'Select Protection Level'}
+                </span>
+                {openDropdown === 'protection' ? <ChevronUp className="text-[#1393c4]" /> : <ChevronDown className="text-[#1393c4]" />}
+              </button>
+              
+              {openDropdown === 'protection' && (
+                <div className="mt-2 border border-gray-200 rounded-lg overflow-hidden">
+                  {protectionLevels.map((level) => (
+                    <div
+                      key={level.id}
+                      onClick={() => handleProtectionLevelSelect(level.id)}
+                      className={`p-4 border-b border-gray-200 last:border-b-0 cursor-pointer transition-colors duration-200 ${
+                        selectedProtectionLevel === level.id 
+                          ? 'bg-[#1393c4] text-white' 
+                          : 'bg-white hover:bg-gray-50'
+                      }`}
+                    >
+                      <div className="flex justify-between items-start mb-2">
+                        <h3 className={`font-bold text-lg ${
+                          selectedProtectionLevel === level.id ? 'text-white' : 'text-[#1393c4]'
+                        }`}>
+                          {level.title}
+                        </h3>
+                        <span className={`font-semibold ${
+                          selectedProtectionLevel === level.id ? 'text-white' : 'text-gray-700'
+                        }`}>
+                          {level.warranty}
+                        </span>
+                      </div>
+                      <p className={`text-sm mb-2 ${
+                        selectedProtectionLevel === level.id ? 'text-blue-100' : 'text-gray-600'
+                      }`}>
+                        {level.description}
+                      </p>
+                      <div className={`text-xs ${
+                        selectedProtectionLevel === level.id ? 'text-blue-100' : 'text-gray-500'
+                      }`}>
+                        <ul className="list-disc list-inside space-y-1">
+                          {level.features.slice(0, 2).map((feature, idx) => (
+                            <li key={idx}>{feature}</li>
+                          ))}
+                          {level.features.length > 2 && <li>+{level.features.length - 2} more features</li>}
+                        </ul>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Additional Message */}
+          <div className="mb-6">
+            <h3 className="text-lg font-bold text-[#1393c4] mb-4">3. ADDITIONAL MESSAGE (OPTIONAL)</h3>
+            <textarea
+              name="message"
+              value={formData.message}
+              onChange={handleInputChange}
+              rows={3}
+              placeholder="Tell us about any specific requirements or questions..."
+              className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent resize-none"
+            />
+          </div>
+
+          {/* Submit Button */}
+          <div className="text-center">
+            <button
+              onClick={handleSubmit}
+              disabled={!isFormValid || isSubmitting}
+              className={`w-full py-4 rounded-xl font-bold text-white transition-all duration-300 shadow-lg ${
+                isFormValid && !isSubmitting
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 hover:scale-105'
+                  : 'bg-gray-300 cursor-not-allowed'
+              }`}
+            >
+              {isSubmitting ? 'Submitting...' : 'GET MY QUOTE'}
+            </button>
+            
+            <p className="text-xs text-gray-600 mt-3">
+              We'll review your request and get back to you within 24 hours with a customized quote.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const CeramicCoatings = ({ setCurrentView }) => {
   const videoRef = useRef(null);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
+  const [selectedPackage, setSelectedPackage] = useState('');
   const [visibleCards, setVisibleCards] = useState(new Set());
   const cardRefs = useRef([]);
 
-  // Video handling effect (same as Hero component)
+  // Video handling effect (same as original)
   useEffect(() => {
-    // Check if screen is small or iPad
     const checkScreenSize = () => {
       const width = window.innerWidth;
       const isIPad = (
@@ -40,31 +446,23 @@ const CeramicCoatings = ({ setCurrentView }) => {
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
 
-    // Optimized video handling with performance improvements
     const video = videoRef.current;
     
     if (video) {
-      // Essential settings for smooth playback
       video.muted = true;
       video.defaultMuted = true;
       video.volume = 0;
       video.setAttribute('playsinline', 'true');
       video.setAttribute('webkit-playsinline', 'true');
-      
-      // Performance optimizations for smoother playback
       video.preload = 'metadata';
       video.poster = '';
-      
-      // Hardware acceleration and smooth rendering
       video.style.willChange = 'transform';
       video.style.backfaceVisibility = 'hidden';
       
-      // iPad-specific video adjustments to prevent stretching
       const adjustVideoFit = () => {
         const width = window.innerWidth;
         const height = window.innerHeight;
         
-        // Detect iPad devices
         const isIPad = (
           (width === 768 && height === 1024) ||
           (width === 820 && height === 1180) ||
@@ -78,11 +476,9 @@ const CeramicCoatings = ({ setCurrentView }) => {
            (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document))
         );
         
-        // Calculate aspect ratios
         const screenRatio = width / height;
-        const videoRatio = 16 / 9; // Assuming your video is 16:9
+        const videoRatio = 16 / 9;
         
-        // Base styles for all devices
         video.style.objectFit = 'cover';
         video.style.width = '100%';
         video.style.height = '100%';
@@ -91,14 +487,11 @@ const CeramicCoatings = ({ setCurrentView }) => {
         video.style.left = '0';
         video.style.transform = 'translateZ(0)';
         
-        // iPad-specific positioning to prevent stretching
         if (isIPad) {
           video.style.objectPosition = 'center center';
-          // Ensure the video covers properly without stretching
           video.style.minWidth = '100%';
           video.style.minHeight = '100%';
         }
-        // Other devices
         else if (screenRatio > videoRatio) {
           video.style.objectPosition = 'center center';
         } else {
@@ -106,10 +499,8 @@ const CeramicCoatings = ({ setCurrentView }) => {
         }
       };
       
-      // Apply initial adjustments
       adjustVideoFit();
       
-      // Optimized event listeners with throttling
       let resizeTimeout;
       const throttledResize = () => {
         clearTimeout(resizeTimeout);
@@ -121,7 +512,6 @@ const CeramicCoatings = ({ setCurrentView }) => {
         setTimeout(adjustVideoFit, 300);
       });
       
-      // Enhanced autoplay with better error handling
       const playVideo = async () => {
         try {
           if (video.readyState >= 2) {
@@ -153,7 +543,6 @@ const CeramicCoatings = ({ setCurrentView }) => {
       
       setTimeout(playVideo, 100);
       
-      // Cleanup
       return () => {
         window.removeEventListener('resize', throttledResize);
         window.removeEventListener('orientationchange', adjustVideoFit);
@@ -166,34 +555,28 @@ const CeramicCoatings = ({ setCurrentView }) => {
     };
   }, []);
 
-  // iPad-specific height calculation to prevent stretching
+  // iPad-specific height calculation
   const getContainerHeight = () => {
     if (typeof window === 'undefined') return '100vh';
     
     const width = window.innerWidth;
     const height = window.innerHeight;
     
-    // Detect iPad devices by common resolutions
     const isIPad = (
-      // iPad Mini: 768x1024
       (width === 768 && height === 1024) ||
       (height === 768 && width === 1024) ||
-      // iPad Air: 820x1180
       (width === 820 && height === 1180) ||
       (height === 820 && width === 1180) ||
-      // iPad Pro 11": 834x1194
       (width === 834 && height === 1194) ||
       (height === 834 && width === 1194) ||
-      // iPad Pro 12.9": 1024x1366
       (width === 1024 && height === 1366) ||
       (height === 1024 && width === 1366) ||
-      // User agent check
       navigator.userAgent.includes('iPad') ||
       (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document)
     );
     
     if (isIPad) {
-      return `${height}px`; // Use actual viewport height on iPad
+      return `${height}px`;
     }
     
     return '100vh';
@@ -272,7 +655,8 @@ const CeramicCoatings = ({ setCurrentView }) => {
       ],
       image: fusionPlusLite,
       gradient: "from-blue-400 to-cyan-500",
-      popular: false
+      popular: false,
+      id: 'fusion-plus-lite'
     },
     {
       name: "FUSION PLUS PAINT & PPF",
@@ -287,7 +671,8 @@ const CeramicCoatings = ({ setCurrentView }) => {
       ],
       image: fusionPlusPaintPPF,
       gradient: "from-cyan-500 to-blue-600",
-      popular: true
+      popular: true,
+      id: 'fusion-plus-paint-ppf'
     },
     {
       name: "FUSION PLUS PREMIUM",
@@ -303,7 +688,8 @@ const CeramicCoatings = ({ setCurrentView }) => {
       ],
       image: fusionPlusPremium,
       gradient: "from-blue-600 to-indigo-700",
-      popular: false
+      popular: false,
+      id: 'fusion-plus-premium'
     }
   ];
 
@@ -345,6 +731,11 @@ const CeramicCoatings = ({ setCurrentView }) => {
       color: "#1393c4"
     }
   ];
+
+  const handleGetPricingClick = (packageId) => {
+    setSelectedPackage(packageId);
+    setIsQuoteModalOpen(true);
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -497,7 +888,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
                   </ul>
 
                   <button
-                    onClick={() => setIsQuoteModalOpen(true)}
+                    onClick={() => handleGetPricingClick(pkg.id)}
                     className={`w-full py-4 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105 shadow-lg ${
                       pkg.popular ? 'bg-gradient-to-r from-cyan-500 to-blue-600' : 'bg-gradient-to-r from-blue-500 to-cyan-600'
                     }`}
@@ -710,22 +1101,12 @@ const CeramicCoatings = ({ setCurrentView }) => {
         </div>
       </section>
 
-      {/* Quote Modal */}
-      {isQuoteModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg max-w-md w-full max-h-[80vh] overflow-y-auto relative shadow-2xl">
-            <button
-              onClick={() => setIsQuoteModalOpen(false)}
-              className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors shadow-sm"
-            >
-              <X className="w-5 h-5" style={{ color: '#1393c4' }} />
-            </button>
-            <div className="p-1">
-              <Quote onClose={() => setIsQuoteModalOpen(false)} />
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Ceramic Coating Quote Modal */}
+      <CeramicCoatingQuoteModal 
+        isOpen={isQuoteModalOpen}
+        onClose={() => setIsQuoteModalOpen(false)}
+        selectedPackage={selectedPackage}
+      />
 
       {/* Footer Component */}
       <Footer />
