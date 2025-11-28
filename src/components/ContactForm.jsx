@@ -356,6 +356,7 @@ For inquiries, please contact us at actioncardetailing@gmail.com
                                     placeholder="Name *"
                                     required
                                     className="w-full p-2 sm:p-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300"
+                                    style={{color: '#1393c4'}}
                                     disabled={isSubmitting}
                                 />
                             </div>
@@ -369,6 +370,7 @@ For inquiries, please contact us at actioncardetailing@gmail.com
                                     placeholder="Email *"
                                     required
                                     className="w-full p-2 sm:p-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300"
+                                    style={{color: '#1393c4'}}
                                     disabled={isSubmitting}
                                 />
                             </div>
@@ -382,6 +384,7 @@ For inquiries, please contact us at actioncardetailing@gmail.com
                                     placeholder="Phone *"
                                     required
                                     className="w-full p-2 sm:p-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300"
+                                    style={{color: '#1393c4'}}
                                     disabled={isSubmitting}
                                 />
                             </div>
@@ -394,6 +397,7 @@ For inquiries, please contact us at actioncardetailing@gmail.com
                                     onChange={handleChange}
                                     required
                                     className="w-full p-2 sm:p-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 bg-white"
+                                    style={{color: '#1393c4'}}
                                     disabled={isSubmitting}
                                 >
                                     {serviceOptions.map((option) => (
@@ -401,6 +405,7 @@ For inquiries, please contact us at actioncardetailing@gmail.com
                                             key={option.value} 
                                             value={option.value}
                                             disabled={option.disabled}
+                                            style={{color: '#1393c4'}}
                                         >
                                             {option.label}
                                         </option>
@@ -417,6 +422,7 @@ For inquiries, please contact us at actioncardetailing@gmail.com
                                     rows="4"
                                     required
                                     className="w-full p-2 sm:p-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 resize-none"
+                                    style={{color: '#1393c4'}}
                                     disabled={isSubmitting}
                                 ></textarea>
                             </div>
@@ -434,6 +440,7 @@ For inquiries, please contact us at actioncardetailing@gmail.com
                                     accept="image/*"
                                     className="w-full p-1 sm:p-2 text-sm sm:text-base border border-gray-300 rounded-lg file:mr-2 sm:file:mr-4 file:py-1 sm:file:py-2 file:px-2 sm:file:px-4 file:rounded-md file:border-0 file:text-white file:text-sm sm:file:text-base transition duration-300 mb-2"
                                     style={{
+                                        color: '#1393c4',
                                         '--file-bg': '#1393c4',
                                         '--file-hover-bg': '#0f7ba8'
                                     }}
@@ -444,7 +451,7 @@ For inquiries, please contact us at actioncardetailing@gmail.com
                                 {photoPreview && (
                                     <div className="mt-2 p-2 border border-gray-300 rounded-lg bg-white">
                                         <div className="flex items-center justify-between mb-2">
-                                            <span className="text-sm font-medium text-gray-700">📷 Photo Preview:</span>
+                                            <span className="text-sm font-medium" style={{color: '#1393c4'}}>📷 Photo Preview:</span>
                                             <button
                                                 type="button"
                                                 onClick={removePhoto}
@@ -459,7 +466,7 @@ For inquiries, please contact us at actioncardetailing@gmail.com
                                             alt="Preview"
                                             className="max-w-full h-32 object-cover rounded border border-gray-200"
                                         />
-                                        <p className="text-xs text-gray-500 mt-1">
+                                        <p className="text-xs mt-1" style={{color: '#1393c4', opacity: 0.7}}>
                                             This photo will be attached as a separate file in the email
                                         </p>
                                     </div>
