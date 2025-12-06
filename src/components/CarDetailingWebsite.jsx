@@ -220,6 +220,14 @@ const CarDetailingWebsite = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Function to scroll to booking section
+  const scrollToBooking = () => {
+    const bookingSection = document.getElementById('booking-section');
+    if (bookingSection) {
+      bookingSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section with Video */}
@@ -330,6 +338,17 @@ const CarDetailingWebsite = () => {
                 <div className="text-[#1393c4] text-sm">Premium Service</div>
               </div>
             </div>
+          </div>
+          
+          {/* Add Book Now Button Here */}
+          <div className="mt-8 text-center">
+            <button
+              onClick={scrollToBooking}
+              className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-[#1393c4] rounded-md hover:bg-[#0f7ba3] transition-colors duration-300 shadow-lg hover:shadow-xl"
+            >
+              <Calendar className="w-5 h-5 mr-2" />
+              BOOK NOW
+            </button>
           </div>
         </div>
       </section>
@@ -474,7 +493,7 @@ const CarDetailingWebsite = () => {
       </section>
 
       {/* Booking Section - FIXED: Remove animations to prevent modal issues */}
-      <section className="py-12 sm:py-16 bg-white">
+      <section id="booking-section" className="py-12 sm:py-16 bg-white">
         <Booking isModal={false} />
       </section>
 
