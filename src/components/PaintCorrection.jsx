@@ -1,4 +1,4 @@
-import { RotateCcw, Droplets, Target, RefreshCw, Zap, Car } from 'lucide-react';
+import { RotateCcw, Droplets, Target, RefreshCw, Zap, Car, Calendar } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import Footer from '../components/Footer';
 import PaintPolishingForm from '../components/PaintPolishingForm';
@@ -13,6 +13,14 @@ const PaintCorrection = () => {
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [visibleCards, setVisibleCards] = useState([]);
   const [visibleSections, setVisibleSections] = useState([]);
+
+  // Function to scroll to paint polishing form
+  const scrollToPaintPolishingForm = () => {
+    const formSection = document.getElementById('paint-polishing-form');
+    if (formSection) {
+      formSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   // Video handling effect (same as Hero component)
   useEffect(() => {
@@ -335,6 +343,17 @@ const PaintCorrection = () => {
             <p className="text-lg mb-8 max-w-3xl mx-auto font-medium px-6 py-4 rounded-lg border-2 bg-white" style={{ color: '#1393c4', borderColor: '#1393c4' }}>
               Transform your vehicle's paint to showroom perfection with our professional correction services
             </p>
+            
+            {/* Add Book Now Button Here */}
+            <div className="mt-6">
+              <button
+                onClick={scrollToPaintPolishingForm}
+                className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-[#1393c4] rounded-md hover:bg-[#0f7ba3] transition-colors duration-300 shadow-lg hover:shadow-xl"
+              >
+                <Calendar className="w-5 h-5 mr-2" />
+                BOOK NOW
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -566,7 +585,7 @@ const PaintCorrection = () => {
       </section>
 
       {/* Paint Polishing Form Section */}
-      <section className="py-16 bg-gray-50">
+      <section id="paint-polishing-form" className="py-16 bg-gray-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <PaintPolishingForm />
         </div>
