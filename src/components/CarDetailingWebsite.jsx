@@ -288,13 +288,24 @@ const CarDetailingWebsite = () => {
           </div>
         </div>
 
-        {/* Hero Content - positioned below video with reduced spacing */}
+        {/* Hero Content - positioned below video with reduced spacing and BOOK NOW button */}
         <div className={`animate-section transition-all duration-1000 ease-in-out ${isVisible[0] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <div className="bg-white py-8 sm:py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#1393c4]">
                 AUTO DETAILING
               </h1>
+              
+              {/* BOOK NOW Button directly below the heading */}
+              <div className="mt-6 sm:mt-8">
+                <button
+                  onClick={scrollToBooking}
+                  className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium text-white bg-[#1393c4] rounded-md hover:bg-[#0f7ba3] transition-colors duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                >
+                  <Calendar className="w-5 h-5 mr-2" />
+                  BOOK NOW
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -315,7 +326,7 @@ const CarDetailingWebsite = () => {
 
               <div className="bg-white p-4 rounded-lg border-l-4 border-[#1393c4]">
                 <p className="text-base text-[#1393c4] font-medium">
-                  Action car Detailing offers a very thorough, deep cleaning of interior and exterior. We specialize in Auto Detailing, Ceramic Coating, Window Tinting, Paint Protection Film (PPF), and Paintless Dent Removal.
+                  Action car Detailing offers a very thorough, deep cleaning of interior and exterior. We specialize in Auto Detailing, Ceramic Coating, Window Tinting, and Paint Protection Film (PPF).
                 </p>
               </div>
             </div>
@@ -338,17 +349,6 @@ const CarDetailingWebsite = () => {
                 <div className="text-[#1393c4] text-sm">Premium Service</div>
               </div>
             </div>
-          </div>
-          
-          {/* Add Book Now Button Here */}
-          <div className="mt-8 text-center">
-            <button
-              onClick={scrollToBooking}
-              className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-[#1393c4] rounded-md hover:bg-[#0f7ba3] transition-colors duration-300 shadow-lg hover:shadow-xl"
-            >
-              <Calendar className="w-5 h-5 mr-2" />
-              BOOK NOW
-            </button>
           </div>
         </div>
       </section>
