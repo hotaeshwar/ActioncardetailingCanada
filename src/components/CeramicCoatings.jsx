@@ -632,32 +632,32 @@ const CeramicCoatings = ({ setCurrentView }) => {
   // Benefits data with icons
   const benefits = [
     {
-      icon: <Shield className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#1393c4' }} />,
+      icon: <Shield className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#ffffff' }} />,
       title: "Superior Protection",
       description: "Advanced ceramic formula creates a durable barrier against UV rays, oxidation, and environmental contaminants"
     },
     {
-      icon: <Droplets className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#1393c4' }} />,
+      icon: <Droplets className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#ffffff' }} />,
       title: "Hydrophobic Shield",
       description: "Extreme water and dirt repellency makes cleaning effortless while maintaining that showroom shine"
     },
     {
-      icon: <Star className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#1393c4' }} />,
+      icon: <Star className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#ffffff' }} />,
       title: "Enhanced Gloss",
       description: "Deep, mirror-like finish that intensifies your vehicle's color and creates stunning visual depth"
     },
     {
-      icon: <Settings className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#1393c4' }} />,
+      icon: <Settings className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#ffffff' }} />,
       title: "Scratch Resistance",
       description: "Hard ceramic layer helps prevent minor scratches and swirl marks, keeping your paint pristine"
     },
     {
-      icon: <Sun className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#1393c4' }} />,
+      icon: <Sun className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#ffffff' }} />,
       title: "UV Protection",
       description: "Blocks harmful UV rays that cause paint fading and oxidation, preserving your vehicle's appearance"
     },
     {
-      icon: <HardHat className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#1393c4' }} />,
+      icon: <HardHat className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#ffffff' }} />,
       title: "Chemical Defense",
       description: "Resists harsh chemicals, bird droppings, tree sap, and road salts that can etch into paint"
     }
@@ -715,34 +715,34 @@ const CeramicCoatings = ({ setCurrentView }) => {
     }
   ];
 
-  // Process steps with enhanced visuals and proper spacing
+  // Process steps with enhanced visuals and proper spacing - FIXED OVERFLOW ISSUE
   const processSteps = [
     {
-      icon: <Beaker className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: '#1393c4' }} />,
+      icon: <Beaker className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: '#ffffff' }} />,
       step: "1",
       title: "Deep Cleaning & Decontamination",
       description: "Thorough washing and clay bar treatment removes all surface contaminants, iron particles, and embedded debris for a pristine foundation"
     },
     {
-      icon: <Settings className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: '#1393c4' }} />,
+      icon: <Settings className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: '#ffffff' }} />,
       step: "2",
       title: "Paint Correction",
       description: "Multi-stage polishing removes swirl marks, scratches, and imperfections to restore your paint to showroom condition"
     },
     {
-      icon: <Atom className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: '#1393c4' }} />,
+      icon: <Atom className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: '#ffffff' }} />,
       step: "3",
       title: "Surface Preparation",
       description: "Panel wipe ensures perfect surface preparation, removing polish oils and residues for optimal coating adhesion"
     },
     {
-      icon: <Shield className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: '#1393c4' }} />,
+      icon: <Shield className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: '#ffffff' }} />,
       step: "4",
       title: "Ceramic Application",
       description: "Precision application of XPEL FUSION PLUS in controlled environment, ensuring even coverage and proper curing"
     },
     {
-      icon: <Star className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: '#1393c4' }} />,
+      icon: <Star className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: '#ffffff' }} />,
       step: "5",
       title: "Curing & Inspection",
       description: "24-48 hour curing process followed by detailed quality inspection and final finishing touches"
@@ -828,7 +828,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <div
-                  className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl md:rounded-2xl flex items-center justify-center text-white mb-3 sm:mb-4 md:mb-6 group-hover:scale-105 sm:group-hover:scale-110 transition-transform duration-300 shadow-md sm:shadow-lg"
+                  className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl md:rounded-2xl flex items-center justify-center mb-3 sm:mb-4 md:mb-6 group-hover:scale-105 sm:group-hover:scale-110 transition-transform duration-300 shadow-md sm:shadow-lg"
                   style={{ backgroundColor: '#1393c4' }}
                 >
                   {benefit.icon}
@@ -927,7 +927,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
               Our Professional Process
             </h2>
             <div className="w-24 sm:w-32 h-1 mx-auto mb-4 sm:mb-6" style={{ background: 'linear-gradient(90deg, #1393c4, #0f7a9c)' }} />
-            <p className="text-base sm:text-lg md:text-xl max-w-3xl mx-auto px-4" style={{ color: '#1393c4' }}>
+            <p className="text-base sm:text-lg md:text-xl max-w-3xl mx-auto px-4 break-words" style={{ color: '#1393c4' }}>
               Meticulous attention to detail at every step ensures flawless results
             </p>
           </div>
@@ -944,8 +944,8 @@ const CeramicCoatings = ({ setCurrentView }) => {
               >
                 <div className="flex items-center gap-3 sm:gap-4">
                   <div
-                    className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl flex items-center justify-center text-white shadow-lg"
-                    style={{ background: `linear-gradient(135deg, #1393c4, #0f7a9c)` }}
+                    className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg"
+                    style={{ background: `#1393c4` }}
                   >
                     {step.icon}
                   </div>
@@ -956,12 +956,12 @@ const CeramicCoatings = ({ setCurrentView }) => {
                     >
                       {step.step}
                     </span>
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold truncate" style={{ color: '#1393c4' }}>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold break-words" style={{ color: '#1393c4' }}>
                       {step.title}
                     </h3>
                   </div>
                 </div>
-                <p className="text-sm sm:text-base leading-relaxed" style={{ color: '#1393c4' }}>
+                <p className="text-sm sm:text-base leading-relaxed break-words hyphens-auto" style={{ color: '#1393c4' }}>
                   {step.description}
                 </p>
               </div>
@@ -978,7 +978,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
             <div className="p-4 sm:p-6 md:p-8 lg:p-12 bg-white">
               <div className="flex flex-col lg:flex-row items-center">
                 <div className="lg:w-1/2 mb-6 sm:mb-8 lg:mb-0">
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 md:mb-8" style={{ color: '#1393c4' }}>
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 md:mb-8 break-words" style={{ color: '#1393c4' }}>
                     PROTECT YOUR VEHICLE WITH XPEL FUSION PLUS CERAMIC COATING
                   </h2>
                   <div className="space-y-3 sm:space-y-4">
@@ -987,7 +987,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
                       onClick={() => setCurrentView('fusion-plus-lite')}
                     >
                       <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
+                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3] break-words" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
                         FUSION PLUS LITE
                       </span>
                     </div>
@@ -996,7 +996,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
                       onClick={() => setCurrentView('fusion-plus-paint-ppf')}
                     >
                       <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
+                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3] break-words" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
                         FUSION PLUS PAINT & PPF
                       </span>
                     </div>
@@ -1005,7 +1005,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
                       onClick={() => setCurrentView('fusion-plus-premium')}
                     >
                       <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
+                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3] break-words" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
                         FUSION PLUS PREMIUM
                       </span>
                     </div>
@@ -1014,7 +1014,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
                       onClick={() => setCurrentView('fusion-plus-wheel-caliper')}
                     >
                       <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
+                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3] break-words" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
                         FUSION PLUS WHEEL & CALIPER
                       </span>
                     </div>
@@ -1023,7 +1023,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
                       onClick={() => setCurrentView('fusion-plus-glass')}
                     >
                       <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
+                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3] break-words" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
                         FUSION PLUS GLASS
                       </span>
                     </div>
@@ -1032,7 +1032,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
                       onClick={() => setCurrentView('fusion-plus-plastic-trims')}
                     >
                       <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
+                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3] break-words" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
                         FUSION PLUS PLASTIC & TRIMS
                       </span>
                     </div>
@@ -1041,7 +1041,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
                       onClick={() => setCurrentView('fusion-plus-upholstery')}
                     >
                       <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
+                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3] break-words" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
                         FUSION PLUS UPHOLSTERY
                       </span>
                     </div>
@@ -1064,29 +1064,29 @@ const CeramicCoatings = ({ setCurrentView }) => {
             <div className="bg-white p-4 sm:p-6 md:p-8 lg:p-12 border-t border-gray-200">
               <div className="flex flex-col lg:flex-row items-center">
                 <div className="lg:w-1/2 mb-6 sm:mb-8 lg:mb-0">
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6" style={{ color: '#1393c4' }}>
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 break-words" style={{ color: '#1393c4' }}>
                     FUSION PLUS
-                    <span className="block text-lg sm:text-xl md:text-2xl" style={{ color: '#1393c4' }}>CERAMIC COATING</span>
+                    <span className="block text-lg sm:text-xl md:text-2xl break-words" style={{ color: '#1393c4' }}>CERAMIC COATING</span>
                   </h2>
 
                   <div className="space-y-3 sm:space-y-4 text-sm sm:text-base">
-                    <p className="leading-relaxed bg-gray-50 p-3 sm:p-4 rounded-lg" style={{ color: '#1393c4' }}>
-                      Developed to perform in a wide variety of surface types, <span className="font-bold" style={{ color: '#1393c4' }}>FUSION PLUS</span> Ceramic Coating offers unrivaled gloss, superior hydrophobic protection, and improved scratch resistance.
+                    <p className="leading-relaxed bg-gray-50 p-3 sm:p-4 rounded-lg break-words" style={{ color: '#1393c4' }}>
+                      Developed to perform in a wide variety of surface types, <span className="font-bold break-words" style={{ color: '#1393c4' }}>FUSION PLUS</span> Ceramic Coating offers unrivaled gloss, superior hydrophobic protection, and improved scratch resistance.
                     </p>
                   </div>
 
                   <div className="mt-4 sm:mt-6 md:mt-8 space-y-2 sm:space-y-3">
                     <div className="flex items-center space-x-2 sm:space-x-3 bg-gray-50 p-2 sm:p-3 rounded-lg hover:bg-gray-100 transition-colors">
                       <span className="text-lg sm:text-xl font-bold" style={{ color: '#1393c4' }}>+</span>
-                      <span className="font-semibold text-sm sm:text-base" style={{ color: '#1393c4' }}>Provides protection from the elements</span>
+                      <span className="font-semibold text-sm sm:text-base break-words" style={{ color: '#1393c4' }}>Provides protection from the elements</span>
                     </div>
                     <div className="flex items-center space-x-2 sm:space-x-3 bg-gray-50 p-2 sm:p-3 rounded-lg hover:bg-gray-100 transition-colors">
                       <span className="text-lg sm:text-xl font-bold" style={{ color: '#1393c4' }}>+</span>
-                      <span className="font-semibold text-sm sm:text-base" style={{ color: '#1393c4' }}>Repels water, dirt & road grime</span>
+                      <span className="font-semibold text-sm sm:text-base break-words" style={{ color: '#1393c4' }}>Repels water, dirt & road grime</span>
                     </div>
                     <div className="flex items-center space-x-2 sm:space-x-3 bg-gray-50 p-2 sm:p-3 rounded-lg hover:bg-gray-100 transition-colors">
                       <span className="text-lg sm:text-xl font-bold" style={{ color: '#1393c4' }}>+</span>
-                      <span className="font-semibold text-sm sm:text-base" style={{ color: '#1393c4' }}>Resist stains & chemical etching</span>
+                      <span className="font-semibold text-sm sm:text-base break-words" style={{ color: '#1393c4' }}>Resist stains & chemical etching</span>
                     </div>
                   </div>
                 </div>
