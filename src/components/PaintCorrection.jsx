@@ -334,26 +334,27 @@ const PaintCorrection = () => {
           data-section="hero"
         >
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-4xl font-bold mb-6 tracking-tight" style={{ color: '#1393c4' }}>
+            <h1 className="text-4xl font-bold mb-4 tracking-tight" style={{ color: '#1393c4' }}>
               PAINT CORRECTION
               <span className="block text-3xl mt-2" style={{ color: '#1393c4' }}>
                 POLISHING
               </span>
             </h1>
-            <p className="text-lg mb-8 max-w-3xl mx-auto font-medium px-6 py-4 rounded-lg border-2 bg-white" style={{ color: '#1393c4', borderColor: '#1393c4' }}>
-              Transform your vehicle's paint to showroom perfection with our professional correction services
-            </p>
             
-            {/* Add Book Now Button Here */}
-            <div className="mt-6">
+            {/* BOOK NOW Button directly below the heading */}
+            <div className="mt-6 mb-6">
               <button
                 onClick={scrollToPaintPolishingForm}
-                className="inline-flex items-center justify-center px-8 py-3 text-base font-medium text-white bg-[#1393c4] rounded-md hover:bg-[#0f7ba3] transition-colors duration-300 shadow-lg hover:shadow-xl"
+                className="inline-flex items-center justify-center px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-medium text-white bg-[#1393c4] rounded-md hover:bg-[#0f7ba3] transition-colors duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
               >
                 <Calendar className="w-5 h-5 mr-2" />
                 BOOK NOW
               </button>
             </div>
+            
+            <p className="text-lg max-w-3xl mx-auto font-medium px-6 py-4 rounded-lg border-2 bg-white" style={{ color: '#1393c4', borderColor: '#1393c4' }}>
+              Transform your vehicle's paint to showroom perfection with our professional correction services
+            </p>
           </div>
         </div>
       </section>
