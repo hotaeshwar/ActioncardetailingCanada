@@ -705,7 +705,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
     }
   ];
 
-  // Process steps with enhanced visuals
+  // Process steps with enhanced visuals and proper spacing
   const processSteps = [
     {
       icon: <Beaker className="w-8 h-8 sm:w-10 sm:h-10" />,
@@ -914,7 +914,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
         </div>
       </section>
 
-      {/* Process Section */}
+      {/* Process Section with Proper Spacing */}
       <section className="py-12 sm:py-16 md:py-20 bg-white relative overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-8 sm:mb-12 md:mb-16">
@@ -927,40 +927,157 @@ const CeramicCoatings = ({ setCurrentView }) => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-6xl mx-auto">
-            {processSteps.map((step, index) => (
-              <div
-                key={index}
-                ref={el => cardRefs.current[benefits.length + packages.length + index] = el}
-                className={`flex flex-col gap-3 sm:gap-4 bg-gray-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:bg-gray-100 transition-all duration-500 transform ${
-                  visibleCards.has(benefits.length + packages.length + index) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
-                }`}
-                style={{ transitionDelay: `${index * 100}ms` }}
-              >
-                <div className="flex items-center gap-3 sm:gap-4">
-                  <div
-                    className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl flex items-center justify-center text-white shadow-lg"
+          {/* Process Steps Container */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 max-w-6xl mx-auto">
+            {/* Step 1: Deep Cleaning & Decontamination */}
+            <div
+              ref={el => cardRefs.current[benefits.length + packages.length] = el}
+              className={`bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-500 transform ${
+                visibleCards.has(benefits.length + packages.length) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
+              }`}
+              style={{ transitionDelay: '0ms' }}
+            >
+              <div className="flex items-start gap-4 sm:gap-6 mb-4 sm:mb-6">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl flex items-center justify-center text-white"
                     style={{ background: `linear-gradient(135deg, #1393c4, #0f7a9c)` }}
                   >
-                    {step.icon}
-                  </div>
-                  <div className="flex items-center gap-1 sm:gap-2">
-                    <span
-                      className="text-xl sm:text-2xl font-bold"
-                      style={{ color: '#1393c4' }}
-                    >
-                      {step.step}
-                    </span>
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold truncate" style={{ color: '#1393c4' }}>
-                      {step.title}
-                    </h3>
+                    <span className="text-xl sm:text-2xl md:text-3xl font-bold">1</span>
                   </div>
                 </div>
-                <p className="text-sm sm:text-base leading-relaxed" style={{ color: '#1393c4' }}>
-                  {step.description}
-                </p>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                    <Beaker className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" style={{ color: '#1393c4' }} />
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold" style={{ color: '#1393c4' }}>
+                      Deep Cleaning & Decontamination
+                    </h3>
+                  </div>
+                  <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: '#1393c4' }}>
+                    Thorough washing and clay bar treatment removes all surface contaminants, iron particles, and embedded debris for a pristine foundation.
+                  </p>
+                </div>
               </div>
-            ))}
+            </div>
+
+            {/* Step 2: Paint Correction */}
+            <div
+              ref={el => cardRefs.current[benefits.length + packages.length + 1] = el}
+              className={`bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-500 transform ${
+                visibleCards.has(benefits.length + packages.length + 1) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
+              }`}
+              style={{ transitionDelay: '100ms' }}
+            >
+              <div className="flex items-start gap-4 sm:gap-6 mb-4 sm:mb-6">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl flex items-center justify-center text-white"
+                    style={{ background: `linear-gradient(135deg, #0f7a9c, #1393c4)` }}
+                  >
+                    <span className="text-xl sm:text-2xl md:text-3xl font-bold">2</span>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                    <Settings className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" style={{ color: '#0f7a9c' }} />
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold" style={{ color: '#0f7a9c' }}>
+                      Paint Correction
+                    </h3>
+                  </div>
+                  <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: '#0f7a9c' }}>
+                    Multi-stage polishing removes swirl marks, scratches, and imperfections to restore your paint to showroom condition.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 3: Surface Preparation */}
+            <div
+              ref={el => cardRefs.current[benefits.length + packages.length + 2] = el}
+              className={`bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-500 transform ${
+                visibleCards.has(benefits.length + packages.length + 2) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
+              }`}
+              style={{ transitionDelay: '200ms' }}
+            >
+              <div className="flex items-start gap-4 sm:gap-6 mb-4 sm:mb-6">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl flex items-center justify-center text-white"
+                    style={{ background: `linear-gradient(135deg, #1393c4, #0f7a9c)` }}
+                  >
+                    <span className="text-xl sm:text-2xl md:text-3xl font-bold">3</span>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                    <Atom className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" style={{ color: '#1393c4' }} />
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold" style={{ color: '#1393c4' }}>
+                      Surface Preparation
+                    </h3>
+                  </div>
+                  <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: '#1393c4' }}>
+                    Panel wipe ensures perfect surface preparation, removing polish oils and residues for optimal coating adhesion.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 4: Ceramic Application */}
+            <div
+              ref={el => cardRefs.current[benefits.length + packages.length + 3] = el}
+              className={`bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-500 transform ${
+                visibleCards.has(benefits.length + packages.length + 3) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
+              }`}
+              style={{ transitionDelay: '300ms' }}
+            >
+              <div className="flex items-start gap-4 sm:gap-6 mb-4 sm:mb-6">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl flex items-center justify-center text-white"
+                    style={{ background: `linear-gradient(135deg, #0f7a9c, #1393c4)` }}
+                  >
+                    <span className="text-xl sm:text-2xl md:text-3xl font-bold">4</span>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                    <Shield className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" style={{ color: '#0f7a9c' }} />
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold" style={{ color: '#0f7a9c' }}>
+                      Ceramic Application
+                    </h3>
+                  </div>
+                  <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: '#0f7a9c' }}>
+                    Precision application of XPEL FUSION PLUS in controlled environment, ensuring even coverage and proper curing.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Step 5: Curing & Inspection - Full width on medium, half width on large */}
+            <div
+              ref={el => cardRefs.current[benefits.length + packages.length + 4] = el}
+              className={`bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-500 transform md:col-span-2 lg:col-span-1 ${
+                visibleCards.has(benefits.length + packages.length + 4) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
+              }`}
+              style={{ transitionDelay: '400ms' }}
+            >
+              <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 mb-4 sm:mb-6">
+                <div className="flex-shrink-0">
+                  <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl flex items-center justify-center text-white"
+                    style={{ background: `linear-gradient(135deg, #1393c4, #0f7a9c)` }}
+                  >
+                    <span className="text-xl sm:text-2xl md:text-3xl font-bold">5</span>
+                  </div>
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
+                    <Star className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" style={{ color: '#1393c4' }} />
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold" style={{ color: '#1393c4' }}>
+                      Curing & Inspection
+                    </h3>
+                  </div>
+                  <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: '#1393c4' }}>
+                    24-48 hour curing process followed by detailed quality inspection and final finishing touches to ensure perfection.
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
