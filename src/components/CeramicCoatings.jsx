@@ -243,20 +243,20 @@ Passion for Detail
         <div className="p-4 sm:p-6">
           {/* Header */}
           <div className="text-center mb-4 sm:mb-6">
-            <h2 className="text-xl sm:text-2xl font-bold text-[#1393c4] mb-2">GET CERAMIC COATING QUOTE</h2>
-            <p className="text-[#1393c4] text-sm sm:text-base">Fill out the form below to receive a customized quote for ceramic coating.</p>
+            <h2 className="text-xl sm:text-2xl font-bold" style={{ color: '#1393c4' }}>GET CERAMIC COATING QUOTE</h2>
+            <p style={{ color: '#1393c4' }} className="text-sm sm:text-base">Fill out the form below to receive a customized quote for ceramic coating.</p>
           </div>
 
           {/* Contact Information */}
           <div className="mb-4 sm:mb-6">
-            <h3 className="text-base sm:text-lg font-bold text-[#1393c4] mb-3 sm:mb-4">1. CONTACT INFORMATION</h3>
+            <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4" style={{ color: '#1393c4' }}>1. CONTACT INFORMATION</h3>
             
             <div className="space-y-3 sm:space-y-4">
               {/* Name Field */}
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-[#1393c4] mb-1 sm:mb-2">Name *</label>
+                <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2" style={{ color: '#1393c4' }}>Name *</label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#1393c4' }} />
                   <input
                     type="text"
                     name="name"
@@ -264,16 +264,17 @@ Passion for Detail
                     onChange={handleInputChange}
                     required
                     placeholder="Enter your full name"
-                    className="w-full pl-9 sm:pl-10 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
+                    className="w-full pl-9 sm:pl-10 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+                    style={{ borderColor: '#1393c4', color: '#1393c4', backgroundColor: '#f8fafc' }}
                   />
                 </div>
               </div>
 
               {/* Phone Field */}
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-[#1393c4] mb-1 sm:mb-2">Phone *</label>
+                <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2" style={{ color: '#1393c4' }}>Phone *</label>
                 <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#1393c4' }} />
                   <input
                     type="tel"
                     name="phone"
@@ -281,16 +282,17 @@ Passion for Detail
                     onChange={handleInputChange}
                     required
                     placeholder="Enter your phone number"
-                    className="w-full pl-9 sm:pl-10 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
+                    className="w-full pl-9 sm:pl-10 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+                    style={{ borderColor: '#1393c4', color: '#1393c4', backgroundColor: '#f8fafc' }}
                   />
                 </div>
               </div>
 
               {/* Email Field */}
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-[#1393c4] mb-1 sm:mb-2">Email *</label>
+                <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2" style={{ color: '#1393c4' }}>Email *</label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#1393c4' }} />
                   <input
                     type="email"
                     name="email"
@@ -298,16 +300,17 @@ Passion for Detail
                     onChange={handleInputChange}
                     required
                     placeholder="Enter your email address"
-                    className="w-full pl-9 sm:pl-10 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
+                    className="w-full pl-9 sm:pl-10 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+                    style={{ borderColor: '#1393c4', color: '#1393c4', backgroundColor: '#f8fafc' }}
                   />
                 </div>
               </div>
 
               {/* Make and Model Field */}
               <div>
-                <label className="block text-xs sm:text-sm font-medium text-[#1393c4] mb-1 sm:mb-2">Vehicle Make and Model *</label>
+                <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2" style={{ color: '#1393c4' }}>Vehicle Make and Model *</label>
                 <div className="relative">
-                  <Car className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
+                  <Car className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#1393c4' }} />
                   <input
                     type="text"
                     name="makeModel"
@@ -315,7 +318,8 @@ Passion for Detail
                     onChange={handleInputChange}
                     required
                     placeholder="e.g., Toyota Camry 2020"
-                    className="w-full pl-9 sm:pl-10 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
+                    className="w-full pl-9 sm:pl-10 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent"
+                    style={{ borderColor: '#1393c4', color: '#1393c4', backgroundColor: '#f8fafc' }}
                   />
                 </div>
               </div>
@@ -324,53 +328,58 @@ Passion for Detail
 
           {/* Protection Level Selection */}
           <div className="mb-4 sm:mb-6">
-            <h3 className="text-base sm:text-lg font-bold text-[#1393c4] mb-3 sm:mb-4">2. CHOOSE YOUR PROTECTION LEVEL *</h3>
+            <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4" style={{ color: '#1393c4' }}>2. CHOOSE YOUR PROTECTION LEVEL *</h3>
             
             <div className="mb-3 sm:mb-4">
               <button
                 onClick={toggleDropdown}
-                className="w-full bg-gray-50 border-2 border-gray-300 rounded-lg p-3 sm:p-4 flex justify-between items-center hover:border-[#1393c4] transition-colors duration-200 text-left"
+                className="w-full border-2 rounded-lg p-3 sm:p-4 flex justify-between items-center transition-colors duration-200 text-left"
+                style={{ borderColor: '#1393c4', backgroundColor: '#f8fafc' }}
               >
-                <span className="text-[#1393c4] font-semibold text-base sm:text-lg truncate pr-2">
+                <span className="font-semibold text-base sm:text-lg truncate pr-2" style={{ color: '#1393c4' }}>
                   {selectedProtectionLevel 
                     ? protectionLevels.find(level => level.id === selectedProtectionLevel)?.title
                     : 'Select Protection Level'}
                 </span>
-                {openDropdown === 'protection' ? <ChevronUp className="text-[#1393c4] flex-shrink-0" /> : <ChevronDown className="text-[#1393c4] flex-shrink-0" />}
+                {openDropdown === 'protection' ? <ChevronUp style={{ color: '#1393c4' }} /> : <ChevronDown style={{ color: '#1393c4' }} />}
               </button>
               
               {openDropdown === 'protection' && (
-                <div className="mt-2 border border-gray-200 rounded-lg overflow-hidden max-h-48 sm:max-h-60 overflow-y-auto">
+                <div className="mt-2 border rounded-lg overflow-hidden max-h-48 sm:max-h-60 overflow-y-auto" style={{ borderColor: '#1393c4' }}>
                   {protectionLevels.map((level) => (
                     <div
                       key={level.id}
                       onClick={() => handleProtectionLevelSelect(level.id)}
-                      className={`p-3 sm:p-4 border-b border-gray-200 last:border-b-0 cursor-pointer transition-colors duration-200 ${
+                      className={`p-3 sm:p-4 border-b last:border-b-0 cursor-pointer transition-colors duration-200 ${
                         selectedProtectionLevel === level.id 
-                          ? 'bg-[#1393c4] text-white' 
-                          : 'bg-white hover:bg-gray-50'
+                          ? 'text-white' 
+                          : 'hover:bg-blue-50'
                       }`}
+                      style={{ 
+                        backgroundColor: selectedProtectionLevel === level.id ? '#1393c4' : 'white',
+                        borderColor: '#1393c4'
+                      }}
                     >
                       <div className="flex justify-between items-start mb-1 sm:mb-2">
                         <h3 className={`font-bold text-sm sm:text-lg ${
-                          selectedProtectionLevel === level.id ? 'text-white' : 'text-[#1393c4]'
-                        }`}>
+                          selectedProtectionLevel === level.id ? 'text-white' : ''
+                        }`} style={{ color: selectedProtectionLevel === level.id ? 'white' : '#1393c4' }}>
                           {level.title}
                         </h3>
                         <span className={`font-semibold text-xs sm:text-sm ${
-                          selectedProtectionLevel === level.id ? 'text-white' : 'text-gray-700'
-                        }`}>
+                          selectedProtectionLevel === level.id ? 'text-white' : ''
+                        }`} style={{ color: selectedProtectionLevel === level.id ? 'white' : '#1393c4' }}>
                           {level.warranty}
                         </span>
                       </div>
                       <p className={`text-xs sm:text-sm mb-1 sm:mb-2 ${
-                        selectedProtectionLevel === level.id ? 'text-blue-100' : 'text-gray-600'
-                      }`}>
+                        selectedProtectionLevel === level.id ? 'text-blue-100' : ''
+                      }`} style={{ color: selectedProtectionLevel === level.id ? '#dbeafe' : '#1393c4' }}>
                         {level.description}
                       </p>
                       <div className={`text-xs ${
-                        selectedProtectionLevel === level.id ? 'text-blue-100' : 'text-gray-500'
-                      }`}>
+                        selectedProtectionLevel === level.id ? 'text-blue-100' : ''
+                      }`} style={{ color: selectedProtectionLevel === level.id ? '#dbeafe' : '#1393c4' }}>
                         <ul className="list-disc list-inside space-y-0.5 sm:space-y-1">
                           {level.features.slice(0, 2).map((feature, idx) => (
                             <li key={idx} className="truncate">{feature}</li>
@@ -387,13 +396,14 @@ Passion for Detail
 
           {/* Additional Message */}
           <div className="mb-4 sm:mb-6">
-            <h3 className="text-base sm:text-lg font-bold text-[#1393c4] mb-3 sm:mb-4">3. ADDITIONAL MESSAGE (OPTIONAL)</h3>
+            <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4" style={{ color: '#1393c4' }}>3. ADDITIONAL MESSAGE (OPTIONAL)</h3>
             <textarea
               name="message"
               value={formData.message}
               onChange={handleInputChange}
               rows={2}
-              className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent resize-none"
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border rounded-lg focus:outline-none focus:ring-2 focus:border-transparent resize-none"
+              style={{ borderColor: '#1393c4', color: '#1393c4', backgroundColor: '#f8fafc' }}
               placeholder="Tell us about any specific requirements or questions..."
             />
           </div>
@@ -412,7 +422,7 @@ Passion for Detail
               {isSubmitting ? 'Submitting...' : 'GET MY QUOTE'}
             </button>
             
-            <p className="text-xs text-gray-600 mt-2 sm:mt-3 px-2">
+            <p className="text-xs mt-2 sm:mt-3 px-2" style={{ color: '#1393c4' }}>
               We'll review your request and get back to you within 24 hours with a customized quote.
             </p>
           </div>
@@ -622,32 +632,32 @@ const CeramicCoatings = ({ setCurrentView }) => {
   // Benefits data with icons
   const benefits = [
     {
-      icon: <Shield className="w-6 h-6 sm:w-8 sm:h-8" />,
+      icon: <Shield className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#1393c4' }} />,
       title: "Superior Protection",
       description: "Advanced ceramic formula creates a durable barrier against UV rays, oxidation, and environmental contaminants"
     },
     {
-      icon: <Droplets className="w-6 h-6 sm:w-8 sm:h-8" />,
+      icon: <Droplets className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#1393c4' }} />,
       title: "Hydrophobic Shield",
       description: "Extreme water and dirt repellency makes cleaning effortless while maintaining that showroom shine"
     },
     {
-      icon: <Star className="w-6 h-6 sm:w-8 sm:h-8" />,
+      icon: <Star className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#1393c4' }} />,
       title: "Enhanced Gloss",
       description: "Deep, mirror-like finish that intensifies your vehicle's color and creates stunning visual depth"
     },
     {
-      icon: <Settings className="w-6 h-6 sm:w-8 sm:h-8" />,
+      icon: <Settings className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#1393c4' }} />,
       title: "Scratch Resistance",
       description: "Hard ceramic layer helps prevent minor scratches and swirl marks, keeping your paint pristine"
     },
     {
-      icon: <Sun className="w-6 h-6 sm:w-8 sm:h-8" />,
+      icon: <Sun className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#1393c4' }} />,
       title: "UV Protection",
       description: "Blocks harmful UV rays that cause paint fading and oxidation, preserving your vehicle's appearance"
     },
     {
-      icon: <HardHat className="w-6 h-6 sm:w-8 sm:h-8" />,
+      icon: <HardHat className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#1393c4' }} />,
       title: "Chemical Defense",
       description: "Resists harsh chemicals, bird droppings, tree sap, and road salts that can etch into paint"
     }
@@ -708,39 +718,34 @@ const CeramicCoatings = ({ setCurrentView }) => {
   // Process steps with enhanced visuals and proper spacing
   const processSteps = [
     {
-      icon: <Beaker className="w-8 h-8 sm:w-10 sm:h-10" />,
+      icon: <Beaker className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: '#1393c4' }} />,
       step: "1",
       title: "Deep Cleaning & Decontamination",
-      description: "Thorough washing and clay bar treatment removes all surface contaminants, iron particles, and embedded debris for a pristine foundation",
-      color: "#1393c4"
+      description: "Thorough washing and clay bar treatment removes all surface contaminants, iron particles, and embedded debris for a pristine foundation"
     },
     {
-      icon: <Settings className="w-8 h-8 sm:w-10 sm:h-10" />,
+      icon: <Settings className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: '#1393c4' }} />,
       step: "2",
       title: "Paint Correction",
-      description: "Multi-stage polishing removes swirl marks, scratches, and imperfections to restore your paint to showroom condition",
-      color: "#0f7a9c"
+      description: "Multi-stage polishing removes swirl marks, scratches, and imperfections to restore your paint to showroom condition"
     },
     {
-      icon: <Atom className="w-8 h-8 sm:w-10 sm:h-10" />,
+      icon: <Atom className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: '#1393c4' }} />,
       step: "3",
       title: "Surface Preparation",
-      description: "Panel wipe ensures perfect surface preparation, removing polish oils and residues for optimal coating adhesion",
-      color: "#1393c4"
+      description: "Panel wipe ensures perfect surface preparation, removing polish oils and residues for optimal coating adhesion"
     },
     {
-      icon: <Shield className="w-8 h-8 sm:w-10 sm:h-10" />,
+      icon: <Shield className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: '#1393c4' }} />,
       step: "4",
       title: "Ceramic Application",
-      description: "Precision application of XPEL FUSION PLUS in controlled environment, ensuring even coverage and proper curing",
-      color: "#0f7a9c"
+      description: "Precision application of XPEL FUSION PLUS in controlled environment, ensuring even coverage and proper curing"
     },
     {
-      icon: <Star className="w-8 h-8 sm:w-10 sm:h-10" />,
+      icon: <Star className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: '#1393c4' }} />,
       step: "5",
       title: "Curing & Inspection",
-      description: "24-48 hour curing process followed by detailed quality inspection and final finishing touches",
-      color: "#1393c4"
+      description: "24-48 hour curing process followed by detailed quality inspection and final finishing touches"
     }
   ];
 
@@ -914,7 +919,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
         </div>
       </section>
 
-      {/* Process Section with Proper Spacing */}
+      {/* Process Section */}
       <section className="py-12 sm:py-16 md:py-20 bg-white relative overflow-hidden">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-8 sm:mb-12 md:mb-16">
@@ -927,157 +932,40 @@ const CeramicCoatings = ({ setCurrentView }) => {
             </p>
           </div>
 
-          {/* Process Steps Container */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 md:gap-8 max-w-6xl mx-auto">
-            {/* Step 1: Deep Cleaning & Decontamination */}
-            <div
-              ref={el => cardRefs.current[benefits.length + packages.length] = el}
-              className={`bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-500 transform ${
-                visibleCards.has(benefits.length + packages.length) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
-              }`}
-              style={{ transitionDelay: '0ms' }}
-            >
-              <div className="flex items-start gap-4 sm:gap-6 mb-4 sm:mb-6">
-                <div className="flex-shrink-0">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl flex items-center justify-center text-white"
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-6xl mx-auto">
+            {processSteps.map((step, index) => (
+              <div
+                key={index}
+                ref={el => cardRefs.current[benefits.length + packages.length + index] = el}
+                className={`flex flex-col gap-3 sm:gap-4 bg-gray-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:bg-gray-100 transition-all duration-500 transform ${
+                  visibleCards.has(benefits.length + packages.length + index) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
+                }`}
+                style={{ transitionDelay: `${index * 100}ms` }}
+              >
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div
+                    className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl flex items-center justify-center text-white shadow-lg"
                     style={{ background: `linear-gradient(135deg, #1393c4, #0f7a9c)` }}
                   >
-                    <span className="text-xl sm:text-2xl md:text-3xl font-bold">1</span>
+                    {step.icon}
                   </div>
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                    <Beaker className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" style={{ color: '#1393c4' }} />
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold" style={{ color: '#1393c4' }}>
-                      Deep Cleaning & Decontamination
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <span
+                      className="text-xl sm:text-2xl font-bold"
+                      style={{ color: '#1393c4' }}
+                    >
+                      {step.step}
+                    </span>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold truncate" style={{ color: '#1393c4' }}>
+                      {step.title}
                     </h3>
                   </div>
-                  <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: '#1393c4' }}>
-                    Thorough washing and clay bar treatment removes all surface contaminants, iron particles, and embedded debris for a pristine foundation.
-                  </p>
                 </div>
+                <p className="text-sm sm:text-base leading-relaxed" style={{ color: '#1393c4' }}>
+                  {step.description}
+                </p>
               </div>
-            </div>
-
-            {/* Step 2: Paint Correction */}
-            <div
-              ref={el => cardRefs.current[benefits.length + packages.length + 1] = el}
-              className={`bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-500 transform ${
-                visibleCards.has(benefits.length + packages.length + 1) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
-              }`}
-              style={{ transitionDelay: '100ms' }}
-            >
-              <div className="flex items-start gap-4 sm:gap-6 mb-4 sm:mb-6">
-                <div className="flex-shrink-0">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl flex items-center justify-center text-white"
-                    style={{ background: `linear-gradient(135deg, #0f7a9c, #1393c4)` }}
-                  >
-                    <span className="text-xl sm:text-2xl md:text-3xl font-bold">2</span>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                    <Settings className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" style={{ color: '#0f7a9c' }} />
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold" style={{ color: '#0f7a9c' }}>
-                      Paint Correction
-                    </h3>
-                  </div>
-                  <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: '#0f7a9c' }}>
-                    Multi-stage polishing removes swirl marks, scratches, and imperfections to restore your paint to showroom condition.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Step 3: Surface Preparation */}
-            <div
-              ref={el => cardRefs.current[benefits.length + packages.length + 2] = el}
-              className={`bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-500 transform ${
-                visibleCards.has(benefits.length + packages.length + 2) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
-              }`}
-              style={{ transitionDelay: '200ms' }}
-            >
-              <div className="flex items-start gap-4 sm:gap-6 mb-4 sm:mb-6">
-                <div className="flex-shrink-0">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl flex items-center justify-center text-white"
-                    style={{ background: `linear-gradient(135deg, #1393c4, #0f7a9c)` }}
-                  >
-                    <span className="text-xl sm:text-2xl md:text-3xl font-bold">3</span>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                    <Atom className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" style={{ color: '#1393c4' }} />
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold" style={{ color: '#1393c4' }}>
-                      Surface Preparation
-                    </h3>
-                  </div>
-                  <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: '#1393c4' }}>
-                    Panel wipe ensures perfect surface preparation, removing polish oils and residues for optimal coating adhesion.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Step 4: Ceramic Application */}
-            <div
-              ref={el => cardRefs.current[benefits.length + packages.length + 3] = el}
-              className={`bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-500 transform ${
-                visibleCards.has(benefits.length + packages.length + 3) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
-              }`}
-              style={{ transitionDelay: '300ms' }}
-            >
-              <div className="flex items-start gap-4 sm:gap-6 mb-4 sm:mb-6">
-                <div className="flex-shrink-0">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl flex items-center justify-center text-white"
-                    style={{ background: `linear-gradient(135deg, #0f7a9c, #1393c4)` }}
-                  >
-                    <span className="text-xl sm:text-2xl md:text-3xl font-bold">4</span>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                    <Shield className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" style={{ color: '#0f7a9c' }} />
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold" style={{ color: '#0f7a9c' }}>
-                      Ceramic Application
-                    </h3>
-                  </div>
-                  <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: '#0f7a9c' }}>
-                    Precision application of XPEL FUSION PLUS in controlled environment, ensuring even coverage and proper curing.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Step 5: Curing & Inspection - Full width on medium, half width on large */}
-            <div
-              ref={el => cardRefs.current[benefits.length + packages.length + 4] = el}
-              className={`bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg hover:shadow-xl transition-all duration-500 transform md:col-span-2 lg:col-span-1 ${
-                visibleCards.has(benefits.length + packages.length + 4) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
-              }`}
-              style={{ transitionDelay: '400ms' }}
-            >
-              <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-6 mb-4 sm:mb-6">
-                <div className="flex-shrink-0">
-                  <div className="w-12 h-12 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-xl sm:rounded-2xl flex items-center justify-center text-white"
-                    style={{ background: `linear-gradient(135deg, #1393c4, #0f7a9c)` }}
-                  >
-                    <span className="text-xl sm:text-2xl md:text-3xl font-bold">5</span>
-                  </div>
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
-                    <Star className="w-6 h-6 sm:w-8 sm:h-8 md:w-10 md:h-10" style={{ color: '#1393c4' }} />
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold" style={{ color: '#1393c4' }}>
-                      Curing & Inspection
-                    </h3>
-                  </div>
-                  <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: '#1393c4' }}>
-                    24-48 hour curing process followed by detailed quality inspection and final finishing touches to ensure perfection.
-                  </p>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -1090,7 +978,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
             <div className="p-4 sm:p-6 md:p-8 lg:p-12 bg-white">
               <div className="flex flex-col lg:flex-row items-center">
                 <div className="lg:w-1/2 mb-6 sm:mb-8 lg:mb-0">
-                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#1393c4] mb-4 sm:mb-6 md:mb-8">
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6 md:mb-8" style={{ color: '#1393c4' }}>
                     PROTECT YOUR VEHICLE WITH XPEL FUSION PLUS CERAMIC COATING
                   </h2>
                   <div className="space-y-3 sm:space-y-4">
@@ -1178,7 +1066,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
                 <div className="lg:w-1/2 mb-6 sm:mb-8 lg:mb-0">
                   <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6" style={{ color: '#1393c4' }}>
                     FUSION PLUS
-                    <span className="block text-lg sm:text-xl md:text-2xl">CERAMIC COATING</span>
+                    <span className="block text-lg sm:text-xl md:text-2xl" style={{ color: '#1393c4' }}>CERAMIC COATING</span>
                   </h2>
 
                   <div className="space-y-3 sm:space-y-4 text-sm sm:text-base">
