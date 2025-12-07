@@ -231,32 +231,32 @@ Passion for Detail
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto relative shadow-2xl">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+      <div className="bg-white rounded-lg max-w-md w-full max-h-[90vh] overflow-y-auto relative shadow-2xl mx-2 sm:mx-0">
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 z-10 p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors shadow-sm"
+          className="absolute top-2 sm:top-3 right-2 sm:right-3 z-10 p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors shadow-sm"
         >
-          <X className="w-5 h-5" style={{ color: '#1393c4' }} />
+          <X className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#1393c4' }} />
         </button>
         
-        <div className="p-6">
+        <div className="p-4 sm:p-6">
           {/* Header */}
-          <div className="text-center mb-6">
-            <h2 className="text-2xl font-bold text-[#1393c4] mb-2">GET CERAMIC COATING QUOTE</h2>
-            <p className="text-[#1393c4]">Fill out the form below to receive a customized quote for ceramic coating.</p>
+          <div className="text-center mb-4 sm:mb-6">
+            <h2 className="text-xl sm:text-2xl font-bold text-[#1393c4] mb-2">GET CERAMIC COATING QUOTE</h2>
+            <p className="text-[#1393c4] text-sm sm:text-base">Fill out the form below to receive a customized quote for ceramic coating.</p>
           </div>
 
           {/* Contact Information */}
-          <div className="mb-6">
-            <h3 className="text-lg font-bold text-[#1393c4] mb-4">1. CONTACT INFORMATION</h3>
+          <div className="mb-4 sm:mb-6">
+            <h3 className="text-base sm:text-lg font-bold text-[#1393c4] mb-3 sm:mb-4">1. CONTACT INFORMATION</h3>
             
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {/* Name Field */}
               <div>
-                <label className="block text-sm font-medium text-[#1393c4] mb-2">Name *</label>
+                <label className="block text-xs sm:text-sm font-medium text-[#1393c4] mb-1 sm:mb-2">Name *</label>
                 <div className="relative">
-                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
                   <input
                     type="text"
                     name="name"
@@ -264,16 +264,16 @@ Passion for Detail
                     onChange={handleInputChange}
                     required
                     placeholder="Enter your full name"
-                    className="w-full pl-10 px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
+                    className="w-full pl-9 sm:pl-10 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
                   />
                 </div>
               </div>
 
               {/* Phone Field */}
               <div>
-                <label className="block text-sm font-medium text-[#1393c4] mb-2">Phone *</label>
+                <label className="block text-xs sm:text-sm font-medium text-[#1393c4] mb-1 sm:mb-2">Phone *</label>
                 <div className="relative">
-                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
                   <input
                     type="tel"
                     name="phone"
@@ -281,16 +281,16 @@ Passion for Detail
                     onChange={handleInputChange}
                     required
                     placeholder="Enter your phone number"
-                    className="w-full pl-10 px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
+                    className="w-full pl-9 sm:pl-10 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
                   />
                 </div>
               </div>
 
               {/* Email Field */}
               <div>
-                <label className="block text-sm font-medium text-[#1393c4] mb-2">Email *</label>
+                <label className="block text-xs sm:text-sm font-medium text-[#1393c4] mb-1 sm:mb-2">Email *</label>
                 <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
                   <input
                     type="email"
                     name="email"
@@ -298,16 +298,16 @@ Passion for Detail
                     onChange={handleInputChange}
                     required
                     placeholder="Enter your email address"
-                    className="w-full pl-10 px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
+                    className="w-full pl-9 sm:pl-10 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
                   />
                 </div>
               </div>
 
               {/* Make and Model Field */}
               <div>
-                <label className="block text-sm font-medium text-[#1393c4] mb-2">Vehicle Make and Model *</label>
+                <label className="block text-xs sm:text-sm font-medium text-[#1393c4] mb-1 sm:mb-2">Vehicle Make and Model *</label>
                 <div className="relative">
-                  <Car className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Car className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-gray-400" />
                   <input
                     type="text"
                     name="makeModel"
@@ -315,7 +315,7 @@ Passion for Detail
                     onChange={handleInputChange}
                     required
                     placeholder="e.g., Toyota Camry 2020"
-                    className="w-full pl-10 px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
+                    className="w-full pl-9 sm:pl-10 px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent"
                   />
                 </div>
               </div>
@@ -323,47 +323,47 @@ Passion for Detail
           </div>
 
           {/* Protection Level Selection */}
-          <div className="mb-6">
-            <h3 className="text-lg font-bold text-[#1393c4] mb-4">2. CHOOSE YOUR PROTECTION LEVEL *</h3>
+          <div className="mb-4 sm:mb-6">
+            <h3 className="text-base sm:text-lg font-bold text-[#1393c4] mb-3 sm:mb-4">2. CHOOSE YOUR PROTECTION LEVEL *</h3>
             
-            <div className="mb-4">
+            <div className="mb-3 sm:mb-4">
               <button
                 onClick={toggleDropdown}
-                className="w-full bg-gray-50 border-2 border-gray-300 rounded-lg p-4 flex justify-between items-center hover:border-[#1393c4] transition-colors duration-200"
+                className="w-full bg-gray-50 border-2 border-gray-300 rounded-lg p-3 sm:p-4 flex justify-between items-center hover:border-[#1393c4] transition-colors duration-200 text-left"
               >
-                <span className="text-[#1393c4] font-semibold text-lg">
+                <span className="text-[#1393c4] font-semibold text-base sm:text-lg truncate pr-2">
                   {selectedProtectionLevel 
                     ? protectionLevels.find(level => level.id === selectedProtectionLevel)?.title
                     : 'Select Protection Level'}
                 </span>
-                {openDropdown === 'protection' ? <ChevronUp className="text-[#1393c4]" /> : <ChevronDown className="text-[#1393c4]" />}
+                {openDropdown === 'protection' ? <ChevronUp className="text-[#1393c4] flex-shrink-0" /> : <ChevronDown className="text-[#1393c4] flex-shrink-0" />}
               </button>
               
               {openDropdown === 'protection' && (
-                <div className="mt-2 border border-gray-200 rounded-lg overflow-hidden">
+                <div className="mt-2 border border-gray-200 rounded-lg overflow-hidden max-h-48 sm:max-h-60 overflow-y-auto">
                   {protectionLevels.map((level) => (
                     <div
                       key={level.id}
                       onClick={() => handleProtectionLevelSelect(level.id)}
-                      className={`p-4 border-b border-gray-200 last:border-b-0 cursor-pointer transition-colors duration-200 ${
+                      className={`p-3 sm:p-4 border-b border-gray-200 last:border-b-0 cursor-pointer transition-colors duration-200 ${
                         selectedProtectionLevel === level.id 
                           ? 'bg-[#1393c4] text-white' 
                           : 'bg-white hover:bg-gray-50'
                       }`}
                     >
-                      <div className="flex justify-between items-start mb-2">
-                        <h3 className={`font-bold text-lg ${
+                      <div className="flex justify-between items-start mb-1 sm:mb-2">
+                        <h3 className={`font-bold text-sm sm:text-lg ${
                           selectedProtectionLevel === level.id ? 'text-white' : 'text-[#1393c4]'
                         }`}>
                           {level.title}
                         </h3>
-                        <span className={`font-semibold ${
+                        <span className={`font-semibold text-xs sm:text-sm ${
                           selectedProtectionLevel === level.id ? 'text-white' : 'text-gray-700'
                         }`}>
                           {level.warranty}
                         </span>
                       </div>
-                      <p className={`text-sm mb-2 ${
+                      <p className={`text-xs sm:text-sm mb-1 sm:mb-2 ${
                         selectedProtectionLevel === level.id ? 'text-blue-100' : 'text-gray-600'
                       }`}>
                         {level.description}
@@ -371,9 +371,9 @@ Passion for Detail
                       <div className={`text-xs ${
                         selectedProtectionLevel === level.id ? 'text-blue-100' : 'text-gray-500'
                       }`}>
-                        <ul className="list-disc list-inside space-y-1">
+                        <ul className="list-disc list-inside space-y-0.5 sm:space-y-1">
                           {level.features.slice(0, 2).map((feature, idx) => (
-                            <li key={idx}>{feature}</li>
+                            <li key={idx} className="truncate">{feature}</li>
                           ))}
                           {level.features.length > 2 && <li>+{level.features.length - 2} more features</li>}
                         </ul>
@@ -386,15 +386,15 @@ Passion for Detail
           </div>
 
           {/* Additional Message */}
-          <div className="mb-6">
-            <h3 className="text-lg font-bold text-[#1393c4] mb-4">3. ADDITIONAL MESSAGE (OPTIONAL)</h3>
+          <div className="mb-4 sm:mb-6">
+            <h3 className="text-base sm:text-lg font-bold text-[#1393c4] mb-3 sm:mb-4">3. ADDITIONAL MESSAGE (OPTIONAL)</h3>
             <textarea
               name="message"
               value={formData.message}
               onChange={handleInputChange}
-              rows={3}
+              rows={2}
+              className="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent resize-none"
               placeholder="Tell us about any specific requirements or questions..."
-              className="w-full px-4 py-3 text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#1393c4] focus:border-transparent resize-none"
             />
           </div>
 
@@ -403,16 +403,16 @@ Passion for Detail
             <button
               onClick={handleSubmit}
               disabled={!isFormValid || isSubmitting}
-              className={`w-full py-4 rounded-xl font-bold text-white transition-all duration-300 shadow-lg ${
+              className={`w-full py-3 sm:py-4 rounded-xl font-bold text-white transition-all duration-300 shadow-lg text-sm sm:text-base ${
                 isFormValid && !isSubmitting
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 hover:scale-105'
+                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 hover:scale-105 active:scale-95'
                   : 'bg-gray-300 cursor-not-allowed'
               }`}
             >
               {isSubmitting ? 'Submitting...' : 'GET MY QUOTE'}
             </button>
             
-            <p className="text-xs text-gray-600 mt-3">
+            <p className="text-xs text-gray-600 mt-2 sm:mt-3 px-2">
               We'll review your request and get back to you within 24 hours with a customized quote.
             </p>
           </div>
@@ -431,7 +431,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
   const [visibleCards, setVisibleCards] = useState(new Set());
   const cardRefs = useRef([]);
 
-  // Video handling effect (same as original)
+  // Video handling effect
   useEffect(() => {
     const checkScreenSize = () => {
       const width = window.innerWidth;
@@ -555,13 +555,14 @@ const CeramicCoatings = ({ setCurrentView }) => {
     };
   }, []);
 
-  // iPad-specific height calculation
+  // Height calculation with mobile-first approach
   const getContainerHeight = () => {
     if (typeof window === 'undefined') return '100vh';
     
     const width = window.innerWidth;
     const height = window.innerHeight;
     
+    // Detect iPad devices
     const isIPad = (
       (width === 768 && height === 1024) ||
       (height === 768 && width === 1024) ||
@@ -575,11 +576,22 @@ const CeramicCoatings = ({ setCurrentView }) => {
       (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document)
     );
     
-    if (isIPad) {
-      return `${height}px`;
+    // Mobile phones
+    if (width < 768) {
+      return Math.min(height * 0.6, 500) + 'px';
     }
-    
-    return '100vh';
+    // iPad specific handling
+    else if (isIPad) {
+      return Math.min(width * 0.5625, height * 0.6) + 'px'; // 0.5625 = 9/16 for 16:9 aspect ratio
+    }
+    // Tablets and small laptops
+    else if (width < 1024) {
+      return Math.min(height * 0.7, 600) + 'px';
+    }
+    // Desktop
+    else {
+      return '100vh';
+    }
   };
 
   // Intersection Observer for scroll animations
@@ -610,32 +622,32 @@ const CeramicCoatings = ({ setCurrentView }) => {
   // Benefits data with icons
   const benefits = [
     {
-      icon: <Shield className="w-8 h-8" />,
+      icon: <Shield className="w-6 h-6 sm:w-8 sm:h-8" />,
       title: "Superior Protection",
       description: "Advanced ceramic formula creates a durable barrier against UV rays, oxidation, and environmental contaminants"
     },
     {
-      icon: <Droplets className="w-8 h-8" />,
+      icon: <Droplets className="w-6 h-6 sm:w-8 sm:h-8" />,
       title: "Hydrophobic Shield",
       description: "Extreme water and dirt repellency makes cleaning effortless while maintaining that showroom shine"
     },
     {
-      icon: <Star className="w-8 h-8" />,
+      icon: <Star className="w-6 h-6 sm:w-8 sm:h-8" />,
       title: "Enhanced Gloss",
       description: "Deep, mirror-like finish that intensifies your vehicle's color and creates stunning visual depth"
     },
     {
-      icon: <Settings className="w-8 h-8" />,
+      icon: <Settings className="w-6 h-6 sm:w-8 sm:h-8" />,
       title: "Scratch Resistance",
       description: "Hard ceramic layer helps prevent minor scratches and swirl marks, keeping your paint pristine"
     },
     {
-      icon: <Sun className="w-8 h-8" />,
+      icon: <Sun className="w-6 h-6 sm:w-8 sm:h-8" />,
       title: "UV Protection",
       description: "Blocks harmful UV rays that cause paint fading and oxidation, preserving your vehicle's appearance"
     },
     {
-      icon: <HardHat className="w-8 h-8" />,
+      icon: <HardHat className="w-6 h-6 sm:w-8 sm:h-8" />,
       title: "Chemical Defense",
       description: "Resists harsh chemicals, bird droppings, tree sap, and road salts that can etch into paint"
     }
@@ -696,35 +708,35 @@ const CeramicCoatings = ({ setCurrentView }) => {
   // Process steps with enhanced visuals
   const processSteps = [
     {
-      icon: <Beaker className="w-10 h-10" />,
+      icon: <Beaker className="w-8 h-8 sm:w-10 sm:h-10" />,
       step: "1",
       title: "Deep Cleaning & Decontamination",
       description: "Thorough washing and clay bar treatment removes all surface contaminants, iron particles, and embedded debris for a pristine foundation",
       color: "#1393c4"
     },
     {
-      icon: <Settings className="w-10 h-10" />,
+      icon: <Settings className="w-8 h-8 sm:w-10 sm:h-10" />,
       step: "2",
       title: "Paint Correction",
       description: "Multi-stage polishing removes swirl marks, scratches, and imperfections to restore your paint to showroom condition",
       color: "#0f7a9c"
     },
     {
-      icon: <Atom className="w-10 h-10" />,
+      icon: <Atom className="w-8 h-8 sm:w-10 sm:h-10" />,
       step: "3",
       title: "Surface Preparation",
       description: "Panel wipe ensures perfect surface preparation, removing polish oils and residues for optimal coating adhesion",
       color: "#1393c4"
     },
     {
-      icon: <Shield className="w-10 h-10" />,
+      icon: <Shield className="w-8 h-8 sm:w-10 sm:h-10" />,
       step: "4",
       title: "Ceramic Application",
       description: "Precision application of XPEL FUSION PLUS in controlled environment, ensuring even coverage and proper curing",
       color: "#0f7a9c"
     },
     {
-      icon: <Star className="w-10 h-10" />,
+      icon: <Star className="w-8 h-8 sm:w-10 sm:h-10" />,
       step: "5",
       title: "Curing & Inspection",
       description: "24-48 hour curing process followed by detailed quality inspection and final finishing touches",
@@ -788,38 +800,38 @@ const CeramicCoatings = ({ setCurrentView }) => {
       </section>
 
       {/* Benefits Section */}
-      <section className="py-20 bg-gradient-to-br from-gray-50 via-blue-50 to-cyan-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#1393c4' }}>
+      <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-gray-50 via-blue-50 to-cyan-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12 md:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4" style={{ color: '#1393c4' }}>
               Why Choose Ceramic Coating?
             </h2>
-            <div className="w-32 h-1 mx-auto mb-6" style={{ background: 'linear-gradient(90deg, #1393c4, #0f7a9c)' }} />
-            <p className="text-xl max-w-3xl mx-auto" style={{ color: '#1393c4' }}>
+            <div className="w-24 sm:w-32 h-1 mx-auto mb-4 sm:mb-6" style={{ background: 'linear-gradient(90deg, #1393c4, #0f7a9c)' }} />
+            <p className="text-base sm:text-lg md:text-xl max-w-3xl mx-auto px-4" style={{ color: '#1393c4' }}>
               Experience the ultimate in paint protection with our advanced ceramic coating technology
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
             {benefits.map((benefit, index) => (
               <div
                 key={index}
                 ref={el => cardRefs.current[index] = el}
-                className={`group bg-white rounded-2xl p-8 shadow-lg hover:shadow-2xl transition-all duration-500 transform ${
-                  visibleCards.has(index) ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+                className={`group bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-md sm:shadow-lg hover:shadow-xl sm:hover:shadow-2xl transition-all duration-500 transform ${
+                  visibleCards.has(index) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
                 }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <div
-                  className="w-16 h-16 rounded-2xl flex items-center justify-center text-white mb-6 group-hover:scale-110 transition-transform duration-300 shadow-lg"
+                  className="w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl md:rounded-2xl flex items-center justify-center text-white mb-3 sm:mb-4 md:mb-6 group-hover:scale-105 sm:group-hover:scale-110 transition-transform duration-300 shadow-md sm:shadow-lg"
                   style={{ backgroundColor: '#1393c4' }}
                 >
                   {benefit.icon}
                 </div>
-                <h3 className="text-2xl font-bold mb-4" style={{ color: '#1393c4' }}>
+                <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-2 sm:mb-3 md:mb-4" style={{ color: '#1393c4' }}>
                   {benefit.title}
                 </h3>
-                <p className="leading-relaxed" style={{ color: '#1393c4' }}>
+                <p className="text-sm sm:text-base leading-relaxed" style={{ color: '#1393c4' }}>
                   {benefit.description}
                 </p>
               </div>
@@ -829,67 +841,67 @@ const CeramicCoatings = ({ setCurrentView }) => {
       </section>
 
       {/* Packages Section */}
-      <section className="py-20 bg-gradient-to-br from-white via-sky-50 to-blue-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#1393c4' }}>
+      <section className="py-12 sm:py-16 md:py-20 bg-gradient-to-br from-white via-sky-50 to-blue-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8 sm:mb-12 md:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4" style={{ color: '#1393c4' }}>
               Choose Your Protection Level
             </h2>
-            <div className="w-32 h-1 mx-auto mb-6" style={{ background: 'linear-gradient(90deg, #1393c4, #0f7a9c)' }} />
-            <p className="text-xl max-w-3xl mx-auto" style={{ color: '#1393c4' }}>
+            <div className="w-24 sm:w-32 h-1 mx-auto mb-4 sm:mb-6" style={{ background: 'linear-gradient(90deg, #1393c4, #0f7a9c)' }} />
+            <p className="text-base sm:text-lg md:text-xl max-w-3xl mx-auto px-4" style={{ color: '#1393c4' }}>
               Professional ceramic coating packages designed for every need and budget
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-7xl mx-auto">
             {packages.map((pkg, index) => (
               <div
                 key={index}
                 ref={el => cardRefs.current[benefits.length + index] = el}
-                className={`relative bg-white rounded-3xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-500 transform ${
-                  visibleCards.has(benefits.length + index) ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-10 opacity-0 scale-95'
-                } ${pkg.popular ? 'ring-4 ring-blue-400 scale-105' : ''}`}
+                className={`relative bg-white rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden shadow-lg sm:shadow-xl hover:shadow-2xl transition-all duration-500 transform ${
+                  visibleCards.has(benefits.length + index) ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-4 sm:translate-y-10 opacity-0 scale-95'
+                } ${pkg.popular ? 'ring-2 sm:ring-4 ring-blue-400 md:scale-105' : ''}`}
                 style={{ transitionDelay: `${index * 150}ms` }}
               >
                 {pkg.popular && (
-                  <div className="absolute top-6 right-6 z-10">
-                    <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+                  <div className="absolute top-4 sm:top-6 right-4 sm:right-6 z-10">
+                    <div className="bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 sm:px-4 sm:py-2 rounded-full text-xs sm:text-sm font-bold shadow-md sm:shadow-lg">
                       MOST POPULAR
                     </div>
                   </div>
                 )}
 
-                <div className={`h-64 bg-gradient-to-br ${pkg.gradient} relative overflow-hidden`}>
+                <div className={`h-48 sm:h-56 md:h-64 bg-gradient-to-br ${pkg.gradient} relative overflow-hidden`}>
                   <img
                     src={pkg.image}
                     alt={pkg.name}
-                    className="w-full h-full object-contain p-6"
+                    className="w-full h-full object-contain p-4 sm:p-6"
                   />
                 </div>
 
-                <div className="p-8">
-                  <h3 className="text-2xl font-bold mb-2" style={{ color: '#1393c4' }}>
+                <div className="p-4 sm:p-6 md:p-8">
+                  <h3 className="text-lg sm:text-xl md:text-2xl font-bold mb-1 sm:mb-2" style={{ color: '#1393c4' }}>
                     {pkg.name}
                   </h3>
-                  <div className="flex items-baseline gap-2 mb-6">
-                    <span className="text-4xl font-bold" style={{ color: '#1393c4' }}>
+                  <div className="flex items-baseline gap-1 sm:gap-2 mb-3 sm:mb-4 md:mb-6">
+                    <span className="text-2xl sm:text-3xl md:text-4xl font-bold" style={{ color: '#1393c4' }}>
                       {pkg.duration}
                     </span>
-                    <span style={{ color: '#1393c4' }}>warranty</span>
+                    <span className="text-sm sm:text-base" style={{ color: '#1393c4' }}>warranty</span>
                   </div>
 
-                  <ul className="space-y-3 mb-8">
+                  <ul className="space-y-2 sm:space-y-3 mb-4 sm:mb-6 md:mb-8">
                     {pkg.features.map((feature, idx) => (
-                      <li key={idx} className="flex items-start gap-3">
-                        <Check className="w-5 h-5 mt-1 flex-shrink-0" style={{ color: '#1393c4' }} />
-                        <span style={{ color: '#1393c4' }}>{feature}</span>
+                      <li key={idx} className="flex items-start gap-2 sm:gap-3">
+                        <Check className="w-4 h-4 sm:w-5 sm:h-5 mt-0.5 sm:mt-1 flex-shrink-0" style={{ color: '#1393c4' }} />
+                        <span className="text-xs sm:text-sm md:text-base" style={{ color: '#1393c4' }}>{feature}</span>
                       </li>
                     ))}
                   </ul>
 
                   <button
                     onClick={() => handleGetPricingClick(pkg.id)}
-                    className={`w-full py-4 rounded-xl font-bold text-white transition-all duration-300 hover:scale-105 shadow-lg ${
+                    className={`w-full py-2 sm:py-3 md:py-4 rounded-lg sm:rounded-xl font-bold text-white transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg text-sm sm:text-base ${
                       pkg.popular ? 'bg-gradient-to-r from-cyan-500 to-blue-600' : 'bg-gradient-to-r from-blue-500 to-cyan-600'
                     }`}
                   >
@@ -903,48 +915,48 @@ const CeramicCoatings = ({ setCurrentView }) => {
       </section>
 
       {/* Process Section */}
-      <section className="py-20 bg-white relative overflow-hidden">
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#1393c4' }}>
+      <section className="py-12 sm:py-16 md:py-20 bg-white relative overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="text-center mb-8 sm:mb-12 md:mb-16">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-3 sm:mb-4" style={{ color: '#1393c4' }}>
               Our Professional Process
             </h2>
-            <div className="w-32 h-1 mx-auto mb-6" style={{ background: 'linear-gradient(90deg, #1393c4, #0f7a9c)' }} />
-            <p className="text-xl text-gray-700 max-w-3xl mx-auto">
+            <div className="w-24 sm:w-32 h-1 mx-auto mb-4 sm:mb-6" style={{ background: 'linear-gradient(90deg, #1393c4, #0f7a9c)' }} />
+            <p className="text-base sm:text-lg md:text-xl max-w-3xl mx-auto px-4" style={{ color: '#1393c4' }}>
               Meticulous attention to detail at every step ensures flawless results
             </p>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-2 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6 max-w-6xl mx-auto">
             {processSteps.map((step, index) => (
               <div
                 key={index}
                 ref={el => cardRefs.current[benefits.length + packages.length + index] = el}
-                className={`flex flex-col gap-4 bg-gray-50 rounded-2xl p-6 hover:bg-gray-100 transition-all duration-500 transform ${
-                  visibleCards.has(benefits.length + packages.length + index) ? 'translate-y-0 opacity-100' : 'translate-y-10 opacity-0'
+                className={`flex flex-col gap-3 sm:gap-4 bg-gray-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:bg-gray-100 transition-all duration-500 transform ${
+                  visibleCards.has(benefits.length + packages.length + index) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
                 }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 sm:gap-4">
                   <div
-                    className="flex-shrink-0 w-16 h-16 rounded-2xl flex items-center justify-center text-white shadow-xl"
+                    className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl flex items-center justify-center text-white shadow-lg"
                     style={{ background: `linear-gradient(135deg, #1393c4, #0f7a9c)` }}
                   >
                     {step.icon}
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1 sm:gap-2">
                     <span
-                      className="text-2xl font-bold"
+                      className="text-xl sm:text-2xl font-bold"
                       style={{ color: '#1393c4' }}
                     >
                       {step.step}
                     </span>
-                    <h3 className="text-xl font-bold" style={{ color: '#1393c4' }}>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold truncate" style={{ color: '#1393c4' }}>
                       {step.title}
                     </h3>
                   </div>
                 </div>
-                <p className="leading-relaxed" style={{ color: '#1393c4' }}>
+                <p className="text-sm sm:text-base leading-relaxed" style={{ color: '#1393c4' }}>
                   {step.description}
                 </p>
               </div>
@@ -954,85 +966,85 @@ const CeramicCoatings = ({ setCurrentView }) => {
       </section>
 
       {/* XPEL Fusion Plus Section */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="bg-white rounded-xl shadow-2xl overflow-hidden border border-gray-200">
+      <section className="py-12 sm:py-16 md:py-20 bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl shadow-lg sm:shadow-xl md:shadow-2xl overflow-hidden border border-gray-200">
             {/* Top Section - Protect Your Vehicle */}
-            <div className="p-8 lg:p-12 bg-white">
+            <div className="p-4 sm:p-6 md:p-8 lg:p-12 bg-white">
               <div className="flex flex-col lg:flex-row items-center">
-                <div className="lg:w-1/2 mb-8 lg:mb-0">
-                  <h2 className="text-3xl font-bold text-[#1393c4] mb-8">
+                <div className="lg:w-1/2 mb-6 sm:mb-8 lg:mb-0">
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#1393c4] mb-4 sm:mb-6 md:mb-8">
                     PROTECT YOUR VEHICLE WITH XPEL FUSION PLUS CERAMIC COATING
                   </h2>
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     <div
-                      className="flex items-center space-x-3 hover:translate-x-2 transition-transform duration-300 cursor-pointer"
+                      className="flex items-center space-x-2 sm:space-x-3 hover:translate-x-1 sm:hover:translate-x-2 transition-transform duration-300 cursor-pointer"
                       onClick={() => setCurrentView('fusion-plus-lite')}
                     >
-                      <span className="w-2 h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
+                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
+                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
                         FUSION PLUS LITE
                       </span>
                     </div>
                     <div 
-                      className="flex items-center space-x-3 hover:translate-x-2 transition-transform duration-300 cursor-pointer"
+                      className="flex items-center space-x-2 sm:space-x-3 hover:translate-x-1 sm:hover:translate-x-2 transition-transform duration-300 cursor-pointer"
                       onClick={() => setCurrentView('fusion-plus-paint-ppf')}
                     >
-                      <span className="w-2 h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
+                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
+                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
                         FUSION PLUS PAINT & PPF
                       </span>
                     </div>
                     <div 
-                      className="flex items-center space-x-3 hover:translate-x-2 transition-transform duration-300 cursor-pointer"
+                      className="flex items-center space-x-2 sm:space-x-3 hover:translate-x-1 sm:hover:translate-x-2 transition-transform duration-300 cursor-pointer"
                       onClick={() => setCurrentView('fusion-plus-premium')}
                     >
-                      <span className="w-2 h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
+                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
+                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
                         FUSION PLUS PREMIUM
                       </span>
                     </div>
                     <div 
-                      className="flex items-center space-x-3 hover:translate-x-2 transition-transform duration-300 cursor-pointer"
+                      className="flex items-center space-x-2 sm:space-x-3 hover:translate-x-1 sm:hover:translate-x-2 transition-transform duration-300 cursor-pointer"
                       onClick={() => setCurrentView('fusion-plus-wheel-caliper')}
                     >
-                      <span className="w-2 h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
+                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
+                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
                         FUSION PLUS WHEEL & CALIPER
                       </span>
                     </div>
                     <div 
-                      className="flex items-center space-x-3 hover:translate-x-2 transition-transform duration-300 cursor-pointer"
+                      className="flex items-center space-x-2 sm:space-x-3 hover:translate-x-1 sm:hover:translate-x-2 transition-transform duration-300 cursor-pointer"
                       onClick={() => setCurrentView('fusion-plus-glass')}
                     >
-                      <span className="w-2 h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
+                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
+                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
                         FUSION PLUS GLASS
                       </span>
                     </div>
                     <div 
-                      className="flex items-center space-x-3 hover:translate-x-2 transition-transform duration-300 cursor-pointer"
+                      className="flex items-center space-x-2 sm:space-x-3 hover:translate-x-1 sm:hover:translate-x-2 transition-transform duration-300 cursor-pointer"
                       onClick={() => setCurrentView('fusion-plus-plastic-trims')}
                     >
-                      <span className="w-2 h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
+                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
+                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
                         FUSION PLUS PLASTIC & TRIMS
                       </span>
                     </div>
                     <div 
-                      className="flex items-center space-x-3 hover:translate-x-2 transition-transform duration-300 cursor-pointer"
+                      className="flex items-center space-x-2 sm:space-x-3 hover:translate-x-1 sm:hover:translate-x-2 transition-transform duration-300 cursor-pointer"
                       onClick={() => setCurrentView('fusion-plus-upholstery')}
                     >
-                      <span className="w-2 h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
+                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
+                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3]" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
                         FUSION PLUS UPHOLSTERY
                       </span>
                     </div>
                   </div>
                 </div>
 
-                <div className="lg:w-1/2 lg:pl-12">
-                  <div className="max-w-md mx-auto hover:scale-105 transition-transform duration-300">
+                <div className="lg:w-1/2 lg:pl-8 xl:pl-12">
+                  <div className="max-w-xs sm:max-w-sm md:max-w-md mx-auto hover:scale-105 transition-transform duration-300">
                     <img
                       src={protectVehicleLogo}
                       alt="XPEL Logo"
@@ -1044,41 +1056,41 @@ const CeramicCoatings = ({ setCurrentView }) => {
             </div>
 
             {/* Bottom Section - Fusion Plus Details */}
-            <div className="bg-white p-8 lg:p-12 border-t border-gray-200">
+            <div className="bg-white p-4 sm:p-6 md:p-8 lg:p-12 border-t border-gray-200">
               <div className="flex flex-col lg:flex-row items-center">
-                <div className="lg:w-1/2 mb-8 lg:mb-0">
-                  <h2 className="text-3xl font-bold mb-6" style={{ color: '#1393c4' }}>
+                <div className="lg:w-1/2 mb-6 sm:mb-8 lg:mb-0">
+                  <h2 className="text-xl sm:text-2xl md:text-3xl font-bold mb-4 sm:mb-6" style={{ color: '#1393c4' }}>
                     FUSION PLUS
-                    <span className="block text-2xl">CERAMIC COATING</span>
+                    <span className="block text-lg sm:text-xl md:text-2xl">CERAMIC COATING</span>
                   </h2>
 
-                  <div className="space-y-4 text-base">
-                    <p className="leading-relaxed bg-gray-50 p-4 rounded-lg" style={{ color: '#1393c4' }}>
+                  <div className="space-y-3 sm:space-y-4 text-sm sm:text-base">
+                    <p className="leading-relaxed bg-gray-50 p-3 sm:p-4 rounded-lg" style={{ color: '#1393c4' }}>
                       Developed to perform in a wide variety of surface types, <span className="font-bold" style={{ color: '#1393c4' }}>FUSION PLUS</span> Ceramic Coating offers unrivaled gloss, superior hydrophobic protection, and improved scratch resistance.
                     </p>
                   </div>
 
-                  <div className="mt-8 space-y-3">
-                    <div className="flex items-center space-x-3 bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition-colors">
-                      <span className="text-xl font-bold" style={{ color: '#1393c4' }}>+</span>
-                      <span className="font-semibold" style={{ color: '#1393c4' }}>Provides protection from the elements</span>
+                  <div className="mt-4 sm:mt-6 md:mt-8 space-y-2 sm:space-y-3">
+                    <div className="flex items-center space-x-2 sm:space-x-3 bg-gray-50 p-2 sm:p-3 rounded-lg hover:bg-gray-100 transition-colors">
+                      <span className="text-lg sm:text-xl font-bold" style={{ color: '#1393c4' }}>+</span>
+                      <span className="font-semibold text-sm sm:text-base" style={{ color: '#1393c4' }}>Provides protection from the elements</span>
                     </div>
-                    <div className="flex items-center space-x-3 bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition-colors">
-                      <span className="text-xl font-bold" style={{ color: '#1393c4' }}>+</span>
-                      <span className="font-semibold" style={{ color: '#1393c4' }}>Repels water, dirt & road grime</span>
+                    <div className="flex items-center space-x-2 sm:space-x-3 bg-gray-50 p-2 sm:p-3 rounded-lg hover:bg-gray-100 transition-colors">
+                      <span className="text-lg sm:text-xl font-bold" style={{ color: '#1393c4' }}>+</span>
+                      <span className="font-semibold text-sm sm:text-base" style={{ color: '#1393c4' }}>Repels water, dirt & road grime</span>
                     </div>
-                    <div className="flex items-center space-x-3 bg-gray-50 p-3 rounded-lg hover:bg-gray-100 transition-colors">
-                      <span className="text-xl font-bold" style={{ color: '#1393c4' }}>+</span>
-                      <span className="font-semibold" style={{ color: '#1393c4' }}>Resist stains & chemical etching</span>
+                    <div className="flex items-center space-x-2 sm:space-x-3 bg-gray-50 p-2 sm:p-3 rounded-lg hover:bg-gray-100 transition-colors">
+                      <span className="text-lg sm:text-xl font-bold" style={{ color: '#1393c4' }}>+</span>
+                      <span className="font-semibold text-sm sm:text-base" style={{ color: '#1393c4' }}>Resist stains & chemical etching</span>
                     </div>
                   </div>
                 </div>
 
-                <div className="lg:w-1/2 lg:pl-12">
+                <div className="lg:w-1/2 lg:pl-8 xl:pl-12 mt-6 lg:mt-0">
                   <img
                     src={fusionPlusProcess}
                     alt="Fusion Plus Ceramic Coating Process"
-                    className="w-full h-auto object-contain rounded-lg shadow-2xl border-4 border-gray-200 hover:scale-105 transition-transform duration-300"
+                    className="w-full h-auto object-contain rounded-lg shadow-lg sm:shadow-xl md:shadow-2xl border-2 sm:border-4 border-gray-200 hover:scale-105 transition-transform duration-300"
                   />
                 </div>
               </div>
@@ -1088,15 +1100,15 @@ const CeramicCoatings = ({ setCurrentView }) => {
       </section>
       
       {/* References Section */}
-      <section className="py-16 bg-gradient-to-br from-sky-100 via-white to-sky-50">
-        <div className="container mx-auto px-4">
+      <section className="py-12 sm:py-16 bg-gradient-to-br from-sky-100 via-white to-sky-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <References />
         </div>
       </section>
 
       {/* Contact Form Section */}
-      <section className="py-16 bg-gradient-to-br from-sky-100 via-white to-sky-50">
-        <div className="container mx-auto px-4">
+      <section className="py-12 sm:py-16 bg-gradient-to-br from-sky-100 via-white to-sky-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <ContactForm />
         </div>
       </section>
