@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Gift } from 'lucide-react';
 
 // Import images and videos
 import car1 from '../assets/images/car1.jpg';
@@ -217,6 +218,23 @@ const ChooseYourService = ({ setCurrentView }) => {
     <div className="py-8 sm:py-12 md:py-16 bg-gray-50">
       <div className="container mx-auto px-4 sm:px-6">
         <div className="text-center mb-8 sm:mb-12 md:mb-16">
+          <div className="flex justify-center mb-4 sm:mb-6">
+            <button
+              className="px-6 sm:px-8 py-2 sm:py-3 rounded-full font-semibold text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center gap-2"
+              style={{ backgroundColor: '#1393c4' }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#0d7a9f';
+                e.currentTarget.style.boxShadow = '0 10px 25px rgba(19, 147, 196, 0.4)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#1393c4';
+                e.currentTarget.style.boxShadow = '';
+              }}
+            >
+              <Gift size={20} />
+              Buy Gift
+            </button>
+          </div>
           <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-black mb-3 sm:mb-4" style={{ color: '#1393c4' }}>
             CHOOSE YOUR SERVICE
           </h2>
