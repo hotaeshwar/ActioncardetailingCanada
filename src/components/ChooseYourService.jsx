@@ -107,6 +107,10 @@ const ChooseYourService = ({ setCurrentView }) => {
     }
   };
 
+  const handleGiftClick = () => {
+    setCurrentView('giftcard');
+  };
+
   const handleTouchStart = (e, serviceName) => {
     isTouchMoveRef.current = false;
     touchStartPos.current = {
@@ -220,6 +224,7 @@ const ChooseYourService = ({ setCurrentView }) => {
         <div className="text-center mb-8 sm:mb-12 md:mb-16">
           <div className="flex justify-center mb-4 sm:mb-6">
             <button
+              onClick={handleGiftClick}
               className="px-6 sm:px-8 py-2 sm:py-3 rounded-full font-semibold text-white transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center gap-2"
               style={{ backgroundColor: '#1393c4' }}
               onMouseEnter={(e) => {
