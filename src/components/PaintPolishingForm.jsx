@@ -336,35 +336,40 @@ const PaintPolishingForm = () => {
     message: ''
   });
 
-  // Load blocked dates from Firebase
+  // Load blocked dates from Firebase - FIXED: Use same structure as DateBlockingManager
   useEffect(() => {
+    const loadBlockedDates = async () => {
+      try {
+        const q = query(collection(db, 'blockedDates'));
+        const querySnapshot = await getDocs(q);
+        const dates = {};
+        querySnapshot.forEach((doc) => {
+          dates[doc.id] = doc.data();
+        });
+        setBlockedDates(dates);
+      } catch (error) {
+        console.error('Error loading blocked dates:', error);
+      }
+    };
+
     loadBlockedDates();
   }, []);
-
-  const loadBlockedDates = async () => {
-    try {
-      const q = query(collection(db, 'blockedDates'));
-      const querySnapshot = await getDocs(q);
-      const dates = {};
-      querySnapshot.forEach((doc) => {
-        dates[doc.id] = doc.data();
-      });
-      setBlockedDates(dates);
-    } catch (error) {
-      console.error('Error loading blocked dates:', error);
-    }
-  };
 
   // Check if a specific date is blocked
   const isDateBlocked = (day) => {
     if (!day) return false;
+    
+    // Format date to YYYY-MM-DD (same as Firebase storage)
     const dateString = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+    
     const blockInfo = blockedDates[dateString];
     
     if (!blockInfo) return false;
     
-    // If it's a full block, the date is blocked
-    if (blockInfo.type === 'full') return true;
+    // If it's a full block (or sunday auto-block), the entire date is blocked
+    if (blockInfo.type === 'full' || blockInfo.type === 'sunday-auto') {
+      return true;
+    }
     
     // If it's a partial block, check if all time slots are blocked
     if (blockInfo.type === 'partial' && blockInfo.blockedSlots) {
@@ -378,32 +383,25 @@ const PaintPolishingForm = () => {
   const isTimeSlotBlocked = (time) => {
     if (!selectedDate) return false;
     
-    // Convert selectedDate to YYYY-MM-DD format
+    // Convert selectedDate to YYYY-MM-DD format (same as Firebase)
     const dateParts = selectedDate.split(' ');
     const monthIndex = months.indexOf(dateParts[0]);
     const day = parseInt(dateParts[1].replace(',', ''));
     const year = parseInt(dateParts[2]);
     const dateString = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     
-    console.log('Checking time slot:', time, 'for date:', dateString);
-    
     const blockInfo = blockedDates[dateString];
-    
-    console.log('Block info found:', blockInfo);
     
     if (!blockInfo) return false;
     
-    // If it's a full block, all time slots are blocked
-    if (blockInfo.type === 'full') {
-      console.log('Full block - slot is blocked');
+    // If it's a full block or sunday auto-block, all time slots are blocked
+    if (blockInfo.type === 'full' || blockInfo.type === 'sunday-auto') {
       return true;
     }
     
     // If it's a partial block, check if this specific time slot is blocked
     if (blockInfo.type === 'partial' && blockInfo.blockedSlots) {
-      const isBlocked = blockInfo.blockedSlots.includes(time);
-      console.log('Partial block - slot', time, 'is blocked:', isBlocked, 'Blocked slots:', blockInfo.blockedSlots);
-      return isBlocked;
+      return blockInfo.blockedSlots.includes(time);
     }
     
     return false;
