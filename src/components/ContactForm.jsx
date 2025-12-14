@@ -7,7 +7,8 @@ const ContactForm = () => {
         name: '',
         email: '',
         phone: '',
-        service: '', // New service field
+        serviceType: '', // First dropdown: service type
+        serviceOption: '', // Second dropdown: specific option
         message: '',
         photo: null
     });
@@ -16,25 +17,63 @@ const ContactForm = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [photoPreview, setPhotoPreview] = useState(null);
 
-    // Service options from the images
-    const serviceOptions = [
-        { value: '', label: 'Select a Service *', disabled: true },
-        
-        // Fusion Plus Packages
-        { value: 'fusion-plus-lite', label: 'FUSION PLUS LITE - 1 year warranty' },
-        { value: 'fusion-plus-paint-ppf', label: 'FUSION PLUS PAINT & PPF - 4 years warranty' },
-        { value: 'fusion-plus-premium', label: 'FUSION PLUS PREMIUM - 8 years warranty' },
-        
-        // Service Packages
-        { value: 'bumper-only', label: 'BUMPER ONLY - Starting at $599 - Service Time 1 Day' },
-        { value: 'economy-kit', label: 'ECONOMY KIT - Starting at $999 - Service Time 1.5 Day' },
-        { value: 'full-front', label: 'FULL FRONT - Starting at $1499 - Service Time 1.5 Day' },
-        { value: 'offset-tire-package', label: 'OFFSET TIRE PACKAGE - Starting at $1999 - Service Time 2 Days' }
+    // Service types (main categories)
+    const serviceTypes = [
+        { value: '', label: 'Select Service Type *', disabled: true },
+        { value: 'paint-protection-film', label: 'Paint Protection Film (PPF)' },
+        { value: 'ceramic-coating', label: 'Ceramic Coating' }
     ];
+
+    // Service options based on selected service type
+    const serviceOptions = {
+        // Paint Protection Film options
+        'paint-protection-film': [
+            { value: '', label: 'Select PPF Option *', disabled: true },
+            { value: 'bumper-only', label: 'BUMPER ONLY - Starting at $599 - Service Time 1 Day' },
+            { value: 'economy-kit', label: 'ECONOMY KIT - Starting at $999 - Service Time 1.5 Day' },
+            { value: 'full-front', label: 'FULL FRONT - Starting at $1499 - Service Time 1.5 Day' },
+            { value: 'offset-tire-package', label: 'OFFSET TIRE PACKAGE - Starting at $1999 - Service Time 2 Days' }
+        ],
+        // Ceramic Coating options
+        'ceramic-coating': [
+            { value: '', label: 'Select Ceramic Coating Option *', disabled: true },
+            { value: 'fusion-plus-lite', label: 'FUSION PLUS LITE - 1 year warranty' },
+            { value: 'fusion-plus-paint-ppf', label: 'FUSION PLUS PAINT & PPF - 4 years warranty' },
+            { value: 'fusion-plus-premium', label: 'FUSION PLUS PREMIUM - 8 years warranty' }
+        ]
+    };
+
+    // Get current service options based on selected type
+    const getCurrentServiceOptions = () => {
+        if (!formData.serviceType) {
+            return [{ value: '', label: 'First select service type above', disabled: true }];
+        }
+        return serviceOptions[formData.serviceType] || [];
+    };
+
+    // Get service display name for emails
+    const getServiceDisplayName = () => {
+        if (!formData.serviceType || !formData.serviceOption) {
+            return 'Not Selected';
+        }
+        
+        const typeLabel = serviceTypes.find(t => t.value === formData.serviceType)?.label || '';
+        const optionLabel = serviceOptions[formData.serviceType]?.find(o => o.value === formData.serviceOption)?.label || '';
+        
+        return `${typeLabel} - ${optionLabel}`;
+    };
 
     const handleChange = (e) => {
         const { name, value, files } = e.target;
-        if (name === 'photo' && files.length > 0) {
+        
+        if (name === 'serviceType') {
+            // When service type changes, reset the service option
+            setFormData(prev => ({
+                ...prev,
+                serviceType: value,
+                serviceOption: ''
+            }));
+        } else if (name === 'photo' && files.length > 0) {
             const file = files[0];
             // Check file size (limit to 5MB)
             if (file.size > 5 * 1024 * 1024) {
@@ -68,12 +107,6 @@ const ContactForm = () => {
             result += chars.charAt(Math.floor(Math.random() * chars.length));
         }
         return result;
-    };
-
-    // Get service display name for emails
-    const getServiceDisplayName = (serviceValue) => {
-        const service = serviceOptions.find(opt => opt.value === serviceValue);
-        return service ? service.label : 'Not Selected';
     };
 
     // Web3Forms implementation with better attachment handling
@@ -118,7 +151,7 @@ NEW CONTACT FORM SUBMISSION RECEIVED
 
 🎯 SERVICE REQUESTED
 --------------------
-${formData.service ? getServiceDisplayName(formData.service) : 'N/A'}
+${formData.serviceType && formData.serviceOption ? getServiceDisplayName() : 'N/A'}
 
 💬 MESSAGE DETAILS
 ------------------
@@ -150,7 +183,7 @@ We have received your message and will get back to you within 24 hours.
 
 📋 YOUR SERVICE REQUEST
 -----------------------
-Service: ${formData.service ? getServiceDisplayName(formData.service) : 'Not Specified'}
+Service: ${formData.serviceType && formData.serviceOption ? getServiceDisplayName() : 'Not Specified'}
 
 📋 YOUR MESSAGE DETAILS
 -----------------------
@@ -224,8 +257,8 @@ For inquiries, please contact us at actioncardetailing@gmail.com
         e.preventDefault();
         
         // Basic validation
-        if (!formData.name || !formData.email || !formData.phone || !formData.message || !formData.service) {
-            alert('❌ Please fill in all required fields including service selection.');
+        if (!formData.name || !formData.email || !formData.phone || !formData.message || !formData.serviceType || !formData.serviceOption) {
+            alert('❌ Please fill in all required fields including both service selections.');
             return;
         }
 
@@ -243,8 +276,13 @@ For inquiries, please contact us at actioncardetailing@gmail.com
         }
 
         // Service validation
-        if (!formData.service) {
-            alert('❌ Please select a service from the dropdown.');
+        if (!formData.serviceType) {
+            alert('❌ Please select a service type.');
+            return;
+        }
+        
+        if (!formData.serviceOption) {
+            alert('❌ Please select a service option.');
             return;
         }
 
@@ -284,7 +322,8 @@ For inquiries, please contact us at actioncardetailing@gmail.com
                     name: '',
                     email: '',
                     phone: '',
-                    service: '',
+                    serviceType: '',
+                    serviceOption: '',
                     message: '',
                     photo: null
                 });
@@ -389,18 +428,18 @@ For inquiries, please contact us at actioncardetailing@gmail.com
                                 />
                             </div>
 
-                            {/* Service Dropdown */}
+                            {/* First Dropdown: Service Type */}
                             <div className="mb-3 sm:mb-4">
                                 <select
-                                    name="service"
-                                    value={formData.service}
+                                    name="serviceType"
+                                    value={formData.serviceType}
                                     onChange={handleChange}
                                     required
                                     className="w-full p-2 sm:p-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 bg-white"
                                     style={{color: '#1393c4'}}
                                     disabled={isSubmitting}
                                 >
-                                    {serviceOptions.map((option) => (
+                                    {serviceTypes.map((option) => (
                                         <option 
                                             key={option.value} 
                                             value={option.value}
@@ -411,7 +450,39 @@ For inquiries, please contact us at actioncardetailing@gmail.com
                                         </option>
                                     ))}
                                 </select>
+                                <p className="text-xs mt-1 text-gray-500" style={{color: '#1393c4'}}>
+                                    Select the type of service you're interested in
+                                </p>
                             </div>
+
+                            {/* Second Dropdown: Service Option (only shows if service type selected) */}
+                            {formData.serviceType && (
+                                <div className="mb-3 sm:mb-4">
+                                    <select
+                                        name="serviceOption"
+                                        value={formData.serviceOption}
+                                        onChange={handleChange}
+                                        required
+                                        className="w-full p-2 sm:p-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-300 bg-white"
+                                        style={{color: '#1393c4'}}
+                                        disabled={isSubmitting}
+                                    >
+                                        {getCurrentServiceOptions().map((option) => (
+                                            <option 
+                                                key={option.value} 
+                                                value={option.value}
+                                                disabled={option.disabled}
+                                                style={{color: '#1393c4'}}
+                                            >
+                                                {option.label}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    <p className="text-xs mt-1 text-gray-500" style={{color: '#1393c4'}}>
+                                        Now select the specific service option for {formData.serviceType === 'paint-protection-film' ? 'Paint Protection Film' : 'Ceramic Coating'}
+                                    </p>
+                                </div>
+                            )}
 
                             <div className="mb-3 sm:mb-4">
                                 <textarea
