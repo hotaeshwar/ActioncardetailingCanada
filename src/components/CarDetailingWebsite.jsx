@@ -11,6 +11,47 @@ const CarDetailingWebsite = () => {
   const [isVisible, setIsVisible] = useState(Array(7).fill(false));
   const videoRef = useRef(null);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [blockedDates, setBlockedDates] = useState([]);
+  // REMOVED: const [bookingKey, setBookingKey] = useState(Date.now());
+
+  // Fetch blocked dates from Firestore
+  useEffect(() => {
+    const fetchBlockedDates = async () => {
+      console.log('TRYING to fetch blocked dates from Firebase...');
+      try {
+        const { db } = await import('../firebase');
+        const { collection, getDocs, query } = await import('firebase/firestore');
+        
+        const q = query(collection(db, 'blockedDates'));
+        const querySnapshot = await getDocs(q);
+        const blockedDatesList = [];
+        
+        console.log('Found documents:', querySnapshot.size);
+        
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          console.log('Document data:', data);
+          if (data.date) {
+            blockedDatesList.push(data.date);
+          }
+        });
+        
+        console.log('Fetched blocked dates from Firestore:', blockedDatesList);
+        setBlockedDates(blockedDatesList);
+        // REMOVED: setBookingKey(Date.now()); // This was causing the re-mount
+      } catch (error) {
+        console.error('Error fetching blocked dates:', error);
+        console.error('Error details:', error.message);
+      }
+    };
+
+    fetchBlockedDates();
+    
+    // Set up real-time updates every 10 seconds
+    const interval = setInterval(fetchBlockedDates, 10000);
+    
+    return () => clearInterval(interval);
+  }, []);
 
   // Video handling like Hero component
   useEffect(() => {
@@ -492,9 +533,12 @@ const CarDetailingWebsite = () => {
         </div>
       </section>
 
-      {/* Booking Section - FIXED: Remove animations to prevent modal issues */}
+      {/* Booking Section - FIXED: Removed key prop */}
       <section id="booking-section" className="py-12 sm:py-16 bg-white">
-        <Booking isModal={false} />
+        <Booking 
+          isModal={false} 
+          blockedDates={blockedDates} 
+        />
       </section>
 
       {/* ContactForm Section */}
