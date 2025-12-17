@@ -44,7 +44,7 @@ export default function DateBlockingManager() {
       setUser(user);
       if (user) {
         loadBlockedDates();
-        autoBlockAllSundays();
+        autoBlockAllDays();
       }
     });
     return () => unsubscribe();
@@ -55,6 +55,11 @@ export default function DateBlockingManager() {
     return date.getDay() === 0;
   };
 
+  const isSaturday = (dateString) => {
+    const date = new Date(dateString + 'T00:00:00');
+    return date.getDay() === 6;
+  };
+
   const formatDateForStorage = (date) => {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -62,26 +67,42 @@ export default function DateBlockingManager() {
     return `${year}-${month}-${day}`;
   };
 
-  const autoBlockAllSundays = async () => {
+  const autoBlockAllDays = async () => {
     try {
-      setAutoBlockingStatus('Checking Sundays...');
+      setAutoBlockingStatus('Checking days...');
       
-      // Get all Sundays for the next 365 days
-      const sundays = [];
+      // Get all Saturdays and Sundays for the next 365 days
+      const daysToBlock = {
+        saturdays: [],
+        sundays: []
+      };
       const today = new Date();
       
       for (let i = 0; i < 365; i++) {
         const date = new Date(today);
         date.setDate(today.getDate() + i);
+        const dateString = formatDateForStorage(date);
         
-        if (date.getDay() === 0) {
-          sundays.push(formatDateForStorage(date));
+        if (date.getDay() === 0) { // Sunday
+          daysToBlock.sundays.push({
+            date: dateString,
+            type: 'saturday-partial', // Use same type as Saturday but with different time
+            isAutoSunday: true,
+            blockedTill: '23:59' // Sunday: block all day (till 11:59 PM)
+          });
+        } else if (date.getDay() === 6) { // Saturday
+          daysToBlock.saturdays.push({
+            date: dateString,
+            type: 'saturday-partial',
+            isAutoSaturday: true,
+            blockedTill: '12:00' // Saturday: block till 12 PM
+          });
         }
       }
 
-      console.log(`Found ${sundays.length} Sundays to block`);
+      console.log(`Found ${daysToBlock.sundays.length} Sundays and ${daysToBlock.saturdays.length} Saturdays to block`);
 
-      // Check which Sundays are already blocked
+      // Check which days are already blocked
       const q = query(collection(db, 'blockedDates'));
       const querySnapshot = await getDocs(q);
       const existingBlocks = new Set();
@@ -89,38 +110,68 @@ export default function DateBlockingManager() {
         existingBlocks.add(doc.id);
       });
 
-      // Block only the Sundays that aren't already blocked
-      let blockedCount = 0;
-      for (const sunday of sundays) {
-        if (!existingBlocks.has(sunday)) {
+      // Block only the days that aren't already blocked
+      let blockedSundaysCount = 0;
+      let blockedSaturdaysCount = 0;
+      
+      // Block Sundays (full day - till 23:59)
+      for (const sunday of daysToBlock.sundays) {
+        if (!existingBlocks.has(sunday.date)) {
           const blockData = {
-            date: sunday,
-            type: 'sunday-auto',
+            date: sunday.date,
+            type: 'saturday-partial', // IMPORTANT: Use same type
             blockedSlots: [],
             updatedAt: new Date().toISOString(),
             blockedBy: 'system-auto',
             blockedAt: new Date().toISOString(),
-            isAutoSunday: true
+            isAutoSunday: true,
+            blockedTill: '23:59' // Sunday: block all day
           };
           
-          await setDoc(doc(db, 'blockedDates', sunday), blockData);
-          blockedCount++;
+          await setDoc(doc(db, 'blockedDates', sunday.date), blockData);
+          blockedSundaysCount++;
+        }
+      }
+      
+      // Block Saturdays (partial till 12 PM)
+      for (const saturday of daysToBlock.saturdays) {
+        if (!existingBlocks.has(saturday.date)) {
+          const blockData = {
+            date: saturday.date,
+            type: 'saturday-partial',
+            blockedSlots: [],
+            blockedTill: '12:00', // Saturday: block till 12 PM
+            updatedAt: new Date().toISOString(),
+            blockedBy: 'system-auto',
+            blockedAt: new Date().toISOString(),
+            isAutoSaturday: true
+          };
+          
+          await setDoc(doc(db, 'blockedDates', saturday.date), blockData);
+          blockedSaturdaysCount++;
         }
       }
 
-      if (blockedCount > 0) {
-        console.log(`Auto-blocked ${blockedCount} Sundays`);
-        setAutoBlockingStatus(`✓ ${blockedCount} Sundays auto-blocked`);
-        await loadBlockedDates();
+      let statusMessage = '';
+      if (blockedSundaysCount > 0 && blockedSaturdaysCount > 0) {
+        statusMessage = `✓ ${blockedSundaysCount} Sundays & ${blockedSaturdaysCount} Saturdays (till 12 PM) auto-blocked`;
+      } else if (blockedSundaysCount > 0) {
+        statusMessage = `✓ ${blockedSundaysCount} Sundays auto-blocked (Saturdays already blocked)`;
+      } else if (blockedSaturdaysCount > 0) {
+        statusMessage = `✓ ${blockedSaturdaysCount} Saturdays (till 12 PM) auto-blocked (Saturdays already blocked)`;
       } else {
-        setAutoBlockingStatus('✓ All Sundays already blocked');
+        statusMessage = '✓ All Sundays and Saturdays (till 12 PM) already blocked';
       }
+      
+      console.log(statusMessage);
+      setAutoBlockingStatus(statusMessage);
+      await loadBlockedDates();
 
       // Clear status after 3 seconds
       setTimeout(() => setAutoBlockingStatus(''), 3000);
     } catch (error) {
-      console.error('Error auto-blocking Sundays:', error);
-      setAutoBlockingStatus('⚠ Error blocking Sundays');
+      console.error('Error auto-blocking days:', error);
+      setAutoBlockingStatus('⚠ Error blocking days');
       setTimeout(() => setAutoBlockingStatus(''), 3000);
     }
   };
@@ -180,6 +231,11 @@ export default function DateBlockingManager() {
       return;
     }
 
+    if (isSaturday(selectedDate)) {
+      alert('Saturdays are automatically blocked till 12 PM and cannot be manually managed.');
+      return;
+    }
+
     if (!user) {
       alert('Please log in as admin first');
       return;
@@ -190,11 +246,12 @@ export default function DateBlockingManager() {
       const dateToStore = selectedDate;
       const blockData = {
         date: dateToStore,
-        type: 'full',
+        type: 'full', // Regular manual blocks are full day
         blockedSlots: [],
         updatedAt: new Date().toISOString(),
         blockedBy: user.email,
-        blockedAt: new Date().toISOString()
+        blockedAt: new Date().toISOString(),
+        blockedTill: '23:59' // Full day block
       };
       
       console.log('Blocking date with data:', blockData);
@@ -214,6 +271,14 @@ export default function DateBlockingManager() {
     if (isSunday(date)) {
       alert('Sundays are automatically blocked and cannot be unblocked.');
       return;
+    }
+
+    if (isSaturday(date)) {
+      const data = blockedDates[date];
+      if (data && data.isAutoSaturday) {
+        alert('Saturdays are automatically blocked till 12 PM and cannot be unblocked.');
+        return;
+      }
     }
 
     if (!user) {
@@ -399,7 +464,7 @@ export default function DateBlockingManager() {
           <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6">
             <p className="text-[#1393c4] text-sm font-semibold flex items-center gap-2">
               <AlertCircle className="w-4 h-4" />
-              All Sundays are automatically blocked (next 365 days)
+              All Sundays are fully blocked and Saturdays are blocked till 12 PM (next 365 days)
             </p>
           </div>
           
@@ -460,61 +525,75 @@ export default function DateBlockingManager() {
                 <Calendar className="w-10 h-10 text-slate-400" />
               </div>
               <p className="text-[#1393c4] text-lg font-medium">No dates are currently blocked</p>
-              <p className="text-[#1393c4] text-sm mt-2 opacity-75">Block dates to prevent bookings (Sundays auto-blocked)</p>
+              <p className="text-[#1393c4] text-sm mt-2 opacity-75">Block dates to prevent bookings (Sundays & Saturdays auto-blocked)</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {Object.entries(blockedDates)
                 .sort(([dateA], [dateB]) => dateA.localeCompare(dateB))
-                .map(([date, data]) => (
-                  <div
-                    key={date}
-                    className="group bg-gradient-to-br from-white to-slate-50 border border-slate-200 rounded-xl p-5 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-3">
-                          <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors duration-300">
-                            <Calendar className="w-5 h-5 text-[#1393c4]" />
+                .map(([date, data]) => {
+                  const isSat = isSaturday(date);
+                  const isSun = isSunday(date);
+                  
+                  return (
+                    <div
+                      key={date}
+                      className="group bg-gradient-to-br from-white to-slate-50 border border-slate-200 rounded-xl p-5 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1"
+                    >
+                      <div className="flex items-start justify-between mb-4">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-3">
+                            <div className="p-2 bg-blue-100 rounded-lg group-hover:bg-blue-200 transition-colors duration-300">
+                              <Calendar className="w-5 h-5 text-[#1393c4]" />
+                            </div>
+                            <h3 className="text-base font-bold text-[#1393c4]">
+                              {formatDisplayDate(date)}
+                            </h3>
                           </div>
-                          <h3 className="text-base font-bold text-[#1393c4]">
-                            {formatDisplayDate(date)}
-                          </h3>
+                          <span className={`inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-lg shadow-md ${
+                            data.isAutoSunday 
+                              ? 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white'
+                              : data.isAutoSaturday
+                              ? 'bg-gradient-to-r from-orange-500 to-amber-500 text-white'
+                              : 'bg-gradient-to-r from-red-500 to-pink-500 text-white'
+                          }`}>
+                            {data.isAutoSunday ? 'AUTO SUNDAY (ALL DAY)' : 
+                             data.isAutoSaturday ? 'SATURDAY (TILL 12 PM)' : 
+                             'FULL DAY BLOCK'}
+                          </span>
+                          {data.blockedBy && (
+                            <p className="text-xs text-[#1393c4] mt-3 font-medium opacity-75">
+                              By: {data.blockedBy}
+                            </p>
+                          )}
+                          {data.blockedTill && (
+                            <p className="text-xs text-[#1393c4] mt-1 font-medium opacity-75">
+                              {data.isAutoSunday ? 'Blocked all day' : `Blocked till: ${data.blockedTill}${data.blockedTill === '23:59' ? '' : ' PM'}`}
+                            </p>
+                          )}
                         </div>
-                        <span className={`inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-lg shadow-md ${
-                          data.isAutoSunday 
-                            ? 'bg-gradient-to-r from-purple-500 to-indigo-500 text-white'
-                            : 'bg-gradient-to-r from-red-500 to-pink-500 text-white'
-                        }`}>
-                          {data.isAutoSunday ? 'AUTO SUNDAY' : 'FULL DAY BLOCK'}
-                        </span>
-                        {data.blockedBy && (
-                          <p className="text-xs text-[#1393c4] mt-3 font-medium opacity-75">
-                            By: {data.blockedBy}
-                          </p>
-                        )}
                       </div>
-                    </div>
 
-                    {!data.isAutoSunday && (
-                      <button
-                        type="button"
-                        onClick={() => unblockDate(date)}
-                        disabled={loading}
-                        className="w-full mt-4 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-                      >
-                        <Unlock className="w-4 h-4" />
-                        Unblock
-                      </button>
-                    )}
-                    
-                    {data.isAutoSunday && (
-                      <div className="w-full mt-4 bg-slate-100 text-slate-500 font-semibold py-3 px-4 rounded-xl text-center text-sm">
-                        Auto-blocked (Sunday)
-                      </div>
-                    )}
-                  </div>
-                ))}
+                      {!data.isAutoSunday && !data.isAutoSaturday && (
+                        <button
+                          type="button"
+                          onClick={() => unblockDate(date)}
+                          disabled={loading}
+                          className="w-full mt-4 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white font-bold py-3 px-4 rounded-xl transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                        >
+                          <Unlock className="w-4 h-4" />
+                          Unblock
+                        </button>
+                      )}
+                      
+                      {(data.isAutoSunday || data.isAutoSaturday) && (
+                        <div className="w-full mt-4 bg-slate-100 text-slate-500 font-semibold py-3 px-4 rounded-xl text-center text-sm">
+                          {data.isAutoSunday ? 'Auto-blocked (Sunday - All Day)' : 'Auto-blocked (Saturday till 12 PM)'}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
             </div>
           )}
         </div>
