@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { Clock, ChevronLeft, ChevronRight, Check, Car, Truck, X, Calendar, DollarSign, Package } from 'lucide-react';
 import { pdf, Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 import { db } from '../firebase';
-import { collection, getDocs, query } from 'firebase/firestore';
+import { collection, getDocs } from 'firebase/firestore';
 
-// Create styles for PDF
 const styles = StyleSheet.create({
   page: {
     flexDirection: 'column',
@@ -65,7 +64,6 @@ const styles = StyleSheet.create({
   }
 });
 
-// PDF Document Component
 const BookingPDF = ({ bookingData, selectedVehicle, selectedPackage, selectedAddOns, selectedDate, selectedTime, bookingId, totalCost }) => (
   <Document>
     <Page size="A4" style={styles.page}>
@@ -144,7 +142,9 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [lastSelectedAddOn, setLastSelectedAddOn] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isScrolling, setIsScrolling] = useState(false); // NEW: Track scrolling state
+  const [isScrolling, setIsScrolling] = useState(false);
+  const [blockedDatesData, setBlockedDatesData] = useState({});
+  const [loadingBlockedDates, setLoadingBlockedDates] = useState(true);
   const [bookingData, setBookingData] = useState({
     firstName: '',
     lastName: '',
@@ -154,48 +154,146 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
     message: ''
   });
 
-  // DEBUG: Log state changes
   useEffect(() => {
-    console.log('STATE UPDATE:');
-    console.log('- selectedVehicle:', selectedVehicle?.name);
-    console.log('- selectedPackage:', selectedPackage?.name);
-    console.log('- selectedAddOns:', selectedAddOns.length);
-    console.log('- selectedDate:', selectedDate);
-    console.log('- selectedTime:', selectedTime);
-    console.log('- isScrolling:', isScrolling);
-  }, [selectedVehicle, selectedPackage, selectedAddOns, selectedDate, selectedTime, isScrolling]);
+    const loadBlockedDatesData = async () => {
+      try {
+        setLoadingBlockedDates(true);
+        const q = collection(db, 'blockedDates');
+        const querySnapshot = await getDocs(q);
+        const dates = {};
+        
+        querySnapshot.forEach((doc) => {
+          dates[doc.id] = doc.data();
+        });
+        
+        setBlockedDatesData(dates);
+      } catch (error) {
+        console.error('Error loading blocked dates:', error);
+      } finally {
+        setLoadingBlockedDates(false);
+      }
+    };
 
-  // Check if a specific date is blocked using the prop
+    loadBlockedDatesData();
+  }, []);
+
   const isDateBlocked = (day) => {
     if (!day) return false;
 
-    // Format date to YYYY-MM-DD
-    const dateString = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-
-    // Check if this date is in the blockedDates array (from prop)
-    return Array.isArray(blockedDates) && blockedDates.includes(dateString);
+    const year = currentMonth.getFullYear();
+    const month = String(currentMonth.getMonth() + 1).padStart(2, '0');
+    const dayStr = String(day).padStart(2, '0');
+    const dateString = `${year}-${month}-${dayStr}`;
+    
+    if (blockedDatesData && blockedDatesData[dateString]) {
+      const blockedInfo = blockedDatesData[dateString];
+      
+      if (blockedInfo.isAutoSunday) {
+        return true;
+      }
+      
+      if (blockedInfo.type === 'full') {
+        return true;
+      }
+      
+      if (blockedInfo.isAutoSaturday) {
+        return false;
+      }
+    }
+    
+    if (Array.isArray(blockedDates) && blockedDates.includes(dateString)) {
+      const dateObj = new Date(dateString);
+      const dayOfWeek = dateObj.getDay();
+      
+      if (dayOfWeek === 0) {
+        return true;
+      }
+      
+      if (dayOfWeek === 6) {
+        return false;
+      }
+      
+      return true;
+    }
+    
+    const dateObj = new Date(`${year}-${month}-${dayStr}T00:00:00`);
+    const dayOfWeek = dateObj.getDay();
+    
+    if (dayOfWeek === 0) {
+      return true;
+    }
+    
+    return false;
   };
 
-  // Check if a specific time slot is blocked using the prop
   const isTimeSlotBlocked = (time) => {
-    if (!selectedDate) return false;
+    if (!selectedDate || loadingBlockedDates) {
+      return false;
+    }
 
-    // Convert selectedDate (e.g., "November 9, 2025") to YYYY-MM-DD format
     const dateParts = selectedDate.split(' ');
     const monthName = dateParts[0];
     const day = parseInt(dateParts[1].replace(',', ''));
     const year = parseInt(dateParts[2]);
 
-    // Convert month name to month number
     const months = ['January', 'February', 'March', 'April', 'May', 'June',
       'July', 'August', 'September', 'October', 'November', 'December'];
     const monthIndex = months.indexOf(monthName);
 
-    // Format date string
+    const selectedDateObj = new Date(year, monthIndex, day);
+    const dayOfWeek = selectedDateObj.getDay();
+    
     const dateString = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
-
-    // For now, if date is blocked, all time slots are blocked
-    return Array.isArray(blockedDates) && blockedDates.includes(dateString);
+    
+    const blockedDateInfo = blockedDatesData[dateString];
+    
+    if (blockedDateInfo) {
+      if (blockedDateInfo.isAutoSunday) {
+        return true;
+      }
+      
+      if (blockedDateInfo.isAutoSaturday) {
+        if (blockedDateInfo.blockedTill) {
+          return time < blockedDateInfo.blockedTill;
+        } else {
+          return time < '12:00';
+        }
+      }
+      
+      if (blockedDateInfo.type === 'full') {
+        return true;
+      }
+      
+      if (blockedDateInfo.blockedTill) {
+        return time < blockedDateInfo.blockedTill;
+      }
+      
+      return true;
+    }
+    
+    const isDateInBlockedArray = Array.isArray(blockedDates) && blockedDates.includes(dateString);
+    
+    if (isDateInBlockedArray) {
+      if (dayOfWeek === 0) {
+        return true;
+      }
+      
+      if (dayOfWeek === 6) {
+        return time < '12:00';
+      }
+      
+      return true;
+    }
+    
+    if (dayOfWeek === 0) {
+      return true;
+    }
+    
+    if (dayOfWeek === 6) {
+      return time < '12:00';
+    }
+    
+    return false;
   };
 
   const vehicleTypes = [
@@ -380,13 +478,11 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
     return total;
   };
 
-  // Generate ACD-DET-REF format ID
   const generateBookingId = () => {
-    const randomNum = Math.floor(Math.random() * 900) + 100; // 100-999
+    const randomNum = Math.floor(Math.random() * 900) + 100;
     return `ACD-DET-REF${randomNum}`;
   };
 
-  // Auto-download PDF function
   const downloadPDF = async (bookingId) => {
     const pdfDoc = (
       <BookingPDF
@@ -415,25 +511,19 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
   };
 
   const handleVehicleSelect = (vehicle) => {
-    console.log('handleVehicleSelect called with:', vehicle.name);
     setSelectedVehicle(vehicle);
     setSelectedPackage(null);
     setPriceAnimation(true);
     setTimeout(() => setPriceAnimation(false), 600);
   };
 
-  // FIXED: Handle Book Now click without immediate scrolling
   const handleBookNowClick = (vehicle) => {
-    console.log('handleBookNowClick called for:', vehicle.name);
     handleVehicleSelect(vehicle);
 
-    // Use a more controlled scrolling approach
     if (!isModal) {
       setTimeout(() => {
         const packagesSection = document.getElementById('packages-section');
-        console.log('Looking for packages-section:', packagesSection);
         if (packagesSection && !isScrolling) {
-          console.log('Scrolling to packages-section');
           setIsScrolling(true);
           packagesSection.scrollIntoView({
             behavior: 'smooth',
@@ -441,65 +531,43 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
             inline: 'nearest'
           });
 
-          // Reset scrolling state after animation completes
           setTimeout(() => {
             setIsScrolling(false);
-            console.log('Scrolling to packages completed');
           }, 1000);
         }
-      }, 150); // Slightly longer delay
+      }, 150);
     }
   };
 
-  // FIXED: Handle package select with better scrolling control
   const handlePackageSelect = (pkg) => {
-    console.log('=========================================');
-    console.log('handlePackageSelect called with:', pkg.name);
-    console.log('Current selectedPackage before:', selectedPackage?.name);
-    console.log('Current isScrolling:', isScrolling);
-
     setSelectedPackage(pkg);
     setSelectedAddOns([]);
 
-    // Don't scroll if we're already scrolling
     if (isScrolling) {
-      console.log('Already scrolling, skipping scroll');
       return;
     }
 
     if (!isModal) {
-      console.log('Setting isScrolling to true');
       setIsScrolling(true);
 
-      // Wait for the DOM to update before scrolling
       setTimeout(() => {
-        console.log('Looking for addons-section...');
         const addonsSection = document.getElementById('addons-section');
-        console.log('Found addons-section:', addonsSection);
-
         if (addonsSection) {
-          console.log('Scrolling to addons-section');
           addonsSection.scrollIntoView({
             behavior: 'smooth',
             block: 'start',
             inline: 'nearest'
           });
-        } else {
-          console.log('WARNING: addons-section not found!');
         }
 
-        // Reset scrolling state after animation completes
         setTimeout(() => {
           setIsScrolling(false);
-          console.log('Scrolling to addons completed, isScrolling set to false');
         }, 1000);
       }, 150);
     }
-    console.log('=========================================');
   };
 
   const handleAddOnToggle = (addon) => {
-    console.log('handleAddOnToggle called for:', addon.name);
     const exists = selectedAddOns.find(item => item.id === addon.id);
 
     if (!exists) {
@@ -512,18 +580,14 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
     }
   };
 
-  // FIXED: Handle add-on popup response with better scrolling control
   const handleAddOnPopupResponse = (wantMore) => {
-    console.log('handleAddOnPopupResponse:', wantMore);
     setShowConfirmationModal(false);
     document.body.style.overflow = 'auto';
 
     if (!wantMore && !isModal && !isScrolling) {
       setIsScrolling(true);
-      console.log('Scrolling to date-section after add-on selection');
       setTimeout(() => {
         const dateSection = document.getElementById('date-section');
-        console.log('Found date-section:', dateSection);
         if (dateSection) {
           dateSection.scrollIntoView({
             behavior: 'smooth',
@@ -532,10 +596,8 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
           });
         }
 
-        // Reset scrolling state after animation completes
         setTimeout(() => {
           setIsScrolling(false);
-          console.log('Scrolling to date-section completed');
         }, 1000);
       }, 150);
     }
@@ -548,35 +610,21 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
     }));
   };
 
-  // FIXED: Handle date select with better user experience
   const handleDateSelect = (day) => {
-    console.log('handleDateSelect called with day:', day);
     if (day && !isPastDate(day) && !isDateBlocked(day)) {
       const selected = `${months[currentMonth.getMonth()]} ${day}, ${currentMonth.getFullYear()}`;
-      console.log('Setting selectedDate to:', selected);
       setSelectedDate(selected);
-      setSelectedTime(''); // Reset selected time when date changes
+      setSelectedTime('');
 
       if (!isModal && !isScrolling) {
         setIsScrolling(true);
-        console.log('Scrolling after date selection');
         setTimeout(() => {
-          // Find the time slots grid container
           const timeSlotsGrid = document.querySelector('.grid.grid-cols-3.sm\\:grid-cols-4.md\\:grid-cols-6');
-          console.log('Found timeSlotsGrid:', timeSlotsGrid);
-
           if (timeSlotsGrid) {
-            // Get the parent container (the date-time section)
             const dateTimeSection = document.getElementById('date-section');
             if (dateTimeSection) {
-              // Scroll to show the time slots section
               const timeSlotsPosition = timeSlotsGrid.getBoundingClientRect().top;
-              const dateTimeSectionPosition = dateTimeSection.getBoundingClientRect().top;
-
-              // Calculate scroll position to show both date selection and time slots
               const scrollToPosition = window.pageYOffset + timeSlotsPosition - 100;
-
-              console.log('Scrolling to time slots');
               window.scrollTo({
                 top: scrollToPosition,
                 behavior: 'smooth'
@@ -584,29 +632,24 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
             }
           }
 
-          // Reset scrolling state after animation completes
           setTimeout(() => {
             setIsScrolling(false);
-            console.log('Scrolling after date selection completed');
           }, 1000);
         }, 150);
       }
     }
   };
 
-  // FIXED: Handle time select with better scrolling
   const handleTimeSelect = (time) => {
-    console.log('handleTimeSelect called with time:', time);
-    if (!isTimeSlotBlocked(time)) {
-      console.log('Setting selectedTime to:', time);
+    const isBlocked = isTimeSlotBlocked(time);
+    
+    if (!isBlocked) {
       setSelectedTime(time);
 
       if (!isModal && selectedDate && time && !isScrolling) {
         setIsScrolling(true);
-        console.log('Scrolling to summary-section');
         setTimeout(() => {
           const summarySection = document.getElementById('summary-section');
-          console.log('Found summary-section:', summarySection);
           if (summarySection) {
             summarySection.scrollIntoView({
               behavior: 'smooth',
@@ -615,10 +658,8 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
             });
           }
 
-          // Reset scrolling state after animation completes
           setTimeout(() => {
             setIsScrolling(false);
-            console.log('Scrolling to summary-section completed');
           }, 1000);
         }, 150);
       }
@@ -634,26 +675,11 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
   };
 
   const isFormValid = () => {
-    const valid = selectedVehicle && selectedPackage && selectedDate && selectedTime &&
+    return selectedVehicle && selectedPackage && selectedDate && selectedTime &&
       bookingData.firstName && bookingData.lastName && bookingData.email &&
       bookingData.phone && bookingData.vehicleMake;
-
-    console.log('isFormValid check:');
-    console.log('- selectedVehicle:', !!selectedVehicle);
-    console.log('- selectedPackage:', !!selectedPackage);
-    console.log('- selectedDate:', !!selectedDate);
-    console.log('- selectedTime:', !!selectedTime);
-    console.log('- firstName:', !!bookingData.firstName);
-    console.log('- lastName:', !!bookingData.lastName);
-    console.log('- email:', !!bookingData.email);
-    console.log('- phone:', !!bookingData.phone);
-    console.log('- vehicleMake:', !!bookingData.vehicleMake);
-    console.log('- Result:', valid);
-
-    return valid;
   };
 
-  // Send only ONE email to the customer with complete cost breakdown and phone number
   const sendEmail = async (bookingId) => {
     const emailFormData = new FormData();
 
@@ -664,7 +690,6 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
     emailFormData.append('email', bookingData.email);
     emailFormData.append('reply_to', 'actioncardetailing@gmail.com');
 
-    // Create detailed cost breakdown
     const costBreakdown = `
 Package Cost:
 • ${selectedPackage.name}: $${selectedPackage.price}.00 CAD
@@ -743,7 +768,6 @@ Passion for Detail
       const data = await response.json();
 
       if (!response.ok) {
-        console.error('Web3Forms API error:', data);
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
@@ -756,8 +780,6 @@ Passion for Detail
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    console.log('handleSubmit called');
 
     if (!isFormValid()) {
       alert('Please fill in all required fields.');
@@ -775,7 +797,6 @@ Passion for Detail
 
         alert(`Booking submitted successfully!\n\nYour booking ID is: ${newBookingId}\n\nConfirmation email has been sent and PDF has been downloaded.\n\nWe will confirm your appointment within 24 hours.`);
 
-        // Reset form
         setSelectedVehicle(null);
         setSelectedPackage(null);
         setSelectedAddOns([]);
@@ -790,7 +811,6 @@ Passion for Detail
           message: ''
         });
 
-        // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
       } else {
@@ -807,15 +827,6 @@ Passion for Detail
   const washPackages = getWashPackages();
   const containerClass = isModal ? "max-w-4xl mx-auto p-4" : "min-h-screen bg-gray-50 py-8 px-4";
   const innerContainerClass = isModal ? "" : "max-w-6xl mx-auto";
-
-  // Debug: Log render state
-  console.log('====== RENDER STATE ======');
-  console.log('selectedVehicle:', selectedVehicle?.name);
-  console.log('selectedPackage:', selectedPackage?.name);
-  console.log('selectedDate:', selectedDate);
-  console.log('selectedTime:', selectedTime);
-  console.log('Rendering date-section with selectedPackage:', !!selectedPackage);
-  console.log('==========================');
 
   return (
     <div className={containerClass}>
@@ -838,7 +849,6 @@ Passion for Detail
           </div>
         )}
 
-        {/* Vehicle Selection */}
         <div className="bg-white rounded-xl shadow-lg p-8 border border-gray-200 mb-8">
           <div className="text-center mb-6">
             <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">1. VEHICLE TYPE</h2>
@@ -877,7 +887,6 @@ Passion for Detail
           </div>
         </div>
 
-        {/* Packages Section */}
         <div id="packages-section" className="bg-white rounded-xl shadow-lg p-8 border border-gray-200 mb-8">
           <div className="text-center mb-6">
             <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">2. WASH PACKAGES</h2>
@@ -923,7 +932,6 @@ Passion for Detail
           </div>
         </div>
 
-        {/* Add-on Confirmation Modal */}
         {showConfirmationModal && (
           <div className="fixed inset-0 z-50 overflow-y-auto">
             <div className="flex min-h-full items-center justify-center p-4 text-center">
@@ -966,7 +974,6 @@ Passion for Detail
           </div>
         )}
 
-        {/* Add-ons Section */}
         {selectedPackage && (
           <div id="addons-section" className="bg-white rounded-xl shadow-lg p-8 border border-gray-200 mb-8">
             <div className="text-center mb-6">
@@ -1058,7 +1065,6 @@ Passion for Detail
           </div>
         )}
 
-        {/* Date and Time Section - ALWAYS RENDERED, just conditionally disabled */}
         <div id="date-section" className="bg-white rounded-xl shadow-lg p-8 border border-gray-200 mb-8">
           <div className="text-center mb-6">
             <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">
@@ -1162,7 +1168,6 @@ Passion for Detail
           </div>
         </div>
 
-        {/* Booking Summary Section */}
         {selectedDate && selectedTime && selectedPackage && (
           <div id="summary-section" className="bg-gradient-to-br from-blue-50 to-white rounded-xl shadow-lg p-8 border-2 border-[#1393c4] mb-8">
             <div className="text-center mb-6">
@@ -1261,7 +1266,6 @@ Passion for Detail
           </div>
         )}
 
-        {/* Contact Information Section */}
         <form onSubmit={handleSubmit}>
           <div id="contact-section" className="bg-white rounded-xl shadow-lg p-8 border border-gray-200 mb-8">
             <div className="text-center mb-6">
@@ -1349,7 +1353,6 @@ Passion for Detail
             </div>
           </div>
 
-          {/* Submit Button */}
           <div className="text-center mt-12">
             <p className="text-sm text-[#1393c4] mb-4 leading-relaxed">
               We will confirm your appointment within 24 hours.
