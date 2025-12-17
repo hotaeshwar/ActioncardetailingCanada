@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Loader2 } from 'lucide-react'; // Import the loader icon from Lucide
+import { Loader2 } from 'lucide-react';
 import formImage from '../assets/images/form1.png';
 
 const ContactForm = () => {
@@ -7,8 +7,8 @@ const ContactForm = () => {
         name: '',
         email: '',
         phone: '',
-        serviceType: '', // First dropdown: service type
-        serviceOption: '', // Second dropdown: specific option
+        serviceType: '',
+        serviceOption: '',
         message: '',
         photo: null
     });
@@ -17,16 +17,20 @@ const ContactForm = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [photoPreview, setPhotoPreview] = useState(null);
 
-    // Service types (main categories)
+    // Service types (main categories) - ALL SERVICES from screenshot
     const serviceTypes = [
         { value: '', label: 'Select Service Type *', disabled: true },
-        { value: 'paint-protection-film', label: 'Paint Protection Film (PPF)' },
-        { value: 'ceramic-coating', label: 'Ceramic Coating' }
+        { value: 'auto-detailing', label: 'Auto Detailing' },
+        { value: 'paint-correction-polishing', label: 'Paint Correction Polishing' },
+        { value: 'window-tinting', label: 'Window Tinting' },
+        { value: 'ceramic-coating', label: 'Ceramic Coating' },
+        { value: 'paint-protection-film', label: 'Paint Protection Film' },
+        { value: 'remediation-claims', label: 'Remediation Claims' }
     ];
 
-    // Service options based on selected service type
+    // Service options - ONLY FOR ORIGINAL SERVICES (PPF and Ceramic Coating)
     const serviceOptions = {
-        // Paint Protection Film options
+        // Paint Protection Film options (ORIGINAL)
         'paint-protection-film': [
             { value: '', label: 'Select PPF Option *', disabled: true },
             { value: 'bumper-only', label: 'BUMPER ONLY - Starting at $599 - Service Time 1 Day' },
@@ -34,12 +38,29 @@ const ContactForm = () => {
             { value: 'full-front', label: 'FULL FRONT - Starting at $1499 - Service Time 1.5 Day' },
             { value: 'offset-tire-package', label: 'OFFSET TIRE PACKAGE - Starting at $1999 - Service Time 2 Days' }
         ],
-        // Ceramic Coating options
+        // Ceramic Coating options (ORIGINAL)
         'ceramic-coating': [
             { value: '', label: 'Select Ceramic Coating Option *', disabled: true },
             { value: 'fusion-plus-lite', label: 'FUSION PLUS LITE - 1 year warranty' },
             { value: 'fusion-plus-paint-ppf', label: 'FUSION PLUS PAINT & PPF - 4 years warranty' },
             { value: 'fusion-plus-premium', label: 'FUSION PLUS PREMIUM - 8 years warranty' }
+        ],
+        // For new services, just show a basic option
+        'auto-detailing': [
+            { value: '', label: 'Select Auto Detailing Service *', disabled: true },
+            { value: 'general-inquiry', label: 'General Auto Detailing Inquiry' }
+        ],
+        'paint-correction-polishing': [
+            { value: '', label: 'Select Paint Correction Service *', disabled: true },
+            { value: 'general-inquiry', label: 'General Paint Correction Inquiry' }
+        ],
+        'window-tinting': [
+            { value: '', label: 'Select Window Tinting Service *', disabled: true },
+            { value: 'general-inquiry', label: 'General Window Tinting Inquiry' }
+        ],
+        'remediation-claims': [
+            { value: '', label: 'Select Remediation Claim Type *', disabled: true },
+            { value: 'general-inquiry', label: 'General Remediation Claim Inquiry' }
         ]
     };
 
@@ -48,7 +69,7 @@ const ContactForm = () => {
         if (!formData.serviceType) {
             return [{ value: '', label: 'First select service type above', disabled: true }];
         }
-        return serviceOptions[formData.serviceType] || [];
+        return serviceOptions[formData.serviceType] || [{ value: '', label: 'No options available', disabled: true }];
     };
 
     // Get service display name for emails
@@ -116,7 +137,7 @@ const ContactForm = () => {
         // Add all form data
         formDataToSend.append('access_key', 'ba99ae3b-60cc-404c-b207-2a42e86aafb6');
         formDataToSend.append('subject', emailType === 'business' 
-            ? `📸 New Contact Form - ${contactId}`
+            ? `📞 New Contact Form - ${contactId}`
             : `✅ Contact Form Confirmation - ${contactId}`);
         formDataToSend.append('from_name', emailType === 'business' 
             ? `${formData.name}`
@@ -479,7 +500,7 @@ For inquiries, please contact us at actioncardetailing@gmail.com
                                         ))}
                                     </select>
                                     <p className="text-xs mt-1 text-gray-500" style={{color: '#1393c4'}}>
-                                        Now select the specific service option for {formData.serviceType === 'paint-protection-film' ? 'Paint Protection Film' : 'Ceramic Coating'}
+                                        Select the specific service option
                                     </p>
                                 </div>
                             )}
