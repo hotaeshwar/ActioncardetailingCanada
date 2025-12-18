@@ -1,13 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import actionCarLogo from '../assets/images/action car logo.png';
 import awardLogo from '../assets/images/award png.png';
 
-const Navbar = ({ currentView, setCurrentView }) => {
+const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
   const [mobileServicesDropdownOpen, setMobileServicesDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   // Enhanced vivid ozone color palette
   const vividOzone = {
@@ -26,44 +29,15 @@ const Navbar = ({ currentView, setCurrentView }) => {
     setServicesDropdownOpen(!servicesDropdownOpen);
   };
 
-  const handleNavClick = (view, href = null) => {
-    if (href) {
-      if (href === '#services') {
-        setCurrentView('services');
-      } else if (href === '#auto-detailing') {
-        setCurrentView('auto-detailing');
-      } else if (href === '#paint-correction') {
-        setCurrentView('paint-correction');
-      } else if (href === '#window-tinting') {
-        setCurrentView('window-tinting');
-      } else if (href === '#ceramic-coating') {
-        setCurrentView('ceramic-coatings');
-      } else if (href === '#remediation-claims') {
-        setCurrentView('remediation-claim');
-      } else if (href === '#paint-protection-film') {
-        setCurrentView('paint-protection-film');
-      } else if (href === '#before-after') {
-        setCurrentView('before-after');
-      } else if (href.startsWith('#') && currentView === 'home') {
-        const element = document.querySelector(href);
-        if (element) {
-          element.scrollIntoView({ behavior: 'smooth' });
-        }
-      } else if (href.startsWith('#')) {
-        setCurrentView('home');
-        setTimeout(() => {
-          const element = document.querySelector(href);
-          if (element) {
-            element.scrollIntoView({ behavior: 'smooth' });
-          }
-        }, 100);
-      }
-    } else {
-      setCurrentView(view);
-    }
+  const handleInternalLink = (path) => {
+    navigate(path);
     setIsMenuOpen(false);
     setServicesDropdownOpen(false);
     setMobileServicesDropdownOpen(false);
+  };
+
+  const isServiceActive = (path) => {
+    return location.pathname === path || location.pathname.startsWith(path + '/');
   };
 
   useEffect(() => {
@@ -93,23 +67,23 @@ const Navbar = ({ currentView, setCurrentView }) => {
   }, []);
 
   const navLinks = [
-    { name: 'HOME', view: 'home' },
-    { name: 'ABOUT', view: 'about' },
-    { name: 'GIFT CARD', view: 'giftcard' },
-    { name: 'SERVICES', href: '#services', hasDropdown: true },
-    { name: 'BEFORE & AFTER', href: '#before-after' },
-    { name: 'TESTIMONIALS', view: 'testimonials' },
-    { name: 'REFERENCES', view: 'references' },
+    { name: 'HOME', to: '/', exact: true, internal: true },
+    { name: 'ABOUT', to: '/about', internal: true },
+    { name: 'GIFT CARD', to: '/giftcard', internal: true },
+    { name: 'SERVICES', hasDropdown: true },
+    { name: 'BEFORE & AFTER', to: '/before-after', internal: true },
+    { name: 'TESTIMONIALS', to: '/testimonials', internal: true },
+    { name: 'REFERENCES', to: '/references', internal: true },
   ];
 
   const serviceItems = [
-    { name: 'OUR SERVICES', href: '#services' },
-    { name: 'AUTO DETAILING', href: '#auto-detailing' },
-    { name: 'PAINT CORRECTION POLISHING', href: '#paint-correction' },
-    { name: 'WINDOW TINTING', href: '#window-tinting' },
-    { name: 'CERAMIC COATING', href: '#ceramic-coating' },
-    { name: 'PAINT PROTECTION FILM', href: '#paint-protection-film' },
-    { name: 'REMEDIATION CLAIMS', href: '#remediation-claims' },
+    { name: 'OUR SERVICES', to: '/services', internal: true },
+    { name: 'AUTO DETAILING', to: '/auto-detailing', internal: true },
+    { name: 'PAINT CORRECTION POLISHING', to: '/paint-correction', internal: true },
+    { name: 'WINDOW TINTING', to: '/window-tinting', internal: true },
+    { name: 'CERAMIC COATING', to: '/ceramic-coatings', internal: true },
+    { name: 'PAINT PROTECTION FILM', to: '/paint-protection-film', internal: true },
+    { name: 'REMEDIATION CLAIMS', to: '/remediation-claim', internal: true },
   ];
 
   return (
@@ -119,8 +93,8 @@ const Navbar = ({ currentView, setCurrentView }) => {
         <div className="transition-all duration-300">
           <div className="max-w-7xl mx-auto px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8">
             <div className="flex items-center justify-between h-28 sm:h-32 md:h-36 lg:h-28 xl:h-32 relative px-2 sm:px-3 md:px-4">
-              {/* Logo - Left side positioned with negative margin to move more left */}
-              <div className="flex-shrink-0 transform transition-transform hover:scale-105 cursor-pointer z-10 lg:w-80 lg:flex lg:justify-start lg:-ml-4 min-w-0 flex items-center" onClick={() => handleNavClick('home')}>
+              {/* Logo - Left side */}
+              <div className="flex-shrink-0 transform transition-transform hover:scale-105 cursor-pointer z-10 lg:w-80 lg:flex lg:justify-start lg:-ml-4 min-w-0 flex items-center" onClick={() => navigate('/')}>
                 <img 
                   className="h-16 sm:h-20 md:h-24 lg:h-20 xl:h-24 w-auto filter drop-shadow-lg max-w-[140px] xs:max-w-[160px] sm:max-w-[180px] md:max-w-[220px] lg:max-w-[240px] xl:max-w-[280px] object-contain" 
                   src={actionCarLogo} 
@@ -142,7 +116,7 @@ const Navbar = ({ currentView, setCurrentView }) => {
                       <button
                         onClick={toggleServicesDropdown}
                         className={`mafia-nav-link flex items-center text-xs ${
-                          currentView === 'services' || currentView === 'auto-detailing' || currentView === 'paint-correction' || currentView === 'window-tinting' || currentView === 'ceramic-coatings' || currentView === 'remediation-claim' || currentView === 'paint-protection-film' ? 'active-nav' : ''
+                          serviceItems.some(item => isServiceActive(item.to)) ? 'active-nav' : ''
                         }`}
                       >
                         <span>{link.name}</span>
@@ -156,37 +130,49 @@ const Navbar = ({ currentView, setCurrentView }) => {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                         </svg>
                       </button>
-                    ) : (
-                      <button
-                        onClick={() => handleNavClick(link.view, link.href)}
-                        className={`mafia-nav-link text-xs ${
-                          currentView === link.view || (link.href === '#before-after' && currentView === 'before-after') ? 'active-nav' : ''
-                        }`}
+                    ) : link.internal ? (
+                      <NavLink
+                        to={link.to}
+                        end={link.exact}
+                        className={({ isActive }) => 
+                          `mafia-nav-link text-xs ${isActive ? 'active-nav' : ''}`
+                        }
                       >
                         <span>{link.name}</span>
-                      </button>
+                      </NavLink>
+                    ) : (
+                      <a
+                        href={link.to}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mafia-nav-link text-xs"
+                      >
+                        <span>{link.name}</span>
+                      </a>
                     )}
                     
                     {link.name === 'SERVICES' && servicesDropdownOpen && (
-                      <div className="vivid-ozone-dropdown absolute mt-2 w-48 lg:w-52 xl:w-60 rounded-md shadow-2xl overflow-hidden z-20">
+                      <div className="vivid-ozone-dropdown absolute mt-2 w-56 lg:w-60 xl:w-64 rounded-md shadow-2xl overflow-hidden z-20">
                         <div className="py-1">
                           {serviceItems.map((service) => (
-                            <button
+                            <a
                               key={service.name}
-                              onClick={() => handleNavClick(null, service.href)}
-                              className={`service-menu-item w-full text-left block px-3 lg:px-4 py-2 lg:py-3 text-xs lg:text-sm text-white transition-all duration-200 border-l-4 border-transparent ${
-                                (service.href === '#services' && currentView === 'services') ||
-                                (service.href === '#auto-detailing' && currentView === 'auto-detailing') ||
-                                (service.href === '#paint-correction' && currentView === 'paint-correction') ||
-                                (service.href === '#window-tinting' && currentView === 'window-tinting') ||
-                                (service.href === '#ceramic-coating' && currentView === 'ceramic-coatings') ||
-                                (service.href === '#remediation-claims' && currentView === 'remediation-claim') ||
-                                (service.href === '#paint-protection-film' && currentView === 'paint-protection-film')
-                                  ? 'active-service-item' : ''
+                              href={service.to}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleInternalLink(service.to);
+                              }}
+                              onContextMenu={(e) => {
+                                // Allow right-click context menu for "Open in new tab"
+                                e.stopPropagation();
+                              }}
+                              className={`service-menu-item w-full text-left block px-4 py-3 text-sm text-white transition-all duration-200 border-l-4 border-transparent no-underline ${
+                                isServiceActive(service.to) ? 'active-service-item' : ''
                               }`}
+                              style={{ display: 'block', textDecoration: 'none' }}
                             >
                               {service.name}
-                            </button>
+                            </a>
                           ))}
                         </div>
                       </div>
@@ -286,37 +272,51 @@ const Navbar = ({ currentView, setCurrentView }) => {
                       {mobileServicesDropdownOpen && (
                         <div className="pl-4 sm:pl-6 md:pl-8 space-y-1">
                           {serviceItems.map((service) => (
-                            <button
+                            <a
                               key={service.name}
-                              onClick={() => handleNavClick(null, service.href)}
-                              className={`mobile-service-item w-full text-left block px-3 sm:px-4 py-2 sm:py-3 rounded-md text-xs sm:text-sm md:text-base font-medium text-gray-200 transition-all duration-200 border-l-2 ${
-                                (service.href === '#services' && currentView === 'services') ||
-                                (service.href === '#auto-detailing' && currentView === 'auto-detailing') ||
-                                (service.href === '#paint-correction' && currentView === 'paint-correction') ||
-                                (service.href === '#window-tinting' && currentView === 'window-tinting') ||
-                                (service.href === '#ceramic-coating' && currentView === 'ceramic-coatings') ||
-                                (service.href === '#remediation-claims' && currentView === 'remediation-claim') ||
-                                (service.href === '#paint-protection-film' && currentView === 'paint-protection-film')
-                                  ? 'active-mobile-service' : ''
+                              href={service.to}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                handleInternalLink(service.to);
+                              }}
+                              onContextMenu={(e) => {
+                                // Allow right-click context menu for "Open in new tab"
+                                e.stopPropagation();
+                              }}
+                              className={`mobile-service-item w-full text-left block px-3 sm:px-4 py-2 sm:py-3 rounded-md text-xs sm:text-sm md:text-base font-medium text-gray-200 transition-all duration-200 border-l-2 no-underline ${
+                                isServiceActive(service.to) ? 'active-mobile-service' : ''
                               }`}
+                              style={{ display: 'block', textDecoration: 'none' }}
                             >
                               {service.name}
-                            </button>
+                            </a>
                           ))}
                         </div>
                       )}
                     </>
-                  ) : (
-                    <button
-                      onClick={() => handleNavClick(link.view, link.href)}
-                      className={`mobile-nav-item w-full text-left block px-3 sm:px-4 py-2 sm:py-3 rounded-md text-sm sm:text-base md:text-lg font-medium text-white transition-all duration-200 ${
-                        currentView === link.view || (link.href === '#before-after' && currentView === 'before-after')
-                          ? 'active-mobile-nav' 
-                          : ''
-                      }`}
+                  ) : link.internal ? (
+                    <NavLink
+                      to={link.to}
+                      end={link.exact}
+                      className={({ isActive }) => 
+                        `mobile-nav-item w-full text-left block px-3 sm:px-4 py-2 sm:py-3 rounded-md text-sm sm:text-base md:text-lg font-medium text-white transition-all duration-200 ${
+                          isActive ? 'active-mobile-nav' : ''
+                        }`
+                      }
+                      onClick={() => setIsMenuOpen(false)}
                     >
                       {link.name}
-                    </button>
+                    </NavLink>
+                  ) : (
+                    <a
+                      href={link.to}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mobile-nav-item w-full text-left block px-3 sm:px-4 py-2 sm:py-3 rounded-md text-sm sm:text-base md:text-lg font-medium text-white transition-all duration-200 hover:bg-white/10"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {link.name}
+                    </a>
                   )}
                 </div>
               ))}
@@ -342,6 +342,22 @@ const Navbar = ({ currentView, setCurrentView }) => {
               0 10px 25px var(--vivid-ozone-shadow),
               0 5px 15px rgba(0, 0, 0, 0.3),
               inset 0 1px 0 rgba(255, 255, 255, 0.2);
+            max-height: 500px;
+            overflow-y: auto;
+          }
+
+          .vivid-ozone-dropdown::-webkit-scrollbar {
+            width: 6px;
+          }
+
+          .vivid-ozone-dropdown::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+          }
+
+          .vivid-ozone-dropdown::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
           }
 
           .border-vivid-ozone {
@@ -368,6 +384,8 @@ const Navbar = ({ currentView, setCurrentView }) => {
             border: none;
             cursor: pointer;
             white-space: nowrap;
+            text-decoration: none;
+            text-align: center;
           }
 
           .mafia-nav-link.active-nav {
@@ -438,6 +456,9 @@ const Navbar = ({ currentView, setCurrentView }) => {
           .service-menu-item {
             background: rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(5px);
+            border-left: 4px solid transparent;
+            cursor: pointer;
+            text-decoration: none !important;
           }
 
           .service-menu-item:hover {
@@ -445,6 +466,7 @@ const Navbar = ({ currentView, setCurrentView }) => {
             color: white !important;
             border-left-color: white !important;
             box-shadow: inset 4px 0 0 white, 0 0 15px var(--vivid-ozone-glow);
+            text-decoration: none !important;
           }
 
           .service-menu-item.active-service-item {
@@ -452,6 +474,7 @@ const Navbar = ({ currentView, setCurrentView }) => {
             border-left-color: var(--vivid-ozone-accent) !important;
             color: white !important;
             box-shadow: inset 4px 0 0 var(--vivid-ozone-accent), 0 0 20px var(--vivid-ozone-glow);
+            text-decoration: none !important;
           }
 
           /* Mobile Navigation Items - Updated for #1393c4 background */
