@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom'; // Added import
 import { Gift } from 'lucide-react';
 
 // Import images and videos
@@ -30,7 +31,8 @@ import paintProtectionVideo from '../assets/images/PPF Home page.mp4';
 // Import MPI Claims assets
 import insuranceLogo from '../assets/images/insurance.png';
 
-const ChooseYourService = ({ setCurrentView }) => {
+const ChooseYourService = () => { // Removed setCurrentView prop
+  const navigate = useNavigate(); // Added useNavigate hook
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [activeCard, setActiveCard] = useState(null);
   const touchTimerRef = useRef(null);
@@ -64,51 +66,51 @@ const ChooseYourService = ({ setCurrentView }) => {
       displayName: "Auto Detailing",
       title: "Premium Auto Detailing",
       icon: autoDetailingImage,
-      linkTo: 'auto-detailing'
+      linkTo: '/auto-detailing'
     },
     "Paint Correction Polishing": {
       displayName: "Paint Correction Polishing",
       title: "Paint Correction Polishing",
       icon: paintCorrectionImage,
-      linkTo: 'paint-correction'
+      linkTo: '/paint-correction'
     },
     "Window Tinting": {
       displayName: "Window Tinting",
       title: "Automotive Window Film",
       icon: windowTintingImage,
-      linkTo: 'window-tinting'
+      linkTo: '/window-tinting'
     },
     "Ceramic Coating": {
       displayName: "Ceramic Coating",
       title: "Professional Ceramic Coating",
       icon: wash2,
-      linkTo: 'ceramic-coatings'
+      linkTo: '/ceramic-coatings'
     },
     "Paint Protection Film": {
       displayName: "Paint Protection Film",
       title: "Premium Paint Protection Film",
       icon: wash1,
-      linkTo: 'paint-protection-film'
+      linkTo: '/paint-protection-film'
     },
     "MPI Claims": {
       displayName: "MPI Claims",
       title: "MPI Remediation Claims",
       icon: insuranceLogo,
-      linkTo: 'remediation-claim'
+      linkTo: '/remediation-claim'
     }
   };
 
   const handleServiceClick = (serviceName) => {
     const service = servicesData[serviceName];
     if (service?.linkTo) {
-      setCurrentView(service.linkTo);
+      navigate(service.linkTo); // Use navigate instead of setCurrentView
     } else {
       console.log("No page available for:", service.title);
     }
   };
 
   const handleGiftClick = () => {
-    setCurrentView('giftcard');
+    navigate('/giftcard'); // Use navigate instead of setCurrentView
   };
 
   const handleTouchStart = (e, serviceName) => {
