@@ -254,14 +254,18 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
       
       if (blockedDateInfo.isAutoSaturday) {
         if (blockedDateInfo.blockedTill) {
-          return time < blockedDateInfo.blockedTill;
+          return time >= blockedDateInfo.blockedTill;
         } else {
-          return time < '12:00';
+          return time >= '12:00';
         }
       }
       
       if (blockedDateInfo.type === 'full') {
         return true;
+      }
+      
+      if (blockedDateInfo.type === 'saturday-partial') {
+        return time >= blockedDateInfo.blockedTill;
       }
       
       if (blockedDateInfo.blockedTill) {
@@ -279,7 +283,7 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
       }
       
       if (dayOfWeek === 6) {
-        return time < '12:00';
+        return time >= '12:00';
       }
       
       return true;
@@ -290,7 +294,7 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
     }
     
     if (dayOfWeek === 6) {
-      return time < '12:00';
+      return time >= '12:00';
     }
     
     return false;
