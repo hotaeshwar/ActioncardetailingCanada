@@ -4,16 +4,14 @@ import Footer from '../components/Footer';
 import ContactForm from '../components/ContactForm';
 import References from '../components/Reference1';
 
-// Ceramic Coating Video from public folder
-const ceramicCoatingVideo = '/images/Ceramic coating (1).mp4';
-
-// Ceramic Coating Images from public folder
-const financeitLogo = '/images/financeit.jpg.webp';
-const fusionPlusLite = '/images/XPEL FUSION PLUS LITE COATING.webp';
-const fusionPlusPaintPPF = '/images/XPEL FUSION PLUS PAINT& PPF COATING.webp';
-const fusionPlusPremium = '/images/XPEL FUSION PLUS PREMIUM COATING.webp';
-const protectVehicleLogo = '/images/PROTECT YOUR VEHICLE WITH XPEL FUSION PLUS CERAMIC COATING.webp';
-const fusionPlusProcess = '/images/FUSION PLUS ceamic coating.webp';
+// Import Ceramic Coating Video and Images from src/assets/
+import ceramicCoatingVideo from '../assets/images/Ceramic coating (1).mp4';
+import financeitLogo from '../assets/images/financeit.jpg.webp';
+import fusionPlusLite from '../assets/images/XPEL FUSION PLUS LITE COATING.webp';
+import fusionPlusPaintPPF from '../assets/images/XPEL FUSION PLUS PAINT& PPF COATING.webp';
+import fusionPlusPremium from '../assets/images/XPEL FUSION PLUS PREMIUM COATING.webp';
+import protectVehicleLogo from '../assets/images/PROTECT YOUR VEHICLE WITH XPEL FUSION PLUS CERAMIC COATING.webp';
+import fusionPlusProcess from '../assets/images/FUSION PLUS ceamic coating.webp';
 
 // Ceramic Coating Quote Modal Component
 const CeramicCoatingQuoteModal = ({ isOpen, onClose, selectedPackage }) => {
