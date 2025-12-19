@@ -12,11 +12,10 @@ const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Enhanced vivid ozone color palette
   const vividOzone = {
-    primary: '#00BFFF',      // Vivid bright cyan-blue (Deep Sky Blue)
-    secondary: '#1E90FF',    // Dodger Blue for variety
-    accent: '#00D4FF',       // Brighter accent
+    primary: '#00BFFF',
+    secondary: '#1E90FF',
+    accent: '#00D4FF',
     shadow: 'rgba(0, 191, 255, 0.5)',
     glow: 'rgba(0, 191, 255, 0.3)'
   };
@@ -29,11 +28,16 @@ const Navbar = () => {
     setServicesDropdownOpen(!servicesDropdownOpen);
   };
 
+  // FIXED: Better link handling
   const handleInternalLink = (path) => {
-    navigate(path);
     setIsMenuOpen(false);
     setServicesDropdownOpen(false);
     setMobileServicesDropdownOpen(false);
+    
+    // Small delay to ensure state updates before navigation
+    setTimeout(() => {
+      navigate(path);
+    }, 50);
   };
 
   const isServiceActive = (path) => {
@@ -88,7 +92,6 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Navbar with transparent background that becomes white on scroll */}
       <nav className={`fixed w-full z-40 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md' : 'bg-transparent'}`}>
         <div className="transition-all duration-300">
           <div className="max-w-7xl mx-auto px-2 sm:px-3 md:px-4 lg:px-6 xl:px-8">
@@ -100,7 +103,6 @@ const Navbar = () => {
                   src={actionCarLogo} 
                   alt="Action Car Detailing Logo" 
                 />
-                {/* Award Logo next to Action Car Logo - Only on small screens */}
                 <img 
                   className="h-20 sm:hidden w-auto ml-2 opacity-90 object-contain" 
                   src={awardLogo} 
@@ -151,28 +153,20 @@ const Navbar = () => {
                       </a>
                     )}
                     
+                    {/* FIXED: Desktop Service Dropdown - Using buttons instead of <a> tags */}
                     {link.name === 'SERVICES' && servicesDropdownOpen && (
                       <div className="vivid-ozone-dropdown absolute mt-2 w-56 lg:w-60 xl:w-64 rounded-md shadow-2xl overflow-hidden z-20">
                         <div className="py-1">
                           {serviceItems.map((service) => (
-                            <a
+                            <button
                               key={service.name}
-                              href={service.to}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handleInternalLink(service.to);
-                              }}
-                              onContextMenu={(e) => {
-                                // Allow right-click context menu for "Open in new tab"
-                                e.stopPropagation();
-                              }}
-                              className={`service-menu-item w-full text-left block px-4 py-3 text-sm text-white transition-all duration-200 border-l-4 border-transparent no-underline ${
+                              onClick={() => handleInternalLink(service.to)}
+                              className={`service-menu-item w-full text-left block px-4 py-3 text-sm text-white transition-all duration-200 border-l-4 border-transparent ${
                                 isServiceActive(service.to) ? 'active-service-item' : ''
                               }`}
-                              style={{ display: 'block', textDecoration: 'none' }}
                             >
                               {service.name}
-                            </a>
+                            </button>
                           ))}
                         </div>
                       </div>
@@ -181,7 +175,7 @@ const Navbar = () => {
                 ))}
               </div>
 
-              {/* Award Logo - Clickable with link - Hidden on mobile, shown on sm and up */}
+              {/* Award Logo */}
               <div className="flex-shrink-0 transform transition-transform hover:scale-105 cursor-pointer z-20 lg:w-80 lg:flex lg:justify-center min-w-0 hidden sm:block">
                 <a 
                   href="https://www.ccaward.com/award-winners/winnipeg-greater-region/best-automobile-detailing/action-car-detailing/" 
@@ -197,7 +191,7 @@ const Navbar = () => {
                 </a>
               </div>
 
-              {/* Stylish Mobile Menu Button with #1393c4 Color and BOLD */}
+              {/* Mobile Menu Button */}
               <div className="lg:hidden flex items-center z-50 ml-auto">
                 <button
                   onClick={toggleMenu}
@@ -207,7 +201,6 @@ const Navbar = () => {
                 >
                   <span className="sr-only">Open main menu</span>
                   <div className="relative w-6 h-6 flex items-center justify-center">
-                    {/* Hamburger lines - now #1393c4 and BOLD */}
                     <div className="absolute w-6 h-1 transition-all duration-300 ease-in-out transform" 
                          style={{
                            backgroundColor: '#1393c4',
@@ -242,7 +235,7 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Enhanced Mobile Menu with #1393c4 color */}
+        {/* FIXED: Mobile Menu - Using buttons instead of <a> tags */}
         {isMenuOpen && (
           <div className="lg:hidden fixed inset-0 shadow-2xl z-40 mt-32 overflow-y-auto backdrop-blur-sm" style={{ backgroundColor: '#1393c4' }}>
             <div className="px-2 sm:px-3 md:px-4 pt-2 pb-3 space-y-1">
@@ -272,24 +265,15 @@ const Navbar = () => {
                       {mobileServicesDropdownOpen && (
                         <div className="pl-4 sm:pl-6 md:pl-8 space-y-1">
                           {serviceItems.map((service) => (
-                            <a
+                            <button
                               key={service.name}
-                              href={service.to}
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handleInternalLink(service.to);
-                              }}
-                              onContextMenu={(e) => {
-                                // Allow right-click context menu for "Open in new tab"
-                                e.stopPropagation();
-                              }}
-                              className={`mobile-service-item w-full text-left block px-3 sm:px-4 py-2 sm:py-3 rounded-md text-xs sm:text-sm md:text-base font-medium text-gray-200 transition-all duration-200 border-l-2 no-underline ${
+                              onClick={() => handleInternalLink(service.to)}
+                              className={`mobile-service-item w-full text-left block px-3 sm:px-4 py-2 sm:py-3 rounded-md text-xs sm:text-sm md:text-base font-medium text-gray-200 transition-all duration-200 border-l-2 ${
                                 isServiceActive(service.to) ? 'active-mobile-service' : ''
                               }`}
-                              style={{ display: 'block', textDecoration: 'none' }}
                             >
                               {service.name}
-                            </a>
+                            </button>
                           ))}
                         </div>
                       )}
@@ -334,7 +318,6 @@ const Navbar = () => {
             --vivid-azure: #1393c4;
           }
 
-          /* Vivid Ozone Dropdown */
           .vivid-ozone-dropdown {
             background: var(--vivid-ozone);
             border: 2px solid var(--vivid-ozone-accent);
@@ -422,7 +405,6 @@ const Navbar = () => {
             }
           }
 
-          /* iPad Pro specific fix */
           @media (min-width: 1024px) and (max-width: 1366px) {            
             .mafia-nav-link {
               padding: 0.35rem 0.5rem !important;
@@ -435,7 +417,6 @@ const Navbar = () => {
             }
           }
 
-          /* Extra small screens (phones) */
           @media (max-width: 475px) {
             .flex.items-center.justify-between {
               gap: 0.5rem;
@@ -452,13 +433,16 @@ const Navbar = () => {
               inset 0 1px 0 rgba(255, 255, 255, 0.3);
           }
 
-          /* Service Menu Items */
+          /* FIXED: Service menu items as buttons */
           .service-menu-item {
             background: rgba(0, 0, 0, 0.2);
             backdrop-filter: blur(5px);
             border-left: 4px solid transparent;
             cursor: pointer;
             text-decoration: none !important;
+            border-top: none;
+            border-right: none;
+            border-bottom: none;
           }
 
           .service-menu-item:hover {
@@ -477,7 +461,6 @@ const Navbar = () => {
             text-decoration: none !important;
           }
 
-          /* Mobile Navigation Items - Updated for #1393c4 background */
           .mobile-nav-link:hover {
             color: white !important;
             background: rgba(255, 255, 255, 0.1) !important;
@@ -493,6 +476,16 @@ const Navbar = () => {
             background: rgba(255, 255, 255, 0.2) !important;
             border-left: 4px solid white !important;
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+          }
+
+          /* FIXED: Mobile service items as buttons */
+          .mobile-service-item {
+            background: transparent;
+            border-top: none;
+            border-right: none;
+            border-bottom: none;
+            cursor: pointer;
+            text-decoration: none !important;
           }
 
           .mobile-service-item:hover {
