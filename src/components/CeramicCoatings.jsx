@@ -4,16 +4,16 @@ import Footer from '../components/Footer';
 import ContactForm from '../components/ContactForm';
 import References from '../components/Reference1';
 
-// Import Ceramic Coating Video
-import ceramicCoatingVideo from '../assets/images/Ceramic coating (1).mp4';
+// Ceramic Coating Video from public folder
+const ceramicCoatingVideo = '/images/Ceramic coating (1).mp4';
 
-// Import Ceramic Coating Images
-import financeitLogo from '../assets/images/financeit.jpg.webp';
-import fusionPlusLite from '../assets/images/XPEL FUSION PLUS LITE COATING.webp';
-import fusionPlusPaintPPF from '../assets/images/XPEL FUSION PLUS PAINT& PPF COATING.webp';
-import fusionPlusPremium from '../assets/images/XPEL FUSION PLUS PREMIUM COATING.webp';
-import protectVehicleLogo from '../assets/images/PROTECT YOUR VEHICLE WITH XPEL FUSION PLUS CERAMIC COATING.webp';
-import fusionPlusProcess from '../assets/images/FUSION PLUS ceamic coating.webp';
+// Ceramic Coating Images from public folder
+const financeitLogo = '/images/financeit.jpg.webp';
+const fusionPlusLite = '/images/XPEL FUSION PLUS LITE COATING.webp';
+const fusionPlusPaintPPF = '/images/XPEL FUSION PLUS PAINT& PPF COATING.webp';
+const fusionPlusPremium = '/images/XPEL FUSION PLUS PREMIUM COATING.webp';
+const protectVehicleLogo = '/images/PROTECT YOUR VEHICLE WITH XPEL FUSION PLUS CERAMIC COATING.webp';
+const fusionPlusProcess = '/images/FUSION PLUS ceamic coating.webp';
 
 // Ceramic Coating Quote Modal Component
 const CeramicCoatingQuoteModal = ({ isOpen, onClose, selectedPackage }) => {
@@ -434,7 +434,6 @@ Passion for Detail
 
 const CeramicCoatings = ({ setCurrentView }) => {
   const videoRef = useRef(null);
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState(false);
   const [selectedPackage, setSelectedPackage] = useState('');
@@ -443,19 +442,6 @@ const CeramicCoatings = ({ setCurrentView }) => {
 
   // Video handling effect
   useEffect(() => {
-    const checkScreenSize = () => {
-      const width = window.innerWidth;
-      const isIPad = (
-        (width === 768) || (width === 820) || (width === 834) || (width === 1024) ||
-        navigator.userAgent.includes('iPad') || 
-        (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document)
-      );
-      setIsSmallScreen(width < 768 && !isIPad);
-    };
-    
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-
     const video = videoRef.current;
     
     if (video) {
@@ -464,7 +450,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
       video.volume = 0;
       video.setAttribute('playsinline', 'true');
       video.setAttribute('webkit-playsinline', 'true');
-      video.preload = 'metadata';
+      video.preload = 'auto';
       video.poster = '';
       video.style.willChange = 'transform';
       video.style.backfaceVisibility = 'hidden';
@@ -472,20 +458,6 @@ const CeramicCoatings = ({ setCurrentView }) => {
       const adjustVideoFit = () => {
         const width = window.innerWidth;
         const height = window.innerHeight;
-        
-        const isIPad = (
-          (width === 768 && height === 1024) ||
-          (width === 820 && height === 1180) ||
-          (width === 834 && height === 1194) ||
-          (width === 1024 && height === 1366) ||
-          (height === 768 && width === 1024) ||
-          (height === 820 && width === 1180) ||
-          (height === 834 && width === 1194) ||
-          (height === 1024 && width === 1366) ||
-          (navigator.userAgent.includes('iPad') || 
-           (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document))
-        );
-        
         const screenRatio = width / height;
         const videoRatio = 16 / 9;
         
@@ -497,12 +469,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
         video.style.left = '0';
         video.style.transform = 'translateZ(0)';
         
-        if (isIPad) {
-          video.style.objectPosition = 'center center';
-          video.style.minWidth = '100%';
-          video.style.minHeight = '100%';
-        }
-        else if (screenRatio > videoRatio) {
+        if (screenRatio > videoRatio) {
           video.style.objectPosition = 'center center';
         } else {
           video.style.objectPosition = 'center 40%';
@@ -522,32 +489,56 @@ const CeramicCoatings = ({ setCurrentView }) => {
         setTimeout(adjustVideoFit, 300);
       });
       
+      // Add video event listeners
+      video.addEventListener('canplay', () => {
+        setIsVideoPlaying(true);
+      });
+      
+      video.addEventListener('playing', () => {
+        setIsVideoPlaying(true);
+      });
+      
+      video.addEventListener('pause', () => {
+        setIsVideoPlaying(false);
+      });
+      
       const playVideo = async () => {
         try {
           if (video.readyState >= 2) {
-            await video.play();
+            const playPromise = video.play();
+            
+            if (playPromise !== undefined) {
+              playPromise.then(() => {
+                setIsVideoPlaying(true);
+              }).catch(() => {
+                // Add user interaction listeners for mobile autoplay
+                const enableVideo = async () => {
+                  try {
+                    await video.play();
+                    setIsVideoPlaying(true);
+                    document.removeEventListener('click', enableVideo);
+                    document.removeEventListener('touchstart', enableVideo);
+                  } catch (err) {
+                    // Silent fail for mobile browsers
+                  }
+                };
+                
+                document.addEventListener('click', enableVideo, { once: true });
+                document.addEventListener('touchstart', enableVideo, { once: true });
+              });
+            }
           } else {
             video.addEventListener('loadeddata', async () => {
               try {
                 await video.play();
+                setIsVideoPlaying(true);
               } catch (error) {
-                console.log('Autoplay failed, waiting for user interaction');
+                // Silent fail for mobile browsers
               }
             }, { once: true });
           }
         } catch (error) {
-          const enableVideo = async () => {
-            try {
-              await video.play();
-              document.removeEventListener('click', enableVideo);
-              document.removeEventListener('touchstart', enableVideo);
-            } catch (err) {
-              console.log('Video play failed:', err);
-            }
-          };
-          
-          document.addEventListener('click', enableVideo, { once: true });
-          document.addEventListener('touchstart', enableVideo, { once: true });
+          // Silent fail for mobile browsers
         }
       };
       
@@ -559,10 +550,6 @@ const CeramicCoatings = ({ setCurrentView }) => {
         clearTimeout(resizeTimeout);
       };
     }
-
-    return () => {
-      window.removeEventListener('resize', checkScreenSize);
-    };
   }, []);
 
   // Height calculation with mobile-first approach
@@ -572,27 +559,9 @@ const CeramicCoatings = ({ setCurrentView }) => {
     const width = window.innerWidth;
     const height = window.innerHeight;
     
-    // Detect iPad devices
-    const isIPad = (
-      (width === 768 && height === 1024) ||
-      (height === 768 && width === 1024) ||
-      (width === 820 && height === 1180) ||
-      (height === 820 && width === 1180) ||
-      (width === 834 && height === 1194) ||
-      (height === 834 && width === 1194) ||
-      (width === 1024 && height === 1366) ||
-      (height === 1024 && width === 1366) ||
-      navigator.userAgent.includes('iPad') ||
-      (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document)
-    );
-    
     // Mobile phones
     if (width < 768) {
       return Math.min(height * 0.6, 500) + 'px';
-    }
-    // iPad specific handling
-    else if (isIPad) {
-      return Math.min(width * 0.5625, height * 0.6) + 'px'; // 0.5625 = 9/16 for 16:9 aspect ratio
     }
     // Tablets and small laptops
     else if (width < 1024) {
@@ -715,7 +684,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
     }
   ];
 
-  // Process steps with enhanced visuals and proper spacing - FIXED OVERFLOW ISSUE
+  // Process steps with enhanced visuals and proper spacing
   const processSteps = [
     {
       icon: <Beaker className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: '#ffffff' }} />,
@@ -761,36 +730,27 @@ const CeramicCoatings = ({ setCurrentView }) => {
         className="relative overflow-hidden"
         style={{ height: getContainerHeight() }}
       >
-        {/* Background Video or Image */}
-        {!isSmallScreen ? (
-          <video
-            ref={videoRef}
-            className="absolute top-0 left-0 w-full h-full object-cover"
-            style={{
-              objectPosition: 'center center',
-              transform: 'translateZ(0)',
-              backfaceVisibility: 'hidden',
-              willChange: 'transform'
-            }}
-            autoPlay
-            muted
-            loop
-            playsInline
-            webkit-playsinline="true"
-            preload="metadata"
-          >
-            <source src={ceramicCoatingVideo} type="video/mp4" />
-          </video>
-        ) : (
-          <div
-            className="absolute top-0 left-0 w-full h-full bg-cover bg-center"
-            style={{
-              backgroundImage: `url(${ceramicCoatingVideo.replace('.mp4', '-poster.jpg')})`,
-              transform: 'translateZ(0)',
-              backfaceVisibility: 'hidden'
-            }}
-          />
-        )}
+        {/* Background Video */}
+        <video
+          ref={videoRef}
+          className="absolute top-0 left-0 w-full h-full object-cover"
+          style={{
+            objectPosition: 'center center',
+            transform: 'translateZ(0)',
+            backfaceVisibility: 'hidden',
+            willChange: 'transform'
+          }}
+          autoPlay
+          muted
+          loop
+          playsInline
+          webkit-playsinline="true"
+          preload="auto"
+          controls={false}
+        >
+          <source src={ceramicCoatingVideo} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
 
         {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
