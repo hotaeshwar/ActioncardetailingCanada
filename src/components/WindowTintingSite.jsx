@@ -7,7 +7,7 @@ import References from '../components/Reference1';
 // Import Window Tint Video
 import windowTintVideo from '../assets/images/window tint (1).mp4';
 
-// Import images for tinting process - UPDATED
+// Import images for tinting process
 import InstallImage from '../assets/images/winplot.jpg';
 import PrepImage from '../assets/images/winprep.jpg';
 import ExecuteImage from '../assets/images/winexecute.jpg';
@@ -35,12 +35,14 @@ import NanoCeramicCarImage from '../assets/images/image3.jpg';
 
 const WindowTintingSite = () => {
   const videoRef = useRef(null);
-  const [isSmallScreen, setIsSmallScreen] = useState(false);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   const [selectedTint, setSelectedTint] = useState(35);
   const [selectedFilm, setSelectedFilm] = useState('prime-cs');
   const [showQuote, setShowQuote] = useState(false);
   const [showVideo, setShowVideo] = useState(false);
   const [currentText, setCurrentText] = useState(0);
+  const [visibleCards, setVisibleCards] = useState(new Set());
+  const cardRefs = useRef([]);
 
   const runningTexts = [
     "SUN GLARE",
@@ -57,65 +59,27 @@ const WindowTintingSite = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Video handling effect (same as Hero component)
+  // Video handling effect (similar to ceramic coating)
   useEffect(() => {
-    // Check if screen is small or iPad
-    const checkScreenSize = () => {
-      const width = window.innerWidth;
-      const isIPad = (
-        (width === 768) || (width === 820) || (width === 834) || (width === 1024) ||
-        navigator.userAgent.includes('iPad') ||
-        (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document)
-      );
-      setIsSmallScreen(width < 768 && !isIPad);
-    };
-
-    checkScreenSize();
-    window.addEventListener('resize', checkScreenSize);
-
-    // Optimized video handling with performance improvements
     const video = videoRef.current;
-
+    
     if (video) {
-      // Essential settings for smooth playback
       video.muted = true;
       video.defaultMuted = true;
       video.volume = 0;
       video.setAttribute('playsinline', 'true');
       video.setAttribute('webkit-playsinline', 'true');
-
-      // Performance optimizations for smoother playback
-      video.preload = 'metadata';
+      video.preload = 'auto';
       video.poster = '';
-
-      // Hardware acceleration and smooth rendering
       video.style.willChange = 'transform';
       video.style.backfaceVisibility = 'hidden';
-
-      // iPad-specific video adjustments to prevent stretching
+      
       const adjustVideoFit = () => {
         const width = window.innerWidth;
         const height = window.innerHeight;
-
-        // Detect iPad devices
-        const isIPad = (
-          (width === 768 && height === 1024) ||
-          (width === 820 && height === 1180) ||
-          (width === 834 && height === 1194) ||
-          (width === 1024 && height === 1366) ||
-          (height === 768 && width === 1024) ||
-          (height === 820 && width === 1180) ||
-          (height === 834 && width === 1194) ||
-          (height === 1024 && width === 1366) ||
-          (navigator.userAgent.includes('iPad') ||
-            (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document))
-        );
-
-        // Calculate aspect ratios
         const screenRatio = width / height;
-        const videoRatio = 16 / 9; // Assuming your video is 16:9
-
-        // Base styles for all devices
+        const videoRatio = 16 / 9;
+        
         video.style.objectFit = 'cover';
         video.style.width = '100%';
         video.style.height = '100%';
@@ -123,122 +87,104 @@ const WindowTintingSite = () => {
         video.style.top = '0';
         video.style.left = '0';
         video.style.transform = 'translateZ(0)';
-
-        // iPad-specific positioning to prevent stretching
-        if (isIPad) {
-          video.style.objectPosition = 'center center';
-          // Ensure the video covers properly without stretching
-          video.style.minWidth = '100%';
-          video.style.minHeight = '100%';
-        }
-        // Other devices
-        else if (screenRatio > videoRatio) {
+        
+        if (screenRatio > videoRatio) {
           video.style.objectPosition = 'center center';
         } else {
           video.style.objectPosition = 'center 40%';
         }
       };
-
-      // Apply initial adjustments
+      
       adjustVideoFit();
-
-      // Optimized event listeners with throttling
+      
       let resizeTimeout;
       const throttledResize = () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(adjustVideoFit, 100);
       };
-
+      
       window.addEventListener('resize', throttledResize);
       window.addEventListener('orientationchange', () => {
         setTimeout(adjustVideoFit, 300);
       });
-
-      // Enhanced autoplay with better error handling
+      
+      // Add video event listeners
+      video.addEventListener('canplay', () => {
+        setIsVideoPlaying(true);
+      });
+      
+      video.addEventListener('playing', () => {
+        setIsVideoPlaying(true);
+      });
+      
+      video.addEventListener('pause', () => {
+        setIsVideoPlaying(false);
+      });
+      
       const playVideo = async () => {
         try {
           if (video.readyState >= 2) {
-            await video.play();
+            const playPromise = video.play();
+            
+            if (playPromise !== undefined) {
+              playPromise.then(() => {
+                setIsVideoPlaying(true);
+              }).catch(() => {
+                // Add user interaction listeners for mobile autoplay
+                const enableVideo = async () => {
+                  try {
+                    await video.play();
+                    setIsVideoPlaying(true);
+                    document.removeEventListener('click', enableVideo);
+                    document.removeEventListener('touchstart', enableVideo);
+                  } catch (err) {
+                    // Silent fail for mobile browsers
+                  }
+                };
+                
+                document.addEventListener('click', enableVideo, { once: true });
+                document.addEventListener('touchstart', enableVideo, { once: true });
+              });
+            }
           } else {
             video.addEventListener('loadeddata', async () => {
               try {
                 await video.play();
+                setIsVideoPlaying(true);
               } catch (error) {
-                console.log('Autoplay failed, waiting for user interaction');
+                // Silent fail for mobile browsers
               }
             }, { once: true });
           }
         } catch (error) {
-          const enableVideo = async () => {
-            try {
-              await video.play();
-              document.removeEventListener('click', enableVideo);
-              document.removeEventListener('touchstart', enableVideo);
-            } catch (err) {
-              console.log('Video play failed:', err);
-            }
-          };
-
-          document.addEventListener('click', enableVideo, { once: true });
-          document.addEventListener('touchstart', enableVideo, { once: true });
+          // Silent fail for mobile browsers
         }
       };
-
+      
       setTimeout(playVideo, 100);
-
-      // Cleanup
+      
       return () => {
         window.removeEventListener('resize', throttledResize);
         window.removeEventListener('orientationchange', adjustVideoFit);
         clearTimeout(resizeTimeout);
       };
     }
-
-    return () => {
-      window.removeEventListener('resize', checkScreenSize);
-    };
   }, []);
 
+  // Height calculation with mobile-first approach (same as ceramic coating)
   const getContainerHeight = () => {
-    if (typeof window === 'undefined') {
-      return '100vh';
-    }
-
+    if (typeof window === 'undefined') return '100vh';
+    
     const width = window.innerWidth;
     const height = window.innerHeight;
-
-    // Detect iPad devices by common resolutions
-    const isIPad = (
-      // iPad Mini: 768x1024
-      (width === 768 && height === 1024) ||
-      // iPad Air: 820x1180  
-      (width === 820 && height === 1180) ||
-      // iPad Pro 11": 834x1194
-      (width === 834 && height === 1194) ||
-      // iPad Pro 12.9": 1024x1366
-      (width === 1024 && height === 1366) ||
-      // Landscape orientations
-      (height === 768 && width === 1024) ||
-      (height === 820 && width === 1180) ||
-      (height === 834 && width === 1194) ||
-      (height === 1024 && width === 1366) ||
-      // General iPad detection for other cases
-      (navigator.userAgent.includes('iPad') ||
-        (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document))
-    );
-
-    // Mobile phones (portrait)
+    
+    // Mobile phones
     if (width < 768) {
-      return Math.min(height * 0.6, 500);
+      return Math.min(height * 0.6, 500) + 'px';
     }
-    // iPad specific handling
-    else if (isIPad) {
-      // For iPads, use fixed height based on width to maintain proper video aspect ratio
-      return Math.min(width * 0.5625, height * 0.6); // 0.5625 = 9/16 for 16:9 aspect ratio
-    }
-    // Other tablets and small laptops
+    // Tablets and small laptops
     else if (width < 1024) {
-      return Math.min(height * 0.7, 600);
+      return Math.min(height * 0.7, 600) + 'px';
     }
     // Desktop
     else {
@@ -246,29 +192,29 @@ const WindowTintingSite = () => {
     }
   };
 
-  // Scroll animation for cards
+  // Intersection Observer for scroll animations (similar to ceramic coating)
   useEffect(() => {
-    const cards = document.querySelectorAll('.animate-card');
-    const animatedCards = new Set();
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
 
-    const handleScroll = () => {
-      cards.forEach((card, index) => {
-        const rect = card.getBoundingClientRect();
-        const windowHeight = window.innerHeight;
-
-        if (rect.top < windowHeight * 0.9 && !animatedCards.has(card)) {
-          animatedCards.add(card);
-          setTimeout(() => {
-            card.classList.add('animate-fade-in');
-          }, index * 50);
+    const observerCallback = (entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const index = cardRefs.current.indexOf(entry.target);
+          setVisibleCards(prev => new Set([...prev, index]));
         }
       });
     };
 
-    window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Check on initial load
+    const observer = new IntersectionObserver(observerCallback, observerOptions);
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    cardRefs.current.forEach(ref => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
   }, []);
 
   const tintOptions = [5, 20, 35, 50, 70];
@@ -330,27 +276,6 @@ const WindowTintingSite = () => {
         .animate-card.animate-fade-in {
           opacity: 1;
           transform: translateY(0);
-        }
-
-        .running-text {
-          display: inline-block;
-          animation: scroll-left 15s linear infinite;
-          white-space: nowrap;
-        }
-
-        @keyframes scroll-left {
-          0% {
-            transform: translateX(100%);
-          }
-          100% {
-            transform: translateX(-100%);
-          }
-        }
-
-        .running-text-container {
-          overflow: hidden;
-          width: 100%;
-          position: relative;
         }
 
         .typewriter {
@@ -459,7 +384,6 @@ const WindowTintingSite = () => {
           background-color: rgba(0, 0, 0, 0.9);
         }
 
-        /* Responsive tint levels image - BETTER FIX */
         .tint-levels-image {
           width: 100%;
           height: auto;
@@ -468,7 +392,6 @@ const WindowTintingSite = () => {
           box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
 
-        /* Mobile optimizations */
         @media (max-width: 768px) {
           .tint-levels-image {
             height: auto;
@@ -480,15 +403,6 @@ const WindowTintingSite = () => {
           }
         }
 
-        @media (max-width: 480px) {
-          .tint-levels-image {
-            padding: 8px;
-            border-radius: 6px;
-            background-color: #f1f5f9;
-          }
-        }
-
-        /* Fix for the specific tint levels car image */
         .why-tinting-image {
           width: 100%;
           height: 400px;
@@ -506,7 +420,6 @@ const WindowTintingSite = () => {
           }
         }
 
-        /* Film card image fixes */
         .film-logo {
           height: 60px;
           object-fit: contain;
@@ -528,7 +441,6 @@ const WindowTintingSite = () => {
           margin: 0 auto 12px auto;
         }
 
-        /* Video thumbnail styling */
         .video-thumbnail-container {
           position: relative;
           cursor: pointer;
@@ -583,7 +495,6 @@ const WindowTintingSite = () => {
           background: rgba(0, 0, 0, 0.4);
         }
 
-        /* Responsive styles */
         @media (max-width: 768px) {
           .video-thumbnail {
             height: 200px;
@@ -596,83 +507,80 @@ const WindowTintingSite = () => {
         }
       `}</style>
 
-      {/* Hero Video Section */}
-      <section className="relative w-full overflow-hidden" style={{ 
-        height: typeof getContainerHeight() === 'string' ? getContainerHeight() : `${getContainerHeight()}px`
-      }}>
-        <div className="absolute inset-0">
-          {/* Video background */}
-          <video
-            ref={videoRef}
-            loop
-            muted
-            playsInline
-            className="absolute top-0 left-0 w-full h-full object-cover"
-            style={{
-              width: '100%',
-              minHeight: '100%',
-              minWidth: '100%'
-            }}
-          >
-            <source src={windowTintVideo} type="video/mp4" />
-          </video>
-        </div>
+      {/* Hero Video Section - Updated to match ceramic coating layout */}
+      <section 
+        className="relative overflow-hidden"
+        style={{ height: getContainerHeight() }}
+      >
+        {/* Background Video */}
+        <video
+          ref={videoRef}
+          className="absolute top-0 left-0 w-full h-full object-cover"
+          style={{
+            objectPosition: 'center center',
+            transform: 'translateZ(0)',
+            backfaceVisibility: 'hidden',
+            willChange: 'transform'
+          }}
+          autoPlay
+          muted
+          loop
+          playsInline
+          webkit-playsinline="true"
+          preload="auto"
+          controls={false}
+        >
+          <source src={windowTintVideo} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
 
-        {/* Responsive gradient overlay */}
-        <div className="absolute bottom-0 left-0 w-full h-1/4 sm:h-1/3 md:h-1/3 lg:h-1/3 bg-gradient-to-t from-black/40 to-transparent z-10" />
+        {/* Gradient Overlay - similar to ceramic coating */}
+        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
 
-        {/* Responsive scroll indicator */}
-        <div className="absolute bottom-4 sm:bottom-6 md:bottom-8 lg:bottom-10 left-1/2 transform -translate-x-1/2 z-20">
-          <div className="flex flex-col items-center">
-            <span className="text-white text-sm mb-2 tracking-widest font-medium drop-shadow-md">SCROLL</span>
-            <div className="relative">
-              <div className="absolute -inset-1 rounded-full bg-sky-500/40 animate-pulse"></div>
-              <div className="animate-bounce bg-sky-600/90 p-2 rounded-full shadow-lg">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-              </div>
+        {/* Content - centered similar to ceramic coating */}
+        <div className="relative h-full flex items-center">
+          <div className="container mx-auto px-4">
+            <div className="max-w-3xl">
+              {/* Optional: You can add title overlay here if needed */}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Hero Content - positioned below video */}
-      <section className="bg-white">
-        <div className="bg-white py-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-4xl font-bold mb-6 leading-tight" style={{ color: '#1393c4' }}>
-              WINDOW TINTING
-            </h1>
-            <p className="text-lg mb-4 font-medium" style={{ color: '#1393c4' }}>Say Goodbye To...</p>
-            <div className="h-8 mb-4">
-              <h3 className="text-3xl font-bold typewriter" style={{ color: '#1393c4' }}>
-                {runningTexts[currentText]}
-              </h3>
-            </div>
-            <p className="text-lg mb-8 font-medium" style={{ color: '#1393c4' }}>
-              Before It Happens
-            </p>
-            <button
-              onClick={() => setShowQuote(true)}
-              className="text-white px-8 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-2xl hover:opacity-90"
-              style={{ backgroundColor: '#1393c4' }}
-            >
-              Get Quote Now
-            </button>
+      {/* Hero Content Section - positioned below video */}
+      <section className="bg-white py-12 sm:py-16 md:py-20">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 leading-tight" style={{ color: '#1393c4' }}>
+            WINDOW TINTING
+          </h1>
+          <p className="text-base sm:text-lg md:text-xl mb-3 sm:mb-4 font-medium" style={{ color: '#1393c4' }}>Say Goodbye To...</p>
+          <div className="h-10 sm:h-12 mb-4 sm:mb-6">
+            <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold typewriter" style={{ color: '#1393c4' }}>
+              {runningTexts[currentText]}
+            </h3>
           </div>
+          <p className="text-base sm:text-lg md:text-xl mb-6 sm:mb-8 font-medium" style={{ color: '#1393c4' }}>
+            Before It Happens
+          </p>
+          <button
+            onClick={() => setShowQuote(true)}
+            className="text-white px-6 sm:px-8 py-3 sm:py-4 rounded-full text-base sm:text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-xl sm:shadow-2xl hover:opacity-90"
+            style={{ backgroundColor: '#1393c4' }}
+          >
+            Get Quote Now
+          </button>
         </div>
       </section>
 
       {/* Why Window Tinting Section */}
-      <section className="py-20 bg-white">
+      <section className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-8 sm:gap-12 items-center">
             <div>
-              <h2 className="text-4xl font-bold mb-8 leading-tight" style={{ color: '#1393c4' }}>
+              <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 leading-tight" style={{ color: '#1393c4' }}>
                 WHY WINDOW TINTING?
               </h2>
-              <div className="mb-8">
+              <div className="mb-6 sm:mb-8">
                 <img
                   src={TintLevelsImage}
                   alt="Tint Levels"
@@ -680,55 +588,75 @@ const WindowTintingSite = () => {
                 />
               </div>
             </div>
-            <div className="space-y-8">
-              <div className="p-6 rounded-xl bg-white">
-                <h3 className="text-2xl font-bold mb-4 leading-tight" style={{ color: '#1393c4' }}>
+            <div className="space-y-6 sm:space-y-8">
+              <div className="p-4 sm:p-6 rounded-xl bg-white">
+                <h3 className="text-xl sm:text-2xl md:text-2xl font-bold mb-3 sm:mb-4 leading-tight" style={{ color: '#1393c4' }}>
                   Experience a New Level of Heat Rejection, UV Protection, & Good Looks
                 </h3>
-                <p className="text-lg leading-relaxed mb-6" style={{ color: '#1393c4' }}>
+                <p className="text-sm sm:text-base md:text-lg leading-relaxed mb-4 sm:mb-6" style={{ color: '#1393c4' }}>
                   We recommend Ceramic window film for maximum heat rejection, glare reduction, and comfort. Gone are the days of needing dark windows to provide relief; even our ultra-light films provide extreme heat reduction, so choose your shade based on your style. All films provide +99% UV protection & Lifetime Warranty. Protect delicate interiors and your loved ones!!!
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="animate-card p-6 rounded-xl bg-white">
+              <div className="grid sm:grid-cols-2 gap-4 sm:gap-6">
+                <div 
+                  ref={el => cardRefs.current[0] = el}
+                  className={`animate-card p-4 sm:p-6 rounded-xl bg-white ${
+                    visibleCards.has(0) ? 'animate-fade-in' : ''
+                  }`}
+                >
                   <div className="flex items-center mb-3">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{ backgroundColor: '#1393c4' }}>
                       <Sun className="text-white" size={16} />
                     </div>
-                    <h4 className="font-bold text-lg" style={{ color: '#1393c4' }}>Superior Heat Rejection</h4>
+                    <h4 className="font-bold text-base sm:text-lg" style={{ color: '#1393c4' }}>Superior Heat Rejection</h4>
                   </div>
-                  <p className="text-sm" style={{ color: '#1393c4' }}>multilayer nano-ceramic particle technology blocks up to 88% of the infrared heat</p>
+                  <p className="text-xs sm:text-sm" style={{ color: '#1393c4' }}>multilayer nano-ceramic particle technology blocks up to 88% of the infrared heat</p>
                 </div>
 
-                <div className="animate-card p-6 rounded-xl bg-white">
+                <div 
+                  ref={el => cardRefs.current[1] = el}
+                  className={`animate-card p-4 sm:p-6 rounded-xl bg-white ${
+                    visibleCards.has(1) ? 'animate-fade-in' : ''
+                  }`}
+                >
                   <div className="flex items-center mb-3">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{ backgroundColor: '#1393c4' }}>
                       <Shield className="text-white" size={16} />
                     </div>
-                    <h4 className="font-bold text-lg" style={{ color: '#1393c4' }}>UV Ray Protection</h4>
+                    <h4 className="font-bold text-base sm:text-lg" style={{ color: '#1393c4' }}>UV Ray Protection</h4>
                   </div>
-                  <p className="text-sm" style={{ color: '#1393c4' }}>XPEL PRIME XR PLUS provides SPF 1,000 protection that effectively blocks over 99% of harmful UV rays</p>
+                  <p className="text-xs sm:text-sm" style={{ color: '#1393c4' }}>XPEL PRIME XR PLUS provides SPF 1,000 protection that effectively blocks over 99% of harmful UV rays</p>
                 </div>
 
-                <div className="animate-card p-6 rounded-xl bg-white">
+                <div 
+                  ref={el => cardRefs.current[2] = el}
+                  className={`animate-card p-4 sm:p-6 rounded-xl bg-white ${
+                    visibleCards.has(2) ? 'animate-fade-in' : ''
+                  }`}
+                >
                   <div className="flex items-center mb-3">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{ backgroundColor: '#1393c4' }}>
                       <Zap className="text-white" size={16} />
                     </div>
-                    <h4 className="font-bold text-lg" style={{ color: '#1393c4' }}>Greater Clarity</h4>
+                    <h4 className="font-bold text-base sm:text-lg" style={{ color: '#1393c4' }}>Greater Clarity</h4>
                   </div>
-                  <p className="text-sm" style={{ color: '#1393c4' }}>Advanced nano construction in XPEL PRIMETM XR provides superior performance without reducing outbound visibility</p>
+                  <p className="text-xs sm:text-sm" style={{ color: '#1393c4' }}>Advanced nano construction in XPEL PRIMETM XR provides superior performance without reducing outbound visibility</p>
                 </div>
 
-                <div className="animate-card p-6 rounded-xl bg-white">
+                <div 
+                  ref={el => cardRefs.current[3] = el}
+                  className={`animate-card p-4 sm:p-6 rounded-xl bg-white ${
+                    visibleCards.has(3) ? 'animate-fade-in' : ''
+                  }`}
+                >
                   <div className="flex items-center mb-3">
                     <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{ backgroundColor: '#1393c4' }}>
                       <Wifi className="text-white" size={16} />
                     </div>
-                    <h4 className="font-bold text-lg" style={{ color: '#1393c4' }}>Crystal Clear Signal</h4>
+                    <h4 className="font-bold text-base sm:text-lg" style={{ color: '#1393c4' }}>Crystal Clear Signal</h4>
                   </div>
-                  <p className="text-sm" style={{ color: '#1393c4' }}>In the digital world, clear communication is key. PRIME XR PLUS construction will not interfere with radio, cellular, or Bluetooth signals</p>
+                  <p className="text-xs sm:text-sm" style={{ color: '#1393c4' }}>In the digital world, clear communication is key. PRIME XR PLUS construction will not interfere with radio, cellular, or Bluetooth signals</p>
                 </div>
               </div>
             </div>
@@ -737,91 +665,85 @@ const WindowTintingSite = () => {
       </section>
 
       {/* Window Tint as Easy as 1,2,3 */}
-      <section className="py-20 bg-white">
+      <section className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-16 leading-tight" style={{ color: '#1393c4' }}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 md:mb-16 leading-tight" style={{ color: '#1393c4' }}>
             Window Tint as Easy as <span style={{ color: '#1393c4', opacity: 0.8 }}>1, 2, 3</span>:
           </h2>
 
-          <div className="grid md:grid-cols-3 gap-8 mb-16">
-            <div className="animate-card text-center">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 text-white" style={{ backgroundColor: '#1393c4' }}>1</div>
-              <h3 className="text-xl font-bold mb-4" style={{ color: '#1393c4' }}>Select the Film</h3>
-              <div className="bg-white p-6 rounded-lg shadow-lg">
-                <img
-                  src={SelectFilmImage}
-                  alt="Film Selection"
-                  className="w-full rounded mb-4"
-                />
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between text-white px-3 py-2 rounded text-sm" style={{ backgroundColor: '#1393c4', opacity: 0.7 }}>
-                    <span>PRIME CS</span>
-                    <span>GOOD</span>
-                  </div>
-                  <div className="flex items-center justify-between text-white px-3 py-2 rounded text-sm" style={{ backgroundColor: '#1393c4', opacity: 0.85 }}>
-                    <span>PRIME HP</span>
-                    <span>BETTER</span>
-                  </div>
-                  <div className="flex items-center justify-between text-white px-3 py-2 rounded text-sm" style={{ backgroundColor: '#1393c4' }}>
-                    <span>PRIME XR</span>
-                    <span>BEST</span>
-                  </div>
+          <div className="grid md:grid-cols-3 gap-6 sm:gap-8 mb-12 sm:mb-16">
+            {[
+              { number: "1", title: "Select the Film", image: SelectFilmImage },
+              { number: "2", title: "Select the Coverage", image: SelectCoverageImage },
+              { number: "3", title: "Select the Shade", image: SelectShadeImage }
+            ].map((step, index) => (
+              <div 
+                key={index}
+                ref={el => cardRefs.current[4 + index] = el}
+                className={`animate-card text-center ${visibleCards.has(4 + index) ? 'animate-fade-in' : ''}`}
+              >
+                <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full flex items-center justify-center text-xl sm:text-2xl font-bold mx-auto mb-4 sm:mb-6 text-white" style={{ backgroundColor: '#1393c4' }}>
+                  {step.number}
+                </div>
+                <h3 className="text-lg sm:text-xl md:text-xl font-bold mb-3 sm:mb-4" style={{ color: '#1393c4' }}>{step.title}</h3>
+                <div className="bg-white p-4 sm:p-6 rounded-lg shadow-lg">
+                  <img
+                    src={step.image}
+                    alt={step.title}
+                    className="w-full rounded mb-3 sm:mb-4"
+                  />
+                  {index === 0 && (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-white px-2 sm:px-3 py-1 sm:py-2 rounded text-xs sm:text-sm" style={{ backgroundColor: '#1393c4', opacity: 0.7 }}>
+                        <span>PRIME CS</span>
+                        <span>GOOD</span>
+                      </div>
+                      <div className="flex items-center justify-between text-white px-2 sm:px-3 py-1 sm:py-2 rounded text-xs sm:text-sm" style={{ backgroundColor: '#1393c4', opacity: 0.85 }}>
+                        <span>PRIME HP</span>
+                        <span>BETTER</span>
+                      </div>
+                      <div className="flex items-center justify-between text-white px-2 sm:px-3 py-1 sm:py-2 rounded text-xs sm:text-sm" style={{ backgroundColor: '#1393c4' }}>
+                        <span>PRIME XR</span>
+                        <span>BEST</span>
+                      </div>
+                    </div>
+                  )}
+                  {index === 1 && (
+                    <div className="flex justify-center space-x-2">
+                      {tintOptions.map((tint) => (
+                        <button
+                          key={tint}
+                          className={`px-2 sm:px-3 py-1 sm:py-2 rounded text-xs sm:text-sm ${selectedTint === tint
+                            ? 'text-white'
+                            : 'hover:opacity-80'
+                            }`}
+                          style={{
+                            backgroundColor: selectedTint === tint ? '#1393c4' : '#f0f9ff',
+                            color: selectedTint === tint ? 'white' : '#1393c4'
+                          }}
+                          onClick={() => setSelectedTint(tint)}
+                        >
+                          {tint}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {index === 2 && (
+                    <div className="flex justify-center space-x-2 text-xs sm:text-sm" style={{ color: '#1393c4' }}>
+                      <span>5%</span>
+                      <span>•</span>
+                      <span>20%</span>
+                      <span>•</span>
+                      <span>35%</span>
+                      <span>•</span>
+                      <span>50%</span>
+                      <span>•</span>
+                      <span>70%</span>
+                    </div>
+                  )}
                 </div>
               </div>
-            </div>
-
-            <div className="animate-card text-center">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 text-white" style={{ backgroundColor: '#1393c4' }}>2</div>
-              <h3 className="text-xl font-bold mb-4" style={{ color: '#1393c4' }}>Select the Coverage</h3>
-              <div className="bg-white p-6 rounded-lg shadow-lg">
-                <img
-                  src={SelectCoverageImage}
-                  alt="Coverage Selection"
-                  className="w-full rounded mb-4"
-                />
-                <div className="flex justify-center space-x-2">
-                  {tintOptions.map((tint) => (
-                    <button
-                      key={tint}
-                      className={`px-3 py-2 rounded text-sm ${selectedTint === tint
-                        ? 'text-white'
-                        : 'hover:opacity-80'
-                        }`}
-                      style={{
-                        backgroundColor: selectedTint === tint ? '#1393c4' : '#f0f9ff',
-                        color: selectedTint === tint ? 'white' : '#1393c4'
-                      }}
-                      onClick={() => setSelectedTint(tint)}
-                    >
-                      {tint}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="animate-card text-center">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 text-white" style={{ backgroundColor: '#1393c4' }}>3</div>
-              <h3 className="text-xl font-bold mb-4" style={{ color: '#1393c4' }}>Select the Shade</h3>
-              <div className="bg-white p-6 rounded-lg shadow-lg">
-                <img
-                  src={SelectShadeImage}
-                  alt="Shade Selection"
-                  className="w-full rounded mb-4"
-                />
-                <div className="flex justify-center space-x-2 text-sm" style={{ color: '#1393c4' }}>
-                  <span>5%</span>
-                  <span>•</span>
-                  <span>20%</span>
-                  <span>•</span>
-                  <span>35%</span>
-                  <span>•</span>
-                  <span>50%</span>
-                  <span>•</span>
-                  <span>70%</span>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
 
           {/* YouTube Video Section with Thumbnail */}
@@ -847,37 +769,40 @@ const WindowTintingSite = () => {
         </div>
       </section>
 
-      {/* What Film Section - Film Cards Only - UPDATED WITH NEW IMAGES */}
-      <section className="py-20 bg-white">
+      {/* What Film Section - Film Cards Only */}
+      <section className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-4 leading-tight" style={{ color: '#1393c4' }}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 leading-tight" style={{ color: '#1393c4' }}>
             1. WHAT FILM?
           </h2>
-          <p className="text-center max-w-4xl mx-auto mb-8 text-lg leading-relaxed" style={{ color: '#1393c4' }}>
+          <p className="text-center max-w-4xl mx-auto mb-6 sm:mb-8 text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: '#1393c4' }}>
             Many shops offering window tint will quote you pricing based on their film just to get you in the door. Once there, they educate you on films and upsell you after you realize the kind of film you desire and the number of windows you really need ( legal), thus you end up spending much more then you originally thought.
           </p>
-          <p className="text-center max-w-4xl mx-auto mb-16 text-lg font-semibold" style={{ color: '#1393c4' }}>
+          <p className="text-center max-w-4xl mx-auto mb-12 sm:mb-16 text-sm sm:text-base md:text-lg font-semibold" style={{ color: '#1393c4' }}>
             We are with all of our Pricing and Options as we treat our clients as we like to be treated; no surprises! The Color Stable, Ceramic  Nano Ceramic choice simply comes down to budget  both  lines we carry are quality, products.
           </p>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {Object.entries(filmTypes).map(([key, film]) => (
+          <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
+            {Object.entries(filmTypes).map(([key, film], index) => (
               <div 
                 key={key} 
-                className="animate-card bg-white rounded-xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300 flex flex-col"
+                ref={el => cardRefs.current[7 + index] = el}
+                className={`animate-card bg-white rounded-xl shadow-xl overflow-hidden transform hover:scale-105 transition-all duration-300 flex flex-col ${
+                  visibleCards.has(7 + index) ? 'animate-fade-in' : ''
+                }`}
               >
-                <div className="p-6 flex-1 flex flex-col">
+                <div className="p-4 sm:p-6 flex-1 flex flex-col">
                   {/* Film Title */}
-                  <div className="text-center mb-4">
-                    <h3 className="text-xl font-bold mb-2 min-h-[28px]" style={{ color: '#1393c4' }}>{film.name}</h3>
-                    <div className="min-h-[44px] mb-3">
+                  <div className="text-center mb-3 sm:mb-4">
+                    <h3 className="text-lg sm:text-xl md:text-xl font-bold mb-1 sm:mb-2 min-h-[28px]" style={{ color: '#1393c4' }}>{film.name}</h3>
+                    <div className="min-h-[44px] mb-2 sm:mb-3">
                       {film.subtitle && (
-                        <p className="text-sm font-semibold" style={{ color: '#1393c4' }}>{film.subtitle}</p>
+                        <p className="text-xs sm:text-sm font-semibold" style={{ color: '#1393c4' }}>{film.subtitle}</p>
                       )}
                     </div>
 
-                    {/* XPEL Logo - MOVED INSIDE CARD */}
-                    <div className="mb-4">
+                    {/* XPEL Logo */}
+                    <div className="mb-3 sm:mb-4">
                       <img
                         src={XpelLogo}
                         alt="XPEL Logo"
@@ -886,8 +811,8 @@ const WindowTintingSite = () => {
                     </div>
                   </div>
 
-                  {/* Product Image - Small size under XPEL logo */}
-                  <div className="mb-4 flex items-center justify-center" style={{ height: '128px' }}>
+                  {/* Product Image */}
+                  <div className="mb-3 sm:mb-4 flex items-center justify-center" style={{ height: '100px sm:128px' }}>
                     <img
                       src={key === 'prime-cs' ? ColorStableImage : key === 'prime-hp' ? PrimeHpImage : NanoCeramicImage}
                       alt={`${film.name} Product`}
@@ -895,8 +820,8 @@ const WindowTintingSite = () => {
                     />
                   </div>
 
-                  {/* Car Image - NEW images properly positioned under product image */}
-                  <div className="mb-4 flex items-center justify-center" style={{ height: '180px' }}>
+                  {/* Car Image */}
+                  <div className="mb-3 sm:mb-4 flex items-center justify-center" style={{ height: '150px sm:180px' }}>
                     <img
                       src={film.carImage}
                       alt={`${film.name} Car`}
@@ -905,20 +830,20 @@ const WindowTintingSite = () => {
                   </div>
 
                   {/* Grade */}
-                  <div className="text-center text-2xl font-black mb-4" style={{ color: '#1393c4' }}>
+                  <div className="text-center text-xl sm:text-2xl font-black mb-3 sm:mb-4" style={{ color: '#1393c4' }}>
                     {film.grade}
                   </div>
 
                   {/* Description */}
-                  <p className="text-xs leading-relaxed mb-4 flex-grow" style={{ color: '#1393c4' }}>
+                  <p className="text-xs leading-relaxed mb-3 sm:mb-4 flex-grow" style={{ color: '#1393c4' }}>
                     {film.description}
                   </p>
 
                   {/* Features */}
-                  <div className="space-y-2 mt-auto">
-                    {film.features.map((feature, index) => (
-                      <div key={index} className="flex items-start space-x-2">
-                        <CheckCircle className="mt-1 flex-shrink-0" style={{ color: '#1393c4' }} size={14} />
+                  <div className="space-y-1 sm:space-y-2 mt-auto">
+                    {film.features.map((feature, idx) => (
+                      <div key={idx} className="flex items-start space-x-1 sm:space-x-2">
+                        <CheckCircle className="mt-0.5 sm:mt-1 flex-shrink-0" style={{ color: '#1393c4' }} size={12} />
                         <span className="text-xs leading-tight" style={{ color: '#1393c4' }}>{feature}</span>
                       </div>
                     ))}
@@ -931,67 +856,58 @@ const WindowTintingSite = () => {
       </section>
 
       {/* What Coverage Section */}
-      <section className="py-20 bg-white">
+      <section className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-8 leading-tight" style={{ color: '#1393c4' }}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 sm:mb-8 leading-tight" style={{ color: '#1393c4' }}>
             2. WHAT COVERAGE?
           </h2>
-          <p className="text-center max-w-4xl mx-auto mb-16 text-lg leading-relaxed" style={{ color: '#1393c4' }}>
+          <p className="text-center max-w-4xl mx-auto mb-8 sm:mb-12 md:mb-16 text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: '#1393c4' }}>
             For maximum UV Protection, heat rejection, and  we recommend doing as much as the budget allows. A chain is only as strong as its weakest link and for the highest levels of interior protection consider all glass. Many think that factory "privacy" glass is a protective tint unfortunately it is shaded for looks only and does not help with UV or Heat.
           </p>
 
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="animate-card text-center">
-              <h3 className="text-2xl font-bold mb-8" style={{ color: '#1393c4' }}>TWO FRONTS:</h3>
-              <div className="bg-white p-8 rounded-xl shadow-lg">
-                <img
-                  src={TwoFrontsImage}
-                  alt="Two Fronts"
-                  className="w-full max-w-md mx-auto mb-6"
-                />
-                <button
-                  onClick={() => setShowQuote(true)}
-                  className="text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:opacity-90 text-base"
-                  style={{ backgroundColor: '#1393c4' }}
-                >
-                  Get A Quote
-                </button>
+          <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
+            {[
+              { title: "TWO FRONTS:", image: TwoFrontsImage },
+              { title: "SIDES AND BACK:", image: SidesBackImage }
+            ].map((item, index) => (
+              <div 
+                key={index}
+                ref={el => cardRefs.current[10 + index] = el}
+                className={`animate-card text-center ${visibleCards.has(10 + index) ? 'animate-fade-in' : ''}`}
+              >
+                <h3 className="text-xl sm:text-2xl md:text-2xl font-bold mb-6 sm:mb-8" style={{ color: '#1393c4' }}>{item.title}</h3>
+                <div className="bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+                  <img
+                    src={item.image}
+                    alt={item.title}
+                    className="w-full max-w-md mx-auto mb-4 sm:mb-6"
+                  />
+                  <button
+                    onClick={() => setShowQuote(true)}
+                    className="text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg font-semibold transition-all duration-300 hover:opacity-90 text-sm sm:text-base"
+                    style={{ backgroundColor: '#1393c4' }}
+                  >
+                    Get A Quote
+                  </button>
+                </div>
               </div>
-            </div>
-
-            <div className="animate-card text-center">
-              <h3 className="text-2xl font-bold mb-8" style={{ color: '#1393c4' }}>SIDES AND BACK:</h3>
-              <div className="bg-white p-8 rounded-xl shadow-lg">
-                <img
-                  src={SidesBackImage}
-                  alt="Sides and Back"
-                  className="w-full max-w-md mx-auto mb-6"
-                />
-                <button
-                  onClick={() => setShowQuote(true)}
-                  className="text-white px-8 py-3 rounded-lg font-semibold transition-all duration-300 hover:opacity-90 text-base"
-                  style={{ backgroundColor: '#1393c4' }}
-                >
-                  Get A Quote
-                </button>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Window Tint Simulator Section */}
-      <section className="py-20 bg-white">
+      <section className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-8 leading-tight" style={{ color: '#1393c4' }}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 sm:mb-8 leading-tight" style={{ color: '#1393c4' }}>
             3. WHAT SHADE?
           </h2>
-          <p className="text-center max-w-4xl mx-auto mb-12 text-lg leading-relaxed" style={{ color: '#1393c4' }}>
+          <p className="text-center max-w-4xl mx-auto mb-8 sm:mb-12 text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: '#1393c4' }}>
             Try our interactive window tint simulator to see how different shades will look on your vehicle.
           </p>
 
-          <div className="text-center mb-12">
-            <div className="p-8 rounded-xl shadow-xl w-full bg-white">
+          <div className="text-center mb-8 sm:mb-12">
+            <div className="p-6 sm:p-8 rounded-xl shadow-xl w-full bg-white">
               <a
                 href="https://www.xpel.com/automotive-window-tint-simulator"
                 target="_blank"
@@ -1002,7 +918,7 @@ const WindowTintingSite = () => {
                   src={WhatShadeImage}
                   alt="Window Tint Simulator - Click to access XPEL interactive simulator"
                   className="w-full max-w-4xl mx-auto rounded-lg cursor-pointer"
-                  style={{ height: '400px', objectFit: 'contain' }}
+                  style={{ height: '300px sm:400px', objectFit: 'contain' }}
                 />
               </a>
             </div>
@@ -1011,79 +927,55 @@ const WindowTintingSite = () => {
       </section>
 
       {/* Our Tinting Process */}
-      <section className="py-20 bg-white">
+      <section className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="container mx-auto px-4">
-          <h2 className="text-4xl font-bold text-center mb-16 leading-tight" style={{ color: '#1393c4' }}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-8 sm:mb-12 md:mb-16 leading-tight" style={{ color: '#1393c4' }}>
             OUR TINTING PROCESS
           </h2>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="animate-card text-center">
-              <div className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 text-white" style={{ backgroundColor: '#1393c4' }}>
-                1
+          <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
+            {[
+              { number: "1", title: "WE PREP", image: PrepImage, description: "Using Xpels DAP software and the best patterns available we all film for a precise fit. We then thermally shrink each panel onto the glass and shave all edges for a smooth install." },
+              { number: "2", title: "WE PLOT", image: InstallImage, description: "WE PLOT With XPEL's Design Access Program (DAP), we create a perfect blueprint for your vehicle's glass. Every cut is digitally mapped to match your exact year, make, and model, ensuring maximum coverage and precision. This plotting process eliminates the need for risky hand-cutting on your vehicle, preserving your glass and trim while setting the stage for a flawless installation." },
+              { number: "3", title: "WE EXECUTE", image: ExecuteImage, description: "We don't take and aren't a 'volume' shop that rushes the jobs in and out to remain profitable; Rather that goes the extra mile to help you choose the right film, make the install as dust-free as possible, and return the vehicle cleaner than we received it. We want you to find value in how we treat both you and your vehicle, ultimately earning your repeat and referral business." }
+            ].map((step, index) => (
+              <div 
+                key={index}
+                ref={el => cardRefs.current[12 + index] = el}
+                className={`animate-card text-center ${visibleCards.has(12 + index) ? 'animate-fade-in' : ''}`}
+              >
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full flex items-center justify-center text-xl sm:text-2xl font-bold mx-auto mb-4 sm:mb-6 text-white" style={{ backgroundColor: '#1393c4' }}>
+                  {step.number}
+                </div>
+                <h3 className="text-xl sm:text-2xl md:text-2xl font-bold mb-4 sm:mb-6" style={{ color: '#1393c4' }}>{step.title}</h3>
+                <div className="bg-white rounded-xl overflow-hidden mb-4 sm:mb-6 shadow-lg">
+                  <img
+                    src={step.image}
+                    alt={step.title}
+                    className="w-full h-40 sm:h-48 object-cover"
+                  />
+                </div>
+                <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: '#1393c4' }}>
+                  {step.description}
+                </p>
               </div>
-              <h3 className="text-2xl font-bold mb-6" style={{ color: '#1393c4' }}>WE PREP</h3>
-              <div className="bg-white rounded-xl overflow-hidden mb-6 shadow-lg">
-                <img
-                  src={PrepImage}
-                  alt="We Prep"
-                  className="w-full h-48 object-cover"
-                />
-              </div>
-              <p className="text-lg leading-relaxed" style={{ color: '#1393c4' }}>
-                Using Xpels DAP software and the best patterns available we all film for a precise fit. We then thermally shrink each panel onto the glass and shave all edges for a smooth install.
-              </p>
-            </div>
-
-            <div className="animate-card text-center">
-              <div className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 text-white" style={{ backgroundColor: '#1393c4' }}>
-                2
-              </div>
-              <h3 className="text-2xl font-bold mb-6" style={{ color: '#1393c4' }}>WE PLOT</h3>
-              <div className="bg-white rounded-xl overflow-hidden mb-6 shadow-lg">
-                <img
-                  src={InstallImage}
-                  alt="We Plot"
-                  className="w-full h-48 object-cover"
-                />
-              </div>
-              <p className="text-lg leading-relaxed" style={{ color: '#1393c4' }}>
-                WE PLOT With XPEL's Design Access Program (DAP), we create a perfect blueprint for your vehicle's glass. Every cut is digitally mapped to match your exact year, make, and model, ensuring maximum coverage and precision. This plotting process eliminates the need for risky hand-cutting on your vehicle, preserving your glass and trim while setting the stage for a flawless installation.
-              </p>
-            </div>
-
-            <div className="animate-card text-center">
-              <div className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-bold mx-auto mb-6 text-white" style={{ backgroundColor: '#1393c4' }}>
-                3
-              </div>
-              <h3 className="text-2xl font-bold mb-6" style={{ color: '#1393c4' }}>WE EXECUTE</h3>
-              <div className="bg-white rounded-xl overflow-hidden mb-6 shadow-lg">
-                <img
-                  src={ExecuteImage}
-                  alt="We Execute"
-                  className="w-full h-48 object-cover"
-                />
-              </div>
-              <p className="text-lg leading-relaxed" style={{ color: '#1393c4' }}>
-                We don't take and aren't a "volume" shop that rushes the jobs in and out to remain profitable; Rather that goes the extra mile to help you choose the right film, make the install as dust-free as possible, and return the vehicle cleaner than we received it. We want you to find value in how we treat both you and your vehicle, ultimately earning your repeat and referral business.
-              </p>
-            </div>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Call to Action */}
-      <section className="py-20 bg-white">
+      <section className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-8 leading-tight" style={{ color: '#1393c4' }}>
+          <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-6 sm:mb-8 leading-tight" style={{ color: '#1393c4' }}>
             Ready to Transform Your Vehicle?
           </h2>
-          <p className="text-lg mb-12 max-w-2xl mx-auto font-medium" style={{ color: '#1393c4' }}>
+          <p className="text-sm sm:text-base md:text-lg mb-8 sm:mb-12 max-w-2xl mx-auto font-medium" style={{ color: '#1393c4' }}>
             Experience the ultimate in UV protection, heat rejection, and style with our professional window tinting services.
           </p>
           <button
             onClick={() => setShowQuote(true)}
-            className="text-white px-12 py-4 rounded-full text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-2xl hover:opacity-90"
+            className="text-white px-8 sm:px-12 py-3 sm:py-4 rounded-full text-base sm:text-lg font-semibold transition-all duration-300 transform hover:scale-105 shadow-xl sm:shadow-2xl hover:opacity-90"
             style={{ backgroundColor: '#1393c4' }}
           >
             Get Your Free Quote Today
@@ -1092,10 +984,18 @@ const WindowTintingSite = () => {
       </section>
 
       {/* References Section */}
-      <References />
+      <section className="py-12 sm:py-16 bg-gradient-to-br from-sky-100 via-white to-sky-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <References />
+        </div>
+      </section>
 
       {/* Contact Form Section */}
-      <ContactForm />
+      <section className="py-12 sm:py-16 bg-gradient-to-br from-sky-100 via-white to-sky-50">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <ContactForm />
+        </div>
+      </section>
 
       {/* Quote Modal */}
       {showQuote && (
