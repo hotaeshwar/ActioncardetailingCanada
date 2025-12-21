@@ -623,15 +623,31 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
       if (!isModal && !isScrolling) {
         setIsScrolling(true);
         setTimeout(() => {
-          const timeSlotsGrid = document.querySelector('.grid.grid-cols-3.sm\\:grid-cols-4.md\\:grid-cols-6');
-          if (timeSlotsGrid) {
-            const dateTimeSection = document.getElementById('date-section');
-            if (dateTimeSection) {
-              const timeSlotsPosition = timeSlotsGrid.getBoundingClientRect().top;
-              const scrollToPosition = window.pageYOffset + timeSlotsPosition - 100;
-              window.scrollTo({
-                top: scrollToPosition,
-                behavior: 'smooth'
+          // Find the time slots grid within the date section
+          const dateSection = document.getElementById('date-section');
+          if (dateSection) {
+            // Get all h3 elements in the date section
+            const headings = dateSection.querySelectorAll('h3');
+            let timeHeading = null;
+            
+            // Find the "Available Times" heading
+            headings.forEach(heading => {
+              if (heading.textContent.includes('Available Times')) {
+                timeHeading = heading;
+              }
+            });
+            
+            if (timeHeading) {
+              // Scroll to the time heading with some offset
+              timeHeading.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+              });
+            } else {
+              // Fallback: scroll to the date section itself
+              dateSection.scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
               });
             }
           }
@@ -973,9 +989,9 @@ Passion for Detail
                     </button>
                   </div>
                 </div>
-              </div>
             </div>
           </div>
+        </div>
         )}
 
         {selectedPackage && (
