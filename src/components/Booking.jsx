@@ -622,51 +622,20 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
 
       if (!isModal && !isScrolling) {
         setIsScrolling(true);
-        
-        // Use requestAnimationFrame to ensure DOM is updated before scrolling
-        requestAnimationFrame(() => {
-          setTimeout(() => {
-            // Find the "Available Times" heading inside the date section
-            const dateSection = document.getElementById('date-section');
-            if (dateSection) {
-              // Get all h3 elements in the date section
-              const headings = dateSection.querySelectorAll('h3');
-              let timeHeading = null;
-              
-              // Find the "Available Times" heading
-              headings.forEach(heading => {
-                if (heading.textContent.includes('Available Times')) {
-                  timeHeading = heading;
-                }
-              });
-              
-              if (timeHeading) {
-                // Scroll to the time heading with some offset
-                const headingRect = timeHeading.getBoundingClientRect();
-                const offset = 120; // Adjust this value as needed to position it at the top
-                window.scrollTo({
-                  top: window.pageYOffset + headingRect.top - offset,
-                  behavior: 'smooth'
-                });
-              } else {
-                // Fallback: scroll to the time slots grid if heading not found
-                const timeSlotsGrid = dateSection.querySelector('.grid.grid-cols-3.sm\\:grid-cols-4.md\\:grid-cols-6');
-                if (timeSlotsGrid) {
-                  const gridRect = timeSlotsGrid.getBoundingClientRect();
-                  const offset = 120; // Adjust this value as needed
-                  window.scrollTo({
-                    top: window.pageYOffset + gridRect.top - offset,
-                    behavior: 'smooth'
-                  });
-                }
-              }
-            }
+        setTimeout(() => {
+          const timeSection = document.getElementById('time-slots-section');
+          if (timeSection) {
+            timeSection.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+              inline: 'nearest'
+            });
+          }
 
-            setTimeout(() => {
-              setIsScrolling(false);
-            }, 1000);
-          }, 50); // Small delay to ensure state update
-        });
+          setTimeout(() => {
+            setIsScrolling(false);
+          }, 1000);
+        }, 150);
       }
     }
   };
@@ -1168,7 +1137,7 @@ Passion for Detail
             </div>
 
             {selectedDate && selectedPackage && (
-              <div className="border-t border-gray-200 pt-6">
+              <div id="time-slots-section" className="border-t border-gray-200 pt-6">
                 <div className="text-center mb-4">
                   <p className="text-[#1393c4] font-semibold text-lg">Selected: {selectedDate}</p>
                 </div>
