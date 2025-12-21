@@ -623,21 +623,15 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
       if (!isModal && !isScrolling) {
         setIsScrolling(true);
         setTimeout(() => {
-          const timeSection = document.getElementById('time-slots-section');
-          if (timeSection) {
-            const elementPosition = timeSection.getBoundingClientRect().top;
-            const offsetPosition = elementPosition + window.pageYOffset - 80;
-            
-            window.scrollTo({
-              top: offsetPosition,
-              behavior: 'smooth'
-            });
+          const timeSlots = document.querySelector('.grid.grid-cols-3.sm\\:grid-cols-4.md\\:grid-cols-6');
+          if (timeSlots) {
+            timeSlots.scrollIntoView({ behavior: 'smooth', block: 'center' });
           }
 
           setTimeout(() => {
             setIsScrolling(false);
           }, 1000);
-        }, 350);
+        }, 300);
       }
     }
   };
