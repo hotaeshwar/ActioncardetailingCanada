@@ -1108,134 +1108,94 @@ Passion for Detail
           </div>
 
           <div className={`bg-gray-50 rounded-xl border-2 border-gray-200 p-6 max-w-4xl mx-auto ${!selectedPackage ? 'opacity-50' : ''}`}>
-            {/* Show time slots FIRST when a date is selected */}
-            {selectedDate && selectedPackage && (
-              <div className="mb-8">
-                <div className="text-center mb-6">
-                  <div className="inline-block bg-[#1393c4] text-white px-6 py-2 rounded-lg mb-2">
-                    <p className="font-semibold text-lg">Selected: {selectedDate}</p>
-                  </div>
-                </div>
-                
-                <h3 className="text-xl font-semibold text-[#1393c4] mb-6 text-center">Available Times</h3>
-                
-                <div className="space-y-8">
-                  {/* Morning times */}
-                  <div>
-                    <h4 className="text-[#1393c4] font-medium mb-3">Morning</h4>
-                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-                      {['08:00', '08:30', '09:00', '09:30', '10:00', '10:30', '11:00', '11:30'].map(time => {
-                        const isBlocked = isTimeSlotBlocked(time);
-                        return (
-                          <button
-                            key={time}
-                            onClick={() => handleTimeSelect(time)}
-                            disabled={isBlocked}
-                            className={`py-3 px-4 text-sm font-medium rounded-lg border-2 transition-colors duration-200 ${isBlocked
-                                ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed line-through'
-                                : selectedTime === time
-                                  ? 'bg-[#1393c4] text-white border-[#1393c4]'
-                                  : 'bg-white text-[#1393c4] border-[#1393c4] hover:bg-blue-50'
-                              }`}
-                            title={isBlocked ? 'This time slot is blocked' : ''}
-                          >
-                            {time}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
+            <div className="flex items-center justify-between mb-6">
+              <div className="text-2xl font-semibold text-[#1393c4]">
+                {months[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+              </div>
+              <div className="flex space-x-2">
+                <button
+                  onClick={() => selectedPackage && setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}
+                  disabled={!selectedPackage}
+                  className="p-3 hover:bg-gray-100 rounded-lg text-[#1393c4] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronLeft className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => selectedPackage && setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}
+                  disabled={!selectedPackage}
+                  className="p-3 hover:bg-gray-100 rounded-lg text-[#1393c4] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ChevronRight className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
 
-                  {/* Afternoon times */}
-                  <div>
-                    <h4 className="text-[#1393c4] font-medium mb-3">Afternoon</h4>
-                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-                      {['12:00', '12:30', '13:00', '13:30', '14:00', '14:30', '15:00', '15:30', '16:00', '16:30'].map(time => {
-                        const isBlocked = isTimeSlotBlocked(time);
-                        return (
-                          <button
-                            key={time}
-                            onClick={() => handleTimeSelect(time)}
-                            disabled={isBlocked}
-                            className={`py-3 px-4 text-sm font-medium rounded-lg border-2 transition-colors duration-200 ${isBlocked
-                                ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed line-through'
-                                : selectedTime === time
-                                  ? 'bg-[#1393c4] text-white border-[#1393c4]'
-                                  : 'bg-white text-[#1393c4] border-[#1393c4] hover:bg-blue-50'
-                              }`}
-                            title={isBlocked ? 'This time slot is blocked' : ''}
-                          >
-                            {time}
-                          </button>
-                        );
-                      })}
-                    </div>
-                  </div>
+            <div className="grid grid-cols-7 gap-2 mb-4">
+              {daysOfWeek.map(day => (
+                <div key={day} className="text-center text-sm font-medium text-[#1393c4] py-2 bg-gray-100 rounded">
+                  {day}
+                </div>
+              ))}
+            </div>
+
+            <div className="grid grid-cols-7 gap-2 mb-8">
+              {getDaysInMonth(currentMonth).map((day, index) => {
+                const isSelected = selectedDate === `${months[currentMonth.getMonth()]} ${day}, ${currentMonth.getFullYear()}`;
+                const isBlocked = isDateBlocked(day);
+                const isPast = isPastDate(day);
+
+                return (
+                  <button
+                    key={index}
+                    onClick={() => day && selectedPackage && handleDateSelect(day)}
+                    disabled={!day || isPast || isBlocked || !selectedPackage}
+                    className={`h-12 w-full rounded-lg text-sm font-medium transition-colors duration-200 ${!day
+                      ? 'cursor-default'
+                      : !selectedPackage || isPast || isBlocked
+                        ? 'text-gray-300 cursor-not-allowed bg-gray-50'
+                        : isSelected
+                          ? 'bg-[#1393c4] text-white font-bold'
+                          : isToday(day)
+                            ? 'bg-blue-100 text-[#1393c4] border border-[#1393c4]'
+                            : 'hover:bg-blue-50 text-[#1393c4] border border-gray-200 hover:border-[#1393c4]'
+                      } ${isBlocked && day ? 'line-through' : ''}`}
+                    title={isBlocked ? 'This date is blocked' : ''}
+                  >
+                    {day}
+                  </button>
+                );
+              })}
+            </div>
+
+            {selectedDate && selectedPackage && (
+              <div className="border-t border-gray-200 pt-6">
+                <div className="text-center mb-4">
+                  <p className="text-[#1393c4] font-semibold text-lg">Selected: {selectedDate}</p>
+                </div>
+                <h3 className="text-xl font-semibold text-[#1393c4] mb-4 text-center">Available Times</h3>
+                <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
+                  {timeSlots.map(time => {
+                    const isBlocked = isTimeSlotBlocked(time);
+                    return (
+                      <button
+                        key={time}
+                        onClick={() => handleTimeSelect(time)}
+                        disabled={isBlocked}
+                        className={`py-3 px-4 text-sm font-medium rounded-lg border-2 transition-colors duration-200 ${isBlocked
+                            ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed line-through'
+                            : selectedTime === time
+                              ? 'bg-[#1393c4] text-white border-[#1393c4]'
+                              : 'bg-white text-[#1393c4] border-[#1393c4] hover:bg-blue-50'
+                          }`}
+                        title={isBlocked ? 'This time slot is blocked' : ''}
+                      >
+                        {time}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
-
-            {/* Calendar section - appears below time slots when date is selected */}
-            <div className={selectedDate ? 'border-t border-gray-200 pt-8' : ''}>
-              <div className="flex items-center justify-between mb-6">
-                <div className="text-2xl font-semibold text-[#1393c4]">
-                  {months[currentMonth.getMonth()]} {currentMonth.getFullYear()}
-                </div>
-                <div className="flex space-x-2">
-                  <button
-                    onClick={() => selectedPackage && setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() - 1, 1))}
-                    disabled={!selectedPackage}
-                    className="p-3 hover:bg-gray-100 rounded-lg text-[#1393c4] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <ChevronLeft className="w-5 h-5" />
-                  </button>
-                  <button
-                    onClick={() => selectedPackage && setCurrentMonth(new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 1))}
-                    disabled={!selectedPackage}
-                    className="p-3 hover:bg-gray-100 rounded-lg text-[#1393c4] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    <ChevronRight className="w-5 h-5" />
-                  </button>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-7 gap-2 mb-4">
-                {daysOfWeek.map(day => (
-                  <div key={day} className="text-center text-sm font-medium text-[#1393c4] py-2 bg-gray-100 rounded">
-                    {day}
-                  </div>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-7 gap-2">
-                {getDaysInMonth(currentMonth).map((day, index) => {
-                  const isSelected = selectedDate === `${months[currentMonth.getMonth()]} ${day}, ${currentMonth.getFullYear()}`;
-                  const isBlocked = isDateBlocked(day);
-                  const isPast = isPastDate(day);
-
-                  return (
-                    <button
-                      key={index}
-                      onClick={() => day && selectedPackage && handleDateSelect(day)}
-                      disabled={!day || isPast || isBlocked || !selectedPackage}
-                      className={`h-12 w-full rounded-lg text-sm font-medium transition-colors duration-200 ${!day
-                        ? 'cursor-default'
-                        : !selectedPackage || isPast || isBlocked
-                          ? 'text-gray-300 cursor-not-allowed bg-gray-50'
-                          : isSelected
-                            ? 'bg-[#1393c4] text-white font-bold'
-                            : isToday(day)
-                              ? 'bg-blue-100 text-[#1393c4] border border-[#1393c4]'
-                              : 'hover:bg-blue-50 text-[#1393c4] border border-gray-200 hover:border-[#1393c4]'
-                        } ${isBlocked && day ? 'line-through' : ''}`}
-                      title={isBlocked ? 'This date is blocked' : ''}
-                    >
-                      {day}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
           </div>
         </div>
 
