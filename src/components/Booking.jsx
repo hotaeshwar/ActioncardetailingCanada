@@ -625,15 +625,19 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
         setTimeout(() => {
           const timeSection = document.getElementById('time-slots-section');
           if (timeSection) {
-            const yOffset = -20;
-            const y = timeSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
-            window.scrollTo({ top: y, behavior: 'smooth' });
+            const elementPosition = timeSection.getBoundingClientRect().top;
+            const offsetPosition = elementPosition + window.pageYOffset - 80;
+            
+            window.scrollTo({
+              top: offsetPosition,
+              behavior: 'smooth'
+            });
           }
 
           setTimeout(() => {
             setIsScrolling(false);
           }, 1000);
-        }, 300);
+        }, 350);
       }
     }
   };
