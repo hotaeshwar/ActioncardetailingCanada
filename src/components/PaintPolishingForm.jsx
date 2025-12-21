@@ -5,7 +5,133 @@ import actionCarLogo from '../assets/images/action car logo.png';
 import { db } from '../firebase';
 import { collection, getDocs, query } from 'firebase/firestore';
 
-// ... (PDF styles remain the same) ...
+// PDF Styles (same as Booking component)
+const styles = StyleSheet.create({
+  page: {
+    flexDirection: 'column',
+    backgroundColor: '#FFFFFF',
+    padding: 30,
+    fontFamily: 'Helvetica'
+  },
+  header: {
+    fontSize: 24,
+    marginBottom: 20,
+    color: '#1393c4',
+    textAlign: 'center',
+    fontWeight: 'bold'
+  },
+  section: {
+    margin: 10,
+    padding: 10,
+    flexGrow: 1
+  },
+  title: {
+    fontSize: 18,
+    marginBottom: 10,
+    color: '#1393c4',
+    fontWeight: 'bold'
+  },
+  subtitle: {
+    fontSize: 14,
+    marginBottom: 5,
+    color: '#1393c4',
+    fontWeight: 'bold'
+  },
+  text: {
+    fontSize: 12,
+    marginBottom: 5,
+    color: '#333333'
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 5
+  },
+  divider: {
+    borderBottom: '1pt solid #1393c4',
+    marginVertical: 10
+  },
+  total: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1393c4',
+    marginTop: 10
+  },
+  bookingId: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#333333',
+    marginBottom: 10,
+    textAlign: 'center'
+  }
+});
+
+// Paint Polishing PDF Component (same structure as Booking PDF)
+const PaintPolishingPDF = ({ bookingData, selectedVehicle, selectedPackage, selectedAddOns, selectedDate, selectedTime, bookingId, getTotalPrice }) => (
+  <Document>
+    <Page size="A4" style={styles.page}>
+      <View style={styles.section}>
+        <Text style={styles.header}>Action Car Detailing</Text>
+        <Text style={styles.bookingId}>Booking Confirmation: {bookingId}</Text>
+
+        <Text style={styles.title}>Customer Information</Text>
+        <Text style={styles.text}>Name: {bookingData.firstName} {bookingData.lastName}</Text>
+        <Text style={styles.text}>Email: {bookingData.email}</Text>
+        <Text style={styles.text}>Phone: {bookingData.phone}</Text>
+        <Text style={styles.text}>Vehicle: {bookingData.vehicleMake}</Text>
+
+        <View style={styles.divider} />
+
+        <Text style={styles.title}>Appointment Details</Text>
+        <Text style={styles.text}>Date: {selectedDate}</Text>
+        <Text style={styles.text}>Time: {selectedTime}</Text>
+
+        <View style={styles.divider} />
+
+        <Text style={styles.title}>Service Details</Text>
+        <Text style={styles.text}>Service Type: Paint Polishing</Text>
+        <Text style={styles.text}>Vehicle Type: {selectedVehicle?.name}</Text>
+        <Text style={styles.text}>Package: {selectedPackage?.name}</Text>
+        <Text style={styles.text}>Duration: {selectedPackage?.duration}</Text>
+
+        <View style={styles.divider} />
+
+        <Text style={styles.title}>Cost Breakdown</Text>
+        <View style={styles.row}>
+          <Text style={styles.text}>{selectedPackage?.name}</Text>
+          <Text style={styles.text}>${selectedPackage?.price}.00 CAD</Text>
+        </View>
+
+        {selectedAddOns.map((addon) => (
+          <View key={addon.id} style={styles.row}>
+            <Text style={styles.text}>+ {addon.name}</Text>
+            <Text style={styles.text}>${addon.price}.00 CAD</Text>
+          </View>
+        ))}
+
+        <View style={styles.divider} />
+
+        <View style={styles.row}>
+          <Text style={styles.total}>Total Cost:</Text>
+          <Text style={styles.total}>${getTotalPrice()}.00 CAD</Text>
+        </View>
+
+        <View style={styles.divider} />
+
+        <Text style={styles.subtitle}>Important Notes:</Text>
+        <Text style={styles.text}>• We will confirm your appointment within 24 hours</Text>
+        <Text style={styles.text}>• Please arrive on time for your scheduled appointment</Text>
+        <Text style={styles.text}>• For afternoon appointments, vehicle pickup may be the next day</Text>
+        <Text style={styles.text}>• Contact us if you need to reschedule or cancel</Text>
+        <Text style={styles.text}>• Email: actioncardetailing@gmail.com</Text>
+
+        <Text style={[styles.text, { marginTop: 20, fontSize: 10 }]}>
+          Generated on: {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}
+        </Text>
+      </View>
+    </Page>
+  </Document>
+);
 
 const PaintPolishingForm = () => {
   const [selectedVehicle, setSelectedVehicle] = useState(null);
