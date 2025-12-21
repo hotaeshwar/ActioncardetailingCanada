@@ -625,17 +625,15 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
         setTimeout(() => {
           const timeSection = document.getElementById('time-slots-section');
           if (timeSection) {
-            timeSection.scrollIntoView({
-              behavior: 'smooth',
-              block: 'start',
-              inline: 'nearest'
-            });
+            const yOffset = -20;
+            const y = timeSection.getBoundingClientRect().top + window.pageYOffset + yOffset;
+            window.scrollTo({ top: y, behavior: 'smooth' });
           }
 
           setTimeout(() => {
             setIsScrolling(false);
           }, 1000);
-        }, 150);
+        }, 300);
       }
     }
   };
