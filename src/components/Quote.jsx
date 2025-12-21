@@ -20,7 +20,6 @@ const Quote = () => {
   
   // New state for dropdown sections
   const [selectedPackage, setSelectedPackage] = useState('');
-  const [selectedWarranty, setSelectedWarranty] = useState('');
   const [openDropdown, setOpenDropdown] = useState(null);
   
   // New state for AM/PM selection
@@ -58,28 +57,6 @@ const Quote = () => {
       price: 'Starting at $1999',
       serviceTime: 'Service Time 2 Days',
       description: 'Premium tire and wheel package with offset detailing'
-    }
-  ];
-
-  // Warranty packages data
-  const warrantyPackages = [
-    {
-      id: 'fusion-plus-lite',
-      title: 'FUSION PLUS LITE',
-      warranty: '1 year warranty',
-      description: 'Basic protection with 1-year coverage'
-    },
-    {
-      id: 'fusion-plus-paint-ppf',
-      title: 'FUSION PLUS PAINT & PPF',
-      warranty: '4 years warranty',
-      description: 'Premium paint protection film with 4-year warranty'
-    },
-    {
-      id: 'fusion-plus-premium',
-      title: 'FUSION PLUS PREMIUM',
-      warranty: '8 years warranty',
-      description: 'Ultimate protection with 8-year comprehensive warranty'
     }
   ];
 
@@ -248,12 +225,6 @@ const Quote = () => {
     setOpenDropdown(null);
   };
 
-  // Handle warranty selection
-  const handleWarrantySelect = (warrantyId) => {
-    setSelectedWarranty(warrantyId);
-    setOpenDropdown(null);
-  };
-
   // Toggle dropdown
   const toggleDropdown = (dropdown) => {
     setOpenDropdown(openDropdown === dropdown ? null : dropdown);
@@ -292,7 +263,6 @@ const Quote = () => {
 
     // Get selected package details
     const selectedPackageDetails = servicePackages.find(pkg => pkg.id === selectedPackage);
-    const selectedWarrantyDetails = warrantyPackages.find(warranty => warranty.id === selectedWarranty);
 
     // Format time with AM/PM for email
     const formatTimeForEmail = (time) => {
@@ -334,10 +304,6 @@ Make/Model: ${formData.makeModel}
 SERVICE PACKAGE SELECTED
 
 ${selectedPackageDetails ? `${selectedPackageDetails.title} - ${selectedPackageDetails.price}` : 'No package selected'}
-
-WARRANTY PACKAGE SELECTED
-
-${selectedWarrantyDetails ? `${selectedWarrantyDetails.title} - ${selectedWarrantyDetails.warranty}` : 'No warranty package selected'}
 
 PREFERRED APPOINTMENT
 
@@ -420,7 +386,6 @@ Passion for Detail
         setSelectedDate('');
         setSelectedTime('');
         setSelectedPackage('');
-        setSelectedWarranty('');
         setTimePeriod('AM');
 
       } else {
@@ -550,7 +515,7 @@ Passion for Detail
           </div>
 
           {/* Service Packages Dropdown */}
-          <div className="mb-6">
+          <div>
             <button
               onClick={() => toggleDropdown('services')}
               className="w-full bg-gray-50 border-2 border-gray-300 rounded-lg p-4 flex justify-between items-center hover:border-[#1393c4] transition-colors duration-200"
@@ -596,55 +561,6 @@ Passion for Detail
                       selectedPackage === pkg.id ? 'text-blue-100' : 'text-[#1393c4]'
                     }`}>
                       {pkg.serviceTime}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Warranty Packages Dropdown */}
-          <div>
-            <button
-              onClick={() => toggleDropdown('warranty')}
-              className="w-full bg-gray-50 border-2 border-gray-300 rounded-lg p-4 flex justify-between items-center hover:border-[#1393c4] transition-colors duration-200"
-            >
-              <span className="text-[#1393c4] font-semibold text-lg">
-                {selectedWarranty 
-                  ? warrantyPackages.find(warranty => warranty.id === selectedWarranty)?.title
-                  : 'Select Warranty Package'}
-              </span>
-              {openDropdown === 'warranty' ? <ChevronUp className="text-[#1393c4]" /> : <ChevronDown className="text-[#1393c4]" />}
-            </button>
-            
-            {openDropdown === 'warranty' && (
-              <div className="mt-2 border border-gray-200 rounded-lg overflow-hidden">
-                {warrantyPackages.map((warranty) => (
-                  <div
-                    key={warranty.id}
-                    onClick={() => handleWarrantySelect(warranty.id)}
-                    className={`p-4 border-b border-gray-200 last:border-b-0 cursor-pointer transition-colors duration-200 ${
-                      selectedWarranty === warranty.id 
-                        ? 'bg-[#1393c4] text-white' 
-                        : 'bg-white hover:bg-gray-50'
-                    }`}
-                  >
-                    <div className="flex justify-between items-start mb-2">
-                      <h3 className={`font-bold text-lg ${
-                        selectedWarranty === warranty.id ? 'text-white' : 'text-[#1393c4]'
-                      }`}>
-                        {warranty.title}
-                      </h3>
-                      <span className={`font-semibold ${
-                        selectedWarranty === warranty.id ? 'text-white' : 'text-gray-700'
-                      }`}>
-                        {warranty.warranty}
-                      </span>
-                    </div>
-                    <p className={`text-sm ${
-                      selectedWarranty === warranty.id ? 'text-blue-100' : 'text-gray-600'
-                    }`}>
-                      {warranty.description}
                     </p>
                   </div>
                 ))}
