@@ -164,7 +164,8 @@ function AppContent() {
       </Suspense>
       
       {showNavAndChat && <ChatBot />}
-      {showNavAndChat && location.pathname === '/' && <Footer />}
+      {/* REMOVED: Footer from here to avoid duplication */}
+      {/* {showNavAndChat && location.pathname === '/' && <Footer />} */}
     </div>
   );
 }
