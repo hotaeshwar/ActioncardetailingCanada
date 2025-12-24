@@ -297,14 +297,22 @@ const RemediationClaim = () => {
     if (!blockInfo) return false;
     
     // If it's a full block, the date is blocked
-    if (blockInfo.type === 'full') return true;
+    if (blockInfo.type === 'full' || blockInfo.type === 'sunday-full') return true;
     
     // If it's a partial block, check if all time slots are blocked
-    if (blockInfo.type === 'partial' && blockInfo.blockedSlots) {
-      return blockInfo.blockedSlots.length === timeSlots.length;
+    if (blockInfo.type === 'partial' || blockInfo.type === 'saturday-partial') {
+      // For partial blocks, we need to check the specific time slot
+      return false; // Date itself is not fully blocked, just some time slots
     }
     
     return false;
+  };
+
+  // Check if a specific day is Sunday
+  const isDaySunday = (day) => {
+    if (!day) return false;
+    const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), day);
+    return date.getDay() === 0; // Sunday
   };
 
   // Check if a specific time slot is blocked
@@ -322,9 +330,22 @@ const RemediationClaim = () => {
     
     if (!blockInfo) return false;
     
-    // If it's a full block, all time slots are blocked
-    if (blockInfo.type === 'full') {
+    // If it's a full block (including Sunday), all time slots are blocked
+    if (blockInfo.type === 'full' || blockInfo.type === 'sunday-full') {
       return true;
+    }
+    
+    // If it's a Saturday partial block, check if time is after 12 PM
+    if (blockInfo.type === 'saturday-partial') {
+      const timeHour = parseInt(time.split(':')[0]);
+      const isPM = time.includes('PM');
+      // Convert to 24-hour format for comparison
+      let hour24 = timeHour;
+      if (isPM && hour24 !== 12) hour24 += 12;
+      if (!isPM && hour24 === 12) hour24 = 0;
+      
+      // Block if time is after 12 PM (hour 12 or greater in 24-hour format)
+      return hour24 >= 12;
     }
     
     // If it's a partial block, check if this specific time slot is blocked
@@ -355,10 +376,11 @@ const RemediationClaim = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // REMOVED 7:00 AM from time slots
   const timeSlots = [
-    '07:00 AM', '08:00 AM', '09:00 AM', '10:00 AM', 
-    '11:00 AM', '12:00 PM', '01:00 PM', '02:00 PM', 
-    '03:00 PM', '04:00 PM', '05:00 PM', '06:00 PM'
+    '08:00 AM', '09:00 AM', '10:00 AM', '11:00 AM', 
+    '12:00 PM', '01:00 PM', '02:00 PM', '03:00 PM', 
+    '04:00 PM', '05:00 PM', '06:00 PM'
   ];
 
   const months = [
@@ -424,7 +446,7 @@ const RemediationClaim = () => {
   };
 
   const handleDateSelect = (day) => {
-    if (day && !isPastDate(day) && !isDateBlocked(day)) {
+    if (day && !isPastDate(day) && !isDateBlocked(day) && !isDaySunday(day)) {
       const selected = `${months[currentDate.getMonth()]} ${day}, ${currentDate.getFullYear()}`;
       setSelectedDate(selected);
       if (selectedTime) {
@@ -1137,24 +1159,30 @@ Passion for Detail
                             </div>
                             
                             <div className="grid grid-cols-7 gap-1">
-                              {getDaysInMonth(currentDate).map((day, index) => (
-                                <button
-                                  key={index}
-                                  onClick={() => handleDateSelect(day)}
-                                  disabled={!day || isPastDate(day) || isDateBlocked(day)}
-                                  className={`
-                                    w-8 h-8 text-sm rounded-full flex items-center justify-center transition-colors
-                                    ${!day ? 'invisible' : ''}
-                                    ${isPastDate(day) || isDateBlocked(day) ? 'text-gray-300 cursor-not-allowed' : 'hover:bg-[#1393c4]/20 hover:text-[#1393c4]'}
-                                    ${isToday(day) ? 'bg-[#1393c4] text-white font-bold' : 'text-gray-700'}
-                                    ${selectedDate.includes(`${day}`) && selectedDate.includes(months[currentDate.getMonth()]) ? 'bg-[#1393c4]/80 text-white font-bold' : ''}
-                                    ${isDateBlocked(day) ? 'line-through' : ''}
-                                  `}
-                                  title={isDateBlocked(day) ? 'This date is blocked' : ''}
-                                >
-                                  {day}
-                                </button>
-                              ))}
+                              {getDaysInMonth(currentDate).map((day, index) => {
+                                const isSunday = day ? new Date(currentDate.getFullYear(), currentDate.getMonth(), day).getDay() === 0 : false;
+                                const isBlocked = isDateBlocked(day);
+                                
+                                return (
+                                  <button
+                                    key={index}
+                                    onClick={() => handleDateSelect(day)}
+                                    disabled={!day || isPastDate(day) || isBlocked || isSunday}
+                                    className={`
+                                      w-8 h-8 text-sm rounded-full flex items-center justify-center transition-colors
+                                      ${!day ? 'invisible' : ''}
+                                      ${isPastDate(day) || isBlocked || isSunday ? 'text-gray-300 cursor-not-allowed' : 'hover:bg-[#1393c4]/20 hover:text-[#1393c4]'}
+                                      ${isToday(day) ? 'bg-[#1393c4] text-white font-bold' : 'text-gray-700'}
+                                      ${selectedDate.includes(`${day}`) && selectedDate.includes(months[currentDate.getMonth()]) ? 'bg-[#1393c4]/80 text-white font-bold' : ''}
+                                      ${isBlocked ? 'line-through' : ''}
+                                      ${isSunday ? 'bg-red-100 text-red-400' : ''}
+                                    `}
+                                    title={isSunday ? 'Sunday - Closed' : isBlocked ? 'This date is blocked' : ''}
+                                  >
+                                    {day}
+                                  </button>
+                                );
+                              })}
                             </div>
                           </div>
 
@@ -1359,24 +1387,30 @@ Passion for Detail
                             </div>
                             
                             <div className="grid grid-cols-7 gap-1">
-                              {getDaysInMonth(currentDate).map((day, index) => (
-                                <button
-                                  key={index}
-                                  onClick={() => handleDateSelect(day)}
-                                  disabled={!day || isPastDate(day) || isDateBlocked(day)}
-                                  className={`
-                                    w-8 h-8 text-sm rounded-full flex items-center justify-center transition-colors
-                                    ${!day ? 'invisible' : ''}
-                                    ${isPastDate(day) || isDateBlocked(day) ? 'text-gray-300 cursor-not-allowed' : 'hover:bg-[#1393c4]/20 hover:text-[#1393c4]'}
-                                    ${isToday(day) ? 'bg-[#1393c4] text-white font-bold' : 'text-gray-700'}
-                                    ${selectedDate.includes(`${day}`) && selectedDate.includes(months[currentDate.getMonth()]) ? 'bg-[#1393c4]/80 text-white font-bold' : ''}
-                                    ${isDateBlocked(day) ? 'line-through' : ''}
-                                  `}
-                                  title={isDateBlocked(day) ? 'This date is blocked' : ''}
-                                >
-                                  {day}
-                                </button>
-                              ))}
+                              {getDaysInMonth(currentDate).map((day, index) => {
+                                const isSunday = day ? new Date(currentDate.getFullYear(), currentDate.getMonth(), day).getDay() === 0 : false;
+                                const isBlocked = isDateBlocked(day);
+                                
+                                return (
+                                  <button
+                                    key={index}
+                                    onClick={() => handleDateSelect(day)}
+                                    disabled={!day || isPastDate(day) || isBlocked || isSunday}
+                                    className={`
+                                      w-8 h-8 text-sm rounded-full flex items-center justify-center transition-colors
+                                      ${!day ? 'invisible' : ''}
+                                      ${isPastDate(day) || isBlocked || isSunday ? 'text-gray-300 cursor-not-allowed' : 'hover:bg-[#1393c4]/20 hover:text-[#1393c4]'}
+                                      ${isToday(day) ? 'bg-[#1393c4] text-white font-bold' : 'text-gray-700'}
+                                      ${selectedDate.includes(`${day}`) && selectedDate.includes(months[currentDate.getMonth()]) ? 'bg-[#1393c4]/80 text-white font-bold' : ''}
+                                      ${isBlocked ? 'line-through' : ''}
+                                      ${isSunday ? 'bg-red-100 text-red-400' : ''}
+                                    `}
+                                    title={isSunday ? 'Sunday - Closed' : isBlocked ? 'This date is blocked' : ''}
+                                  >
+                                    {day}
+                                  </button>
+                                );
+                              })}
                             </div>
                           </div>
 
