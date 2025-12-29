@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { ShoppingCart, Gift, Sparkles, Star, CreditCard, Loader, X } from 'lucide-react';
+import actionCarLogo from '../assets/images/action car logo.png';
 
 const GiftCard = () => {
   const [selectedAmount, setSelectedAmount] = useState(50);
@@ -14,6 +15,167 @@ const GiftCard = () => {
   const modalRef = useRef(null);
 
   const amounts = [25, 50, 100, 200, 500];
+
+  // Generate Gift Certificate Function
+  const generateCertificate = (paymentDetails, amount, qty) => {
+    // Create canvas for certificate
+    const canvas = document.createElement('canvas');
+    canvas.width = 1200;
+    canvas.height = 800;
+    const ctx = canvas.getContext('2d');
+
+    // Background
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Border with vivid azure color
+    ctx.strokeStyle = '#1393c4';
+    ctx.lineWidth = 8;
+    ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
+
+    // Inner border
+    ctx.strokeStyle = '#1393c4';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(40, 40, canvas.width - 80, canvas.height - 80);
+
+    // Load and draw logo
+    const logo = new Image();
+    logo.crossOrigin = 'anonymous';
+    logo.src = actionCarLogo;
+    
+    logo.onload = () => {
+      // Draw logo at the top center
+      const logoWidth = 200;
+      const logoHeight = 80;
+      ctx.drawImage(logo, (canvas.width - logoWidth) / 2, 60, logoWidth, logoHeight);
+
+      // Title
+      ctx.fillStyle = '#1393c4';
+      ctx.font = 'bold 60px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('GIFT CERTIFICATE', canvas.width / 2, 200);
+
+      // Amount
+      ctx.fillStyle = '#1393c4';
+      ctx.font = 'bold 80px Arial';
+      ctx.fillText(`$${amount}.00 CAD`, canvas.width / 2, 340);
+
+      // Quantity if more than 1
+      if (qty > 1) {
+        ctx.fillStyle = '#1393c4';
+        ctx.font = '28px Arial';
+        ctx.fillText(`Quantity: ${qty}`, canvas.width / 2, 400);
+      }
+
+      // Certificate details
+      ctx.fillStyle = '#1393c4';
+      ctx.font = '24px Arial';
+      ctx.fillText('This certificate is redeemable for services', canvas.width / 2, 490);
+      ctx.fillText('Valid across all our locations', canvas.width / 2, 530);
+
+      // Certificate code (using transaction ID)
+      const certificateCode = paymentDetails.id || `GC-${Date.now()}`;
+      ctx.fillStyle = '#1393c4';
+      ctx.font = 'bold 20px monospace';
+      ctx.fillText(`Certificate Code: ${certificateCode}`, canvas.width / 2, 600);
+
+      // Date
+      const currentDate = new Date().toLocaleDateString('en-CA', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      ctx.fillStyle = '#1393c4';
+      ctx.font = '18px Arial';
+      ctx.fillText(`Issued on: ${currentDate}`, canvas.width / 2, 670);
+
+      // Footer
+      ctx.fillStyle = '#1393c4';
+      ctx.font = 'italic 16px Arial';
+      ctx.fillText('Thank you for your purchase!', canvas.width / 2, 730);
+      ctx.fillText('No expiration date • Easy to redeem', canvas.width / 2, 760);
+
+      // Convert canvas to blob and download
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Gift-Certificate-${certificateCode}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      });
+    };
+
+    // Error handling if logo fails to load
+    logo.onerror = () => {
+      console.warn('Logo failed to load, generating certificate without logo');
+      
+      // Fallback: Draw company name instead of logo
+      ctx.fillStyle = '#1393c4';
+      ctx.font = 'bold 40px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('ACTION CAR', canvas.width / 2, 100);
+
+      // Title
+      ctx.fillStyle = '#1393c4';
+      ctx.font = 'bold 60px Arial';
+      ctx.fillText('GIFT CERTIFICATE', canvas.width / 2, 200);
+
+      // Amount
+      ctx.fillStyle = '#1393c4';
+      ctx.font = 'bold 80px Arial';
+      ctx.fillText(`$${amount}.00 CAD`, canvas.width / 2, 340);
+
+      // Quantity if more than 1
+      if (qty > 1) {
+        ctx.fillStyle = '#1393c4';
+        ctx.font = '28px Arial';
+        ctx.fillText(`Quantity: ${qty}`, canvas.width / 2, 400);
+      }
+
+      // Certificate details
+      ctx.fillStyle = '#1393c4';
+      ctx.font = '24px Arial';
+      ctx.fillText('This certificate is redeemable for services', canvas.width / 2, 490);
+      ctx.fillText('Valid across all our locations', canvas.width / 2, 530);
+
+      // Certificate code
+      const certificateCode = paymentDetails.id || `GC-${Date.now()}`;
+      ctx.fillStyle = '#1393c4';
+      ctx.font = 'bold 20px monospace';
+      ctx.fillText(`Certificate Code: ${certificateCode}`, canvas.width / 2, 600);
+
+      // Date
+      const currentDate = new Date().toLocaleDateString('en-CA', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+      ctx.fillStyle = '#1393c4';
+      ctx.font = '18px Arial';
+      ctx.fillText(`Issued on: ${currentDate}`, canvas.width / 2, 670);
+
+      // Footer
+      ctx.fillStyle = '#1393c4';
+      ctx.font = 'italic 16px Arial';
+      ctx.fillText('Thank you for your purchase!', canvas.width / 2, 730);
+      ctx.fillText('No expiration date • Easy to redeem', canvas.width / 2, 760);
+
+      // Convert canvas to blob and download
+      canvas.toBlob((blob) => {
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `Gift-Certificate-${certificateCode}.png`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      });
+    };
+  };
 
   // PayPal SDK loading with Canadian settings
   useEffect(() => {
@@ -109,6 +271,10 @@ const GiftCard = () => {
           const details = await actions.order.capture();
           console.log('Payment completed:', details);
           setPaymentStatus('success');
+          
+          // Generate and download certificate
+          generateCertificate(details, selectedAmount, quantity);
+          
           setQuantity(1);
           
           // Keep modal open to show success message
@@ -371,7 +537,7 @@ const GiftCard = () => {
                   {paymentStatus === 'success' ? (
                     <div className="flex items-center space-x-2">
                       <span className="text-green-600">✅</span>
-                      <span>Payment successful! Your gift card will be delivered via email.</span>
+                      <span>Payment successful! Your gift certificate has been downloaded.</span>
                     </div>
                   ) : (
                     <div className="flex items-center space-x-2">
