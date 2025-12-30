@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { User, Phone, Mail, Car, Calendar, MessageSquare, ChevronLeft, ChevronRight, Clock, ChevronDown, ChevronUp } from 'lucide-react';
+import { User, Phone, Mail, Car, Calendar, MessageSquare, ChevronLeft, ChevronRight, Clock, ChevronDown, ChevronUp, AlertCircle } from 'lucide-react';
 import { db } from '../firebase';
 import { collection, getDocs, query } from 'firebase/firestore';
 
@@ -105,9 +105,23 @@ const Quote = () => {
     }
   };
 
-  // Check if a specific date is blocked
+  // NEW: Check if a date is Saturday or Sunday
+  const isWeekend = (day) => {
+    if (!day) return false;
+    const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+    const dayOfWeek = date.getDay(); // 0 = Sunday, 6 = Saturday
+    return dayOfWeek === 0 || dayOfWeek === 6;
+  };
+
+  // UPDATED: Check if a specific date is blocked - now includes weekend blocking
   const isDateBlocked = (day) => {
     if (!day) return false;
+    
+    // NEW: Automatically block weekends
+    if (isWeekend(day)) {
+      return true;
+    }
+    
     const dateString = `${currentMonth.getFullYear()}-${String(currentMonth.getMonth() + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     const blockInfo = blockedDates[dateString];
     
@@ -125,7 +139,7 @@ const Quote = () => {
     return false;
   };
 
-  // Check if a specific time slot is blocked
+  // UPDATED: Check if a specific time slot is blocked - includes weekend blocking
   const isTimeSlotBlocked = (time) => {
     if (!selectedDate) return false;
     
@@ -134,6 +148,13 @@ const Quote = () => {
     const monthIndex = months.indexOf(dateParts[0]);
     const day = parseInt(dateParts[1].replace(',', ''));
     const year = parseInt(dateParts[2]);
+    
+    // NEW: Check if this is a weekend
+    const date = new Date(year, monthIndex, day);
+    if (date.getDay() === 0 || date.getDay() === 6) {
+      return true; // Block all time slots on weekends
+    }
+    
     const dateString = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     
     const blockInfo = blockedDates[dateString];
@@ -411,6 +432,17 @@ Passion for Detail
             <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-[#1393c4]">GET YOUR QUOTE</h1>
           </div>
           <p className="text-[#1393c4] text-sm sm:text-base md:text-lg">Fill out the form below to receive a customized quote.</p>
+          
+          {/* NEW: Weekend Availability Notice */}
+          <div className="mt-4 bg-blue-50 border border-blue-200 rounded-lg p-3 max-w-lg mx-auto">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <AlertCircle className="w-4 h-4 text-[#1393c4]" />
+              <p className="text-sm font-semibold text-[#1393c4]">Weekend Availability</p>
+            </div>
+            <p className="text-xs text-gray-600 text-center">
+              Saturdays and Sundays are currently not available for booking. Please select a weekday for your appointment.
+            </p>
+          </div>
         </div>
 
         {/* Contact Information Section */}
@@ -574,6 +606,7 @@ Passion for Detail
           <div className="text-center mb-4 sm:mb-6">
             <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-[#1393c4] mb-2 sm:mb-4">3. PREFERRED DATE AND TIME</h2>
             <p className="text-[#1393c4] text-sm sm:text-base">Choose your preferred appointment time (optional).</p>
+            <p className="text-xs text-gray-500 mt-1">Note: Weekends (Saturday & Sunday) are not available for booking.</p>
           </div>
 
           <div className="bg-gray-50 rounded-lg sm:rounded-xl border-2 border-gray-200 p-3 sm:p-4 md:p-6 max-w-4xl mx-auto">
@@ -610,6 +643,7 @@ Passion for Detail
                 const isSelected = selectedDate === `${months[currentMonth.getMonth()]} ${day}, ${currentMonth.getFullYear()}`;
                 const isBlocked = isDateBlocked(day);
                 const isPast = isPastDate(day);
+                const isWeekendDay = isWeekend(day);
                 
                 return (
                   <button
@@ -626,10 +660,13 @@ Passion for Detail
                         : isToday(day)
                         ? 'bg-blue-100 text-[#1393c4] border border-[#1393c4]'
                         : 'hover:bg-blue-50 text-[#1393c4] border border-gray-200 hover:border-[#1393c4]'
-                    } ${isBlocked && day ? 'line-through' : ''}`}
-                    title={isBlocked ? 'This date is blocked' : ''}
+                    } ${isWeekendDay ? 'bg-red-50 text-red-400' : ''}`}
+                    title={isWeekendDay ? 'Weekends not available' : isBlocked ? 'This date is blocked' : ''}
                   >
                     {day}
+                    {isWeekendDay && (
+                      <span className="block text-[8px] mt-[-2px]">(No)</span>
+                    )}
                   </button>
                 );
               })}
