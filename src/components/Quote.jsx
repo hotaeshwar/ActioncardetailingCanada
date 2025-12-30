@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { User, Phone, Mail, Car, Calendar, MessageSquare, ChevronLeft, ChevronRight, Clock, ChevronDown, ChevronUp, AlertCircle } from 'lucide-react';
+import { User, Phone, Mail, Car, Calendar, MessageSquare, ChevronLeft, ChevronRight, Clock, ChevronDown, ChevronUp, AlertCircle, Lock } from 'lucide-react';
 import { db } from '../firebase';
 import { collection, getDocs, query } from 'firebase/firestore';
+
+// Import DateBlockingManager
+import DateBlockingManager from '../components/DateBlockingManager';
 
 const Quote = () => {
   const [formData, setFormData] = useState({
@@ -24,6 +27,9 @@ const Quote = () => {
   
   // New state for AM/PM selection
   const [timePeriod, setTimePeriod] = useState('AM');
+
+  // State for DateBlockingManager modal
+  const [showDateManager, setShowDateManager] = useState(false);
 
   // Refs for scrolling
   const timeSectionRef = useRef(null);
@@ -105,20 +111,33 @@ const Quote = () => {
     }
   };
 
-  // NEW: Check if a date is Saturday or Sunday
-  const isWeekend = (day) => {
+  // Check if a date is Saturday
+  const isSaturday = (day) => {
     if (!day) return false;
     const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-    const dayOfWeek = date.getDay(); // 0 = Sunday, 6 = Saturday
-    return dayOfWeek === 0 || dayOfWeek === 6;
+    return date.getDay() === 6; // 6 = Saturday
   };
 
-  // UPDATED: Check if a specific date is blocked - now includes weekend blocking
+  // Check if a date is Sunday
+  const isSunday = (day) => {
+    if (!day) return false;
+    const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+    return date.getDay() === 0; // 0 = Sunday
+  };
+
+  // Get weekday name
+  const getWeekdayName = (day) => {
+    if (!day) return '';
+    const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
+    return date.toLocaleDateString('en-US', { weekday: 'long' });
+  };
+
+  // UPDATED: Check if a specific date is blocked - now handles Saturday partial blocking
   const isDateBlocked = (day) => {
     if (!day) return false;
     
-    // NEW: Automatically block weekends
-    if (isWeekend(day)) {
+    // NEW: Check if this is Sunday - full block
+    if (isSunday(day)) {
       return true;
     }
     
@@ -127,8 +146,12 @@ const Quote = () => {
     
     if (!blockInfo) return false;
     
-    // If it's a full block, the date is blocked
-    if (blockInfo.type === 'full') return true;
+    // If it's a full block or sunday-full, the date is blocked
+    if (blockInfo.type === 'full' || blockInfo.type === 'sunday-full') return true;
+    
+    // If it's a saturday-partial, the date is partially blocked (after 12 PM)
+    // But the date itself is NOT fully blocked - AM times are still available
+    if (blockInfo.type === 'saturday-partial') return false;
     
     // If it's a partial block, check if all time slots are blocked
     if (blockInfo.type === 'partial' && blockInfo.blockedSlots) {
@@ -139,7 +162,7 @@ const Quote = () => {
     return false;
   };
 
-  // UPDATED: Check if a specific time slot is blocked - includes weekend blocking
+  // UPDATED: Check if a specific time slot is blocked - handles Saturday partial blocking
   const isTimeSlotBlocked = (time) => {
     if (!selectedDate) return false;
     
@@ -149,24 +172,47 @@ const Quote = () => {
     const day = parseInt(dateParts[1].replace(',', ''));
     const year = parseInt(dateParts[2]);
     
-    // NEW: Check if this is a weekend
+    // NEW: Check if this is Sunday
     const date = new Date(year, monthIndex, day);
-    if (date.getDay() === 0 || date.getDay() === 6) {
-      return true; // Block all time slots on weekends
+    if (date.getDay() === 0) {
+      return true; // Block all time slots on Sunday
     }
     
     const dateString = `${year}-${String(monthIndex + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
     
     const blockInfo = blockedDates[dateString];
     
+    // Check for Saturday special handling
+    if (date.getDay() === 6) { // Saturday
+      // Check if there's custom Saturday blocking
+      if (blockInfo && blockInfo.type === 'saturday-partial') {
+        // For saturday-partial, block all PM times
+        const [hours] = time.split(':');
+        const hour = parseInt(hours);
+        if (hour >= 12) {
+          return true; // Block PM times on Saturday
+        }
+      } else if (blockInfo && (blockInfo.type === 'full' || blockInfo.type === 'saturday-full')) {
+        return true; // Full Saturday block
+      } else if (!blockInfo) {
+        // Default Saturday behavior: Block PM times
+        const [hours] = time.split(':');
+        const hour = parseInt(hours);
+        if (hour >= 12) {
+          return true; // Block PM times on Saturday
+        }
+      }
+    }
+    
+    // For other days, check block info
     if (!blockInfo) return false;
     
-    // If it's a full block, all time slots are blocked
-    if (blockInfo.type === 'full') {
+    // Check block type
+    if (blockInfo.type === 'full' || blockInfo.type === 'sunday-full') {
       return true;
     }
     
-    // If it's a partial block, check if this specific time slot is blocked
+    // Check if specific time slot is blocked
     if (blockInfo.type === 'partial' && blockInfo.blockedSlots) {
       const isBlocked = blockInfo.blockedSlots.includes(time);
       return isBlocked;
@@ -271,7 +317,6 @@ const Quote = () => {
     return result;
   };
 
-  // FIXED: Send only ONE email to the customer with the new format including package selections AND time period
   const sendEmail = async (quoteId) => {
     const emailFormData = new FormData();
     
@@ -295,7 +340,6 @@ const Quote = () => {
       return `${displayHour}:${minutes} ${period}`;
     };
 
-    // Single email with the desired format including package selections AND time period
     emailFormData.append('message', `
 ✅ ACTION CAR DETAILING – AUTOMATED QUOTE REQUEST CONFIRMATION
 
@@ -440,7 +484,8 @@ Passion for Detail
               <p className="text-sm font-semibold text-[#1393c4]">Weekend Availability</p>
             </div>
             <p className="text-xs text-gray-600 text-center">
-              Saturdays and Sundays are currently not available for booking. Please select a weekday for your appointment.
+              • Sundays: Closed all day<br />
+              • Saturdays: Open for morning bookings only (8 AM - 11:30 AM)
             </p>
           </div>
         </div>
@@ -606,7 +651,11 @@ Passion for Detail
           <div className="text-center mb-4 sm:mb-6">
             <h2 className="text-lg sm:text-xl md:text-2xl font-bold text-[#1393c4] mb-2 sm:mb-4">3. PREFERRED DATE AND TIME</h2>
             <p className="text-[#1393c4] text-sm sm:text-base">Choose your preferred appointment time (optional).</p>
-            <p className="text-xs text-gray-500 mt-1">Note: Weekends (Saturday & Sunday) are not available for booking.</p>
+            <p className="text-xs text-gray-500 mt-1">
+              • Weekdays: 8 AM - 5:30 PM<br />
+              • Saturdays: 8 AM - 11:30 AM only<br />
+              • Sundays: Closed
+            </p>
           </div>
 
           <div className="bg-gray-50 rounded-lg sm:rounded-xl border-2 border-gray-200 p-3 sm:p-4 md:p-6 max-w-4xl mx-auto">
@@ -643,14 +692,16 @@ Passion for Detail
                 const isSelected = selectedDate === `${months[currentMonth.getMonth()]} ${day}, ${currentMonth.getFullYear()}`;
                 const isBlocked = isDateBlocked(day);
                 const isPast = isPastDate(day);
-                const isWeekendDay = isWeekend(day);
+                const isSaturdayDay = isSaturday(day);
+                const isSundayDay = isSunday(day);
+                const weekday = getWeekdayName(day);
                 
                 return (
                   <button
                     key={index}
                     onClick={() => day && handleDateSelect(day)}
                     disabled={!day || isPast || isBlocked}
-                    className={`h-6 sm:h-7 md:h-8 lg:h-10 w-full rounded text-xs font-medium transition-colors duration-200 ${
+                    className={`h-6 sm:h-7 md:h-8 lg:h-10 w-full rounded text-xs font-medium transition-colors duration-200 relative ${
                       !day
                         ? 'cursor-default'
                         : isPast || isBlocked
@@ -659,13 +710,20 @@ Passion for Detail
                         ? 'bg-[#1393c4] text-white font-bold'
                         : isToday(day)
                         ? 'bg-blue-100 text-[#1393c4] border border-[#1393c4]'
+                        : isSundayDay
+                        ? 'bg-red-50 text-red-400 cursor-not-allowed'
+                        : isSaturdayDay
+                        ? 'bg-yellow-50 text-yellow-600 hover:bg-yellow-100'
                         : 'hover:bg-blue-50 text-[#1393c4] border border-gray-200 hover:border-[#1393c4]'
-                    } ${isWeekendDay ? 'bg-red-50 text-red-400' : ''}`}
-                    title={isWeekendDay ? 'Weekends not available' : isBlocked ? 'This date is blocked' : ''}
+                    }`}
+                    title={isSundayDay ? 'Sunday - Closed' : isSaturdayDay ? 'Saturday - Morning only (8 AM - 11:30 AM)' : weekday}
                   >
                     {day}
-                    {isWeekendDay && (
-                      <span className="block text-[8px] mt-[-2px]">(No)</span>
+                    {isSaturdayDay && (
+                      <span className="block text-[8px] mt-[-2px] text-yellow-500">(AM)</span>
+                    )}
+                    {isSundayDay && (
+                      <span className="block text-[8px] mt-[-2px] text-red-500">(No)</span>
                     )}
                   </button>
                 );
@@ -680,7 +738,36 @@ Passion for Detail
                 <div className="text-center mb-3 sm:mb-4">
                   <p className="text-[#1393c4] font-semibold text-sm sm:text-base md:text-lg">Selected: {selectedDate}</p>
                 </div>
-                <h3 className="text-base sm:text-lg md:text-xl font-semibold text-[#1393c4] mb-3 sm:mb-4 text-center">Available Times (8 AM - 6 PM)</h3>
+                
+                {/* Check if selected date is Saturday */}
+                {(() => {
+                  const dateParts = selectedDate.split(' ');
+                  const monthIndex = months.indexOf(dateParts[0]);
+                  const day = parseInt(dateParts[1].replace(',', ''));
+                  const year = parseInt(dateParts[2]);
+                  const date = new Date(year, monthIndex, day);
+                  
+                  if (date.getDay() === 6) { // Saturday
+                    return (
+                      <div className="mb-4 bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+                        <p className="text-yellow-700 text-sm text-center font-medium">
+                          ⚠ Saturday: Only morning appointments available (8 AM - 11:30 AM)
+                        </p>
+                      </div>
+                    );
+                  } else if (date.getDay() === 0) { // Sunday
+                    return (
+                      <div className="mb-4 bg-red-50 border border-red-200 rounded-lg p-3">
+                        <p className="text-red-700 text-sm text-center font-medium">
+                          ❌ Sunday: Closed all day
+                        </p>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
+                
+                <h3 className="text-base sm:text-lg md:text-xl font-semibold text-[#1393c4] mb-3 sm:mb-4 text-center">Available Times</h3>
                 
                 {/* AM/PM Selection - Made more visible */}
                 <div className="flex justify-center mb-6">
@@ -711,6 +798,26 @@ Passion for Detail
                     </div>
                   </div>
                 </div>
+                
+                {/* Check if PM should be disabled for Saturday */}
+                {(() => {
+                  const dateParts = selectedDate.split(' ');
+                  const monthIndex = months.indexOf(dateParts[0]);
+                  const day = parseInt(dateParts[1].replace(',', ''));
+                  const year = parseInt(dateParts[2]);
+                  const date = new Date(year, monthIndex, day);
+                  
+                  if (date.getDay() === 6 && timePeriod === 'PM') { // Saturday PM
+                    return (
+                      <div className="mb-4 bg-red-50 border border-red-200 rounded-lg p-3">
+                        <p className="text-red-700 text-sm text-center font-medium">
+                          ❌ Saturday afternoons are not available for booking
+                        </p>
+                      </div>
+                    );
+                  }
+                  return null;
+                })()}
                 
                 {/* Clean Time Slots - No borders, no backgrounds, just text */}
                 <div className="text-center mb-2">
@@ -777,6 +884,23 @@ Passion for Detail
           </p>
         </div>
       </div>
+
+      {/* Date Blocking Manager Modal */}
+      {showDateManager && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="bg-white rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto relative shadow-2xl mx-2 sm:mx-0">
+            <div className="p-4 sm:p-6">
+              <DateBlockingManager />
+            </div>
+            <button
+              onClick={() => setShowDateManager(false)}
+              className="absolute top-2 sm:top-3 right-2 sm:right-3 z-10 p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors shadow-sm"
+            >
+              <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-[#1393c4]" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
