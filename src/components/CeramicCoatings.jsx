@@ -3,6 +3,8 @@ import { Play, Check, Shield, Star, Droplets, Settings, HardHat, Sun, Atom, Beak
 import Footer from '../components/Footer';
 import ContactForm from '../components/ContactForm';
 import References from '../components/Reference1';
+// ADD THIS IMPORT
+import DateBlockingManager from '../components/DateBlockingManager';
 
 // Import Ceramic Coating Video and Images from src/assets/
 import ceramicCoatingVideo from '../assets/images/Ceramic coating (1).mp4';
@@ -437,6 +439,9 @@ const CeramicCoatings = ({ setCurrentView }) => {
   const [selectedPackage, setSelectedPackage] = useState('');
   const [visibleCards, setVisibleCards] = useState(new Set());
   const cardRefs = useRef([]);
+  
+  // ADD THIS STATE FOR DATE BLOCKING MODAL
+  const [showDateManager, setShowDateManager] = useState(false);
 
   // Video handling effect
   useEffect(() => {
@@ -721,6 +726,11 @@ const CeramicCoatings = ({ setCurrentView }) => {
     setIsQuoteModalOpen(true);
   };
 
+  // ADD THIS FUNCTION TO HANDLE DATE MANAGER CLICK
+  const handleOpenDateManager = () => {
+    setShowDateManager(true);
+  };
+
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section with Video Background */}
@@ -757,6 +767,13 @@ const CeramicCoatings = ({ setCurrentView }) => {
         <div className="relative h-full flex items-center">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl">
+              {/* ADD ADMIN BUTTON */}
+              <button
+                onClick={handleOpenDateManager}
+                className="absolute top-4 right-4 bg-[#1393c4] hover:bg-[#0d7aa1] text-white px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 z-10"
+              >
+                Admin: Manage Dates
+              </button>
             </div>
           </div>
         </div>
@@ -1075,6 +1092,23 @@ const CeramicCoatings = ({ setCurrentView }) => {
           <ContactForm />
         </div>
       </section>
+
+      {/* ADD DATE BLOCKING MANAGER MODAL */}
+      {showDateManager && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
+          <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto relative shadow-2xl mx-2 sm:mx-0">
+            <button
+              onClick={() => setShowDateManager(false)}
+              className="absolute top-2 sm:top-3 right-2 sm:right-3 z-10 p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors shadow-sm"
+            >
+              <X className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#1393c4' }} />
+            </button>
+            <div className="p-4 sm:p-6">
+              <DateBlockingManager />
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Ceramic Coating Quote Modal */}
       <CeramicCoatingQuoteModal 
