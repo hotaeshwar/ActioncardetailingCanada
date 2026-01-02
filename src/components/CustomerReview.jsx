@@ -66,7 +66,7 @@ const CustomerReview = () => {
         {/* Footer */}
         <div className="mt-6 sm:mt-8 md:mt-10 text-center">
           <p className="text-xs sm:text-sm md:text-base" style={{ color: '#1393c4' }}>
-            Powered by Quick Feedback
+            Powered by One Local
           </p>
         </div>
       </div>
