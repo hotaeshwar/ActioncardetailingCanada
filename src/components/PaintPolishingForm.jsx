@@ -305,28 +305,28 @@ const PaintPolishingForm = () => {
         name: 'One Stage Paint Correction Polish',
         duration: '3 Hours',
         price: pricing.oneStage,
-        description: 'Paint correction (One stage) (2 Hours)'
+        description: 'Paint correction (One stage) (3 Hours)'
       },
       {
         id: 'two-stage',
         name: 'Two Stage Paint Correction Polish',
         duration: '5 Hours',
         price: pricing.twoStage,
-        description: 'Paint correction (Two stage) (180 min)'
+        description: 'Paint correction (Two stage) (5 Hours)'
       },
       {
         id: 'three-stage',
         name: 'Three Stage Paint Correction Polish',
         duration: '7 Hours',
         price: pricing.threeStage,
-        description: 'Paint correction (Three stage) (240 min)'
+        description: 'Paint correction (Three stage) (7 Hours)'
       },
       {
         id: 'four-stage',
         name: 'Four Stage Paint Correction Polish',
         duration: '8-12 Hours',
         price: pricing.fourStage,
-        description: 'Paint correction (Four stage) (300 min)'
+        description: 'Paint correction (Four stage) (8-12 Hours)'
       }
     ];
   };
