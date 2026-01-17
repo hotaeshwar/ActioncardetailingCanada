@@ -72,7 +72,7 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'HOME', to: '/', exact: true, internal: true },
-    { name: 'ABOUT', to: '/about', internal: true },
+    { name: 'ABOUT', to: '/about-us', internal: true },
     { name: 'GIFT CARD', to: '/giftcard', internal: true },
     { name: 'SERVICES', hasDropdown: true },
     { name: 'BEFORE & AFTER', to: '/before-after', internal: true },
@@ -83,9 +83,9 @@ const Navbar = () => {
   const serviceItems = [
     { name: 'OUR SERVICES', to: '/services', internal: true },
     { name: 'AUTO DETAILING', to: '/auto-detailing', internal: true },
-    { name: 'PAINT CORRECTION POLISHING', to: '/paint-correction', internal: true },
+    { name: 'PAINT CORRECTION POLISHING', to: '/paint-correction-polishing', internal: true },
     { name: 'WINDOW TINTING', to: '/window-tinting', internal: true },
-    { name: 'CERAMIC COATING', to: '/ceramic-coatings', internal: true },
+    { name: 'CERAMIC COATING', to: '/ceramic-coating', internal: true },
     { name: 'PAINT PROTECTION FILM', to: '/paint-protection-film', internal: true },
     { name: 'REMEDIATION CLAIMS', to: '/remediation-claim', internal: true },
   ];
