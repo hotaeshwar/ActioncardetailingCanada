@@ -105,9 +105,9 @@ function AppContent() {
           
           {/* Car Detailing Services Routes */}
           <Route path="/auto-detailing" element={<CarDetailingWebsite />} />
-          <Route path="/paint-correction" element={<PaintCorrection />} />
+          <Route path="/paint-correction-polishing" element={<PaintCorrection />} />
           <Route path="/window-tinting" element={<WindowTintingSite />} />
-          <Route path="/ceramic-coatings" element={<CeramicCoatings />} />
+          <Route path="/ceramic-coating" element={<CeramicCoatings />} />
           <Route path="/paint-protection-film" element={<PaintProtectionFilm />} />
           <Route path="/dent-repair" element={<DentRepairComponent />} />
           <Route path="/car-detailing" element={<CarDetailing />} />
@@ -123,7 +123,8 @@ function AppContent() {
           <Route path="/perfect-solutions" element={<PerfectSolutionsCarousel />} />
           
           {/* Company Info Routes */}
-          <Route path="/about" element={<Aboutus />} />
+          <Route path="/about-us" element={<Aboutus />} />
+		  <Route path="/about" element={<Navigate to="/about-us" replace />} />
           <Route path="/references" element={<References />} />
           <Route path="/testimonials" element={<Testimonials />} />
           <Route path="/giftcard" element={<GiftCard />} />
