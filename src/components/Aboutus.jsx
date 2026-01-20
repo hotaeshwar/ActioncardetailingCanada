@@ -186,7 +186,7 @@ const ActionCarAbout = () => {
                     <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-3 sm:mb-4" style={{ color: '#1393c4' }}>What Sets Us Apart</h2>
                     <div className="space-y-3 sm:space-y-4 text-sm sm:text-base lg:text-lg" style={{ color: '#1393c4' }}>
                       <p className="leading-relaxed">
-                        We're proud to be the <span className="font-semibold">2025 Consumer Choice Award Winner</span> in the Auto Detailing category — the only winner in Winnipeg & the Greater Region.
+                        We're proud to be the <span className="font-semibold">2026 Consumer Choice Award Winner</span> in the Auto Detailing category — the only winner in Winnipeg & the Greater Region.
                       </p>
                       <div className="bg-sky-50 p-4 sm:p-5 lg:p-6 rounded-lg border border-sky-200">
                         <p className="font-semibold mb-3 text-sm sm:text-base" style={{ color: '#1393c4' }}>Our commitment:</p>
