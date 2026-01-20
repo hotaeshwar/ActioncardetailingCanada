@@ -32,7 +32,7 @@ const BusinessDescription = ({ setCurrentView }) => {
               </p>
               
               <p>
-                Our most recent recognition came in the form of a <span className="font-bold">2025 Consumer Choice Award</span>. 
+                Our most recent recognition came in the form of a <span className="font-bold">2026 Consumer Choice Award</span>. 
                 We're proud to be the <span className="font-semibold">only winner in our industry</span>.
               </p>
               
