@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom'; // Added import
+import { useNavigate } from 'react-router-dom';
 import { Gift } from 'lucide-react';
 
 // Import images and videos
@@ -31,8 +31,8 @@ import paintProtectionVideo from '../assets/images/PPF Home page.mp4';
 // Import MPI Claims assets
 import insuranceLogo from '../assets/images/insurance.png';
 
-const ChooseYourService = () => { // Removed setCurrentView prop
-  const navigate = useNavigate(); // Added useNavigate hook
+const ChooseYourService = () => {
+  const navigate = useNavigate();
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [activeCard, setActiveCard] = useState(null);
   const touchTimerRef = useRef(null);
@@ -72,7 +72,7 @@ const ChooseYourService = () => { // Removed setCurrentView prop
       displayName: "Paint Correction Polishing",
       title: "Paint Correction Polishing",
       icon: paintCorrectionImage,
-      linkTo: '/paint-correction'
+      linkTo: '/paint-correction-polishing'
     },
     "Window Tinting": {
       displayName: "Window Tinting",
@@ -84,7 +84,7 @@ const ChooseYourService = () => { // Removed setCurrentView prop
       displayName: "Ceramic Coating",
       title: "Professional Ceramic Coating",
       icon: wash2,
-      linkTo: '/ceramic-coatings'
+      linkTo: '/ceramic-coating' // CORRECTED: matches route in App.js
     },
     "Paint Protection Film": {
       displayName: "Paint Protection Film",
@@ -103,14 +103,14 @@ const ChooseYourService = () => { // Removed setCurrentView prop
   const handleServiceClick = (serviceName) => {
     const service = servicesData[serviceName];
     if (service?.linkTo) {
-      navigate(service.linkTo); // Use navigate instead of setCurrentView
+      navigate(service.linkTo);
     } else {
       console.log("No page available for:", service.title);
     }
   };
 
   const handleGiftClick = () => {
-    navigate('/giftcard'); // Use navigate instead of setCurrentView
+    navigate('/giftcard');
   };
 
   const handleTouchStart = (e, serviceName) => {
