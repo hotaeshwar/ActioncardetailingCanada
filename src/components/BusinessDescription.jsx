@@ -1,11 +1,16 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const BusinessDescription = ({ setCurrentView }) => {
+  const navigate = useNavigate();
+
   const handleAboutClick = () => {
+    // If setCurrentView prop is provided (for backward compatibility)
     if (setCurrentView) {
       setCurrentView('about');
     } else {
-      console.warn('setCurrentView prop not provided. Please ensure proper routing is set up.');
+      // Use React Router navigation
+      navigate('/about-us');
     }
   };
 
