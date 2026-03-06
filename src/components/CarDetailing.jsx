@@ -7,7 +7,7 @@ import {
   faTimes 
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import awardHome from '../assets/images/Awardhome.png';
+import awardHome from '../assets/images/awardhome.png';
 import insuranceImg from '../assets/images/insurance.png';
 
 const CarDetailing = () => {
@@ -16,7 +16,7 @@ const CarDetailing = () => {
 
   useEffect(() => {
     const checkScreenSize = () => {
-      setIsMobile(window.innerWidth < 1024); // Changed to 1024 to include tablets
+      setIsMobile(window.innerWidth < 1024);
     };
 
     checkScreenSize();
@@ -24,7 +24,6 @@ const CarDetailing = () => {
     return () => window.removeEventListener('resize', checkScreenSize);
   }, []);
 
-  // Prevent body scroll when modal is open
   useEffect(() => {
     if (selectedCard) {
       document.body.style.overflow = 'hidden';
@@ -398,12 +397,8 @@ const CarDetailing = () => {
         }
         
         @keyframes fadeIn {
-          from {
-            opacity: 0;
-          }
-          to {
-            opacity: 1;
-          }
+          from { opacity: 0; }
+          to { opacity: 1; }
         }
         
         @keyframes slideUp {
