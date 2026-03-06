@@ -1,9 +1,7 @@
 import React from 'react';
 import { FaFacebook, FaInstagram } from 'react-icons/fa';
 import actionCarLogo from '../assets/images/action car logo.png';
-import awardLogo from '../assets/images/award png.png';
-// Import the new award icon - BIGGER VERSION
-import awardHome from '../assets/images/Awardhome.png';
+import awardHome from '../assets/images/awardhome.png';
 
 const Footer = () => {
   return (
@@ -11,7 +9,6 @@ const Footer = () => {
       {/* Wave curve top border */}
       <div className="w-full h-12 sm:h-14 md:h-16 bg-white">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 100" preserveAspectRatio="none" className="w-full h-full">
-          
           <path fill="#1393c4" d="M0,0 C240,100 480,100 720,50 C960,0 1200,0 1440,100 L1440,100 L0,100 Z"></path>
         </svg>
       </div>
@@ -69,7 +66,7 @@ const Footer = () => {
               <p className="mb-1 sm:mb-2 text-sm sm:text-base">Sunday | Closed</p>
             </div>
             
-            {/* Logo and Award section with white background */}
+            {/* Logo and Award section */}
             <div className="flex flex-col items-center justify-center mt-2 sm:mt-0 space-y-4">
               {/* Logo */}
               <div className="bg-white rounded-xl p-4 shadow-lg">
