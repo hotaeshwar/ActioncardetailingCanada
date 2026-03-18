@@ -167,7 +167,7 @@ function FlashScreen({ show, fading }) {
     <div
       className="fixed inset-0 z-[9999] flex items-center justify-center bg-white"
       style={{
-        transition: 'opacity 1s ease-in-out',
+        transition: 'opacity 0.5s ease-in-out',
         opacity: fading ? 0 : 1,
       }}
     >
@@ -229,7 +229,7 @@ function FlashScreen({ show, fading }) {
         <div className="w-52 h-1.5 bg-gray-200 rounded-full overflow-hidden mb-3">
           <div
             className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"
-            style={{ animation: 'progressBar 4s ease-in-out forwards' }}
+            style={{ animation: 'progressBar 1.5s ease-in-out forwards' }}
           />
         </div>
 
@@ -251,15 +251,15 @@ function App() {
   const [fading, setFading] = useState(false);
 
   useEffect(() => {
-    // Start fading at 4 seconds
+    // Start fading at 1.5 seconds
     const fadeTimer = setTimeout(() => {
       setFading(true);
-    }, 4000);
+    }, 1500);
 
-    // Remove completely after fade (4s + 1s transition = 5s total)
+    // Remove completely after fade (1.5s + 0.5s transition = 2s total)
     const hideTimer = setTimeout(() => {
       setShowFlash(false);
-    }, 5000);
+    }, 2000);
 
     return () => {
       clearTimeout(fadeTimer);
