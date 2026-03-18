@@ -160,22 +160,86 @@ function AppContent() {
 }
 
 // Flash Screen Component
-function FlashScreen({ show }) {
+function FlashScreen({ show, fading }) {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800">
-      <div className="flex flex-col items-center justify-center animate-pulse">
-        <img 
-          src={actionCarLogo} 
-          alt="Action Car Logo" 
-          className="w-64 h-64 object-contain mb-4 drop-shadow-2xl"
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center bg-white"
+      style={{
+        transition: 'opacity 1s ease-in-out',
+        opacity: fading ? 0 : 1,
+      }}
+    >
+      {/* Animation keyframes */}
+      <style>{`
+        @keyframes logoFadeIn {
+          0%   { opacity: 0; transform: scale(0.85); }
+          100% { opacity: 1; transform: scale(1); }
+        }
+        @keyframes spin {
+          0%   { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+        @keyframes progressBar {
+          0%   { width: 0%; }
+          20%  { width: 25%; }
+          50%  { width: 55%; }
+          75%  { width: 78%; }
+          90%  { width: 90%; }
+          100% { width: 100%; }
+        }
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0.4; }
+        }
+      `}</style>
+
+      {/* Content */}
+      <div
+        className="flex flex-col items-center justify-center"
+        style={{ animation: 'logoFadeIn 1s ease-out forwards' }}
+      >
+        {/* Logo */}
+        <img
+          src={actionCarLogo}
+          alt="Action Car Logo"
+          className="w-56 h-56 object-contain drop-shadow-xl mb-6"
         />
-        <div className="flex space-x-2 mt-4">
-          <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-          <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-          <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+
+        {/* Circular spinner */}
+        <div className="relative w-16 h-16 mb-6">
+          {/* Outer ring */}
+          <div
+            className="absolute inset-0 rounded-full border-4 border-gray-200"
+          />
+          {/* Spinning arc */}
+          <div
+            className="absolute inset-0 rounded-full border-4 border-transparent border-t-blue-500 border-r-blue-400"
+            style={{ animation: 'spin 0.9s linear infinite' }}
+          />
+          {/* Inner spinning arc (opposite) */}
+          <div
+            className="absolute inset-2 rounded-full border-4 border-transparent border-b-blue-300"
+            style={{ animation: 'spin 1.3s linear infinite reverse' }}
+          />
         </div>
+
+        {/* Progress bar */}
+        <div className="w-52 h-1.5 bg-gray-200 rounded-full overflow-hidden mb-3">
+          <div
+            className="h-full bg-gradient-to-r from-blue-400 to-blue-600 rounded-full"
+            style={{ animation: 'progressBar 4s ease-in-out forwards' }}
+          />
+        </div>
+
+        {/* Loading text */}
+        <p
+          className="text-gray-400 text-sm tracking-widest uppercase"
+          style={{ animation: 'pulse 1.5s ease-in-out infinite' }}
+        >
+          Loading...
+        </p>
       </div>
     </div>
   );
@@ -184,19 +248,29 @@ function FlashScreen({ show }) {
 // Main App component
 function App() {
   const [showFlash, setShowFlash] = useState(true);
+  const [fading, setFading] = useState(false);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowFlash(false);
-    }, 2500);
+    // Start fading at 4 seconds
+    const fadeTimer = setTimeout(() => {
+      setFading(true);
+    }, 4000);
 
-    return () => clearTimeout(timer);
+    // Remove completely after fade (4s + 1s transition = 5s total)
+    const hideTimer = setTimeout(() => {
+      setShowFlash(false);
+    }, 5000);
+
+    return () => {
+      clearTimeout(fadeTimer);
+      clearTimeout(hideTimer);
+    };
   }, []);
 
   return (
     <>
-      <FlashScreen show={showFlash} />
-      
+      <FlashScreen show={showFlash} fading={fading} />
+
       <BrowserRouter
         basename="/"
         future={{ v7_startTransition: true }}
