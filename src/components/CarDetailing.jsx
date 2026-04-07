@@ -70,7 +70,7 @@ const CarDetailing = () => {
       customImage: awardHome,
       isAwardLogo: true,
       backTitle: 'Award Winning',
-      backContent: 'Winner of Consumer Choice Award 2025 in Auto Detailing Category. This prestigious award recognizes our outstanding service and customer satisfaction.',
+      backContent: 'Winner of Consumer Choice Award 2026 in Auto Detailing Category. This prestigious award recognizes our outstanding service and customer satisfaction.',
       features: [
         'Consumer Choice Award 2025 winner',
         'Outstanding customer satisfaction',

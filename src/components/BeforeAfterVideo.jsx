@@ -1,14 +1,16 @@
 import React from 'react';
 import beforeAfterVideo from '../assets/images/BEFOREANDAFTER.mp4';
+import beforeVideo from '../assets/images/beforenew.mp4';
+import afterVideo from '../assets/images/afternew.mp4';
 import Footer from '../components/Footer';
 import ContactForm from '../components/ContactForm';
 
 const BeforeAfterVideo = () => {
   return (
     <div className="min-h-screen bg-snow">
-      <div className="w-full min-h-screen flex flex-col items-center justify-center p-2 sm:p-4 md:p-6 lg:p-8 pt-20 md:pt-24 lg:pt-28">
+      <div className="w-full min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 md:px-10 lg:px-16 pt-20 md:pt-24 lg:pt-28 pb-10">
         {/* Header Text */}
-        <div className="text-center mb-6 md:mb-8">
+        <div className="text-center mb-8 md:mb-10">
           <span className="text-2xl md:text-3xl lg:text-4xl font-bold block mb-2" style={{ color: '#1393c4' }}>
             Before & After
           </span>
@@ -17,24 +19,70 @@ const BeforeAfterVideo = () => {
           </span>
         </div>
 
-        {/* Video Card */}
-        <div className="w-full max-w-xs sm:max-w-sm md:max-w-2xl lg:max-w-4xl xl:max-w-5xl aspect-video rounded-none sm:rounded-lg md:rounded-xl lg:rounded-2xl overflow-hidden shadow-none sm:shadow-lg md:shadow-xl lg:shadow-2xl">
-          <video
-            className="w-full h-full object-cover"
-            autoPlay
-            loop
-            muted
-            playsInline
-            controls
-            preload="metadata"
-            webkit-playsinline="true"
-          >
-            <source src={beforeAfterVideo} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
+        {/* All Video Cards */}
+        <div className="w-full flex flex-col md:flex-row gap-6 md:gap-10">
+          {/* Original Before & After Video */}
+          <div className="flex-1 flex flex-col items-center">
+            <span className="text-lg md:text-xl font-bold mb-3" style={{ color: '#1393c4' }}>Before & After</span>
+            <div className="w-full aspect-video rounded-xl md:rounded-2xl overflow-hidden shadow-lg md:shadow-xl lg:shadow-2xl">
+              <video
+                className="w-full h-full object-cover"
+                autoPlay
+                loop
+                muted
+                playsInline
+                controls
+                preload="metadata"
+                webkit-playsinline="true"
+              >
+                <source src={beforeAfterVideo} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+
+          {/* Before Video */}
+          <div className="flex-1 flex flex-col items-center">
+            <span className="text-lg md:text-xl font-bold mb-3" style={{ color: '#1393c4' }}>Before</span>
+            <div className="w-full aspect-video rounded-xl md:rounded-2xl overflow-hidden shadow-lg md:shadow-xl lg:shadow-2xl">
+              <video
+                className="w-full h-full object-cover"
+                autoPlay
+                loop
+                muted
+                playsInline
+                controls
+                preload="metadata"
+                webkit-playsinline="true"
+              >
+                <source src={beforeVideo} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
+
+          {/* After Video */}
+          <div className="flex-1 flex flex-col items-center">
+            <span className="text-lg md:text-xl font-bold mb-3" style={{ color: '#1393c4' }}>After</span>
+            <div className="w-full aspect-video rounded-xl md:rounded-2xl overflow-hidden shadow-lg md:shadow-xl lg:shadow-2xl">
+              <video
+                className="w-full h-full object-cover"
+                autoPlay
+                loop
+                muted
+                playsInline
+                controls
+                preload="metadata"
+                webkit-playsinline="true"
+              >
+                <source src={afterVideo} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
+            </div>
+          </div>
         </div>
       </div>
-      
+
       {/* Contact Form Section */}
       <ContactForm />
       <Footer />
