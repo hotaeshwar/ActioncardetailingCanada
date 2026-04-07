@@ -20,15 +20,6 @@ const Navbar = () => {
     setServicesDropdownOpen(!servicesDropdownOpen);
   };
 
-  const handleInternalLink = (path) => {
-    setIsMenuOpen(false);
-    setServicesDropdownOpen(false);
-    setMobileServicesDropdownOpen(false);
-    setTimeout(() => {
-      navigate(path);
-    }, 50);
-  };
-
   const isServiceActive = (path) => {
     return location.pathname === path || location.pathname.startsWith(path + '/');
   };
@@ -142,15 +133,21 @@ const Navbar = () => {
                       <div className="vivid-ozone-dropdown absolute mt-2 w-56 lg:w-60 xl:w-64 rounded-md shadow-2xl overflow-hidden z-20">
                         <div className="py-1">
                           {serviceItems.map((service) => (
-                            <button
+                            <NavLink
                               key={service.name}
-                              onClick={() => handleInternalLink(service.to)}
-                              className={`service-menu-item w-full text-left block px-4 py-3 text-sm text-white transition-all duration-200 border-l-4 border-transparent ${
-                                isServiceActive(service.to) ? 'active-service-item' : ''
-                              }`}
+                              to={service.to}
+                              onClick={() => {
+                                setServicesDropdownOpen(false);
+                                setIsMenuOpen(false);
+                              }}
+                              className={({ isActive }) =>
+                                `service-menu-item w-full text-left block px-4 py-3 text-sm text-white transition-all duration-200 border-l-4 border-transparent ${
+                                  isActive ? 'active-service-item' : ''
+                                }`
+                              }
                             >
                               {service.name}
-                            </button>
+                            </NavLink>
                           ))}
                         </div>
                       </div>
@@ -250,15 +247,21 @@ const Navbar = () => {
                       {mobileServicesDropdownOpen && (
                         <div className="pl-4 sm:pl-6 md:pl-8 space-y-1">
                           {serviceItems.map((service) => (
-                            <button
+                            <NavLink
                               key={service.name}
-                              onClick={() => handleInternalLink(service.to)}
-                              className={`mobile-service-item w-full text-left block px-3 sm:px-4 py-2 sm:py-3 rounded-md text-xs sm:text-sm md:text-base font-medium text-gray-200 transition-all duration-200 border-l-2 ${
-                                isServiceActive(service.to) ? 'active-mobile-service' : ''
-                              }`}
+                              to={service.to}
+                              onClick={() => {
+                                setIsMenuOpen(false);
+                                setMobileServicesDropdownOpen(false);
+                              }}
+                              className={({ isActive }) =>
+                                `mobile-service-item w-full text-left block px-3 sm:px-4 py-2 sm:py-3 rounded-md text-xs sm:text-sm md:text-base font-medium text-gray-200 transition-all duration-200 border-l-2 ${
+                                  isActive ? 'active-mobile-service' : ''
+                                }`
+                              }
                             >
                               {service.name}
-                            </button>
+                            </NavLink>
                           ))}
                         </div>
                       )}
@@ -424,9 +427,7 @@ const Navbar = () => {
             border-left: 4px solid transparent;
             cursor: pointer;
             text-decoration: none !important;
-            border-top: none;
-            border-right: none;
-            border-bottom: none;
+            display: block;
           }
 
           .service-menu-item:hover {
@@ -437,7 +438,8 @@ const Navbar = () => {
             text-decoration: none !important;
           }
 
-          .service-menu-item.active-service-item {
+          .service-menu-item.active-service-item,
+          .service-menu-item.active {
             background: rgba(255, 255, 255, 0.3) !important;
             border-left-color: var(--vivid-ozone-accent) !important;
             color: white !important;
@@ -464,11 +466,9 @@ const Navbar = () => {
 
           .mobile-service-item {
             background: transparent;
-            border-top: none;
-            border-right: none;
-            border-bottom: none;
             cursor: pointer;
             text-decoration: none !important;
+            display: block;
           }
 
           .mobile-service-item:hover {
@@ -477,7 +477,8 @@ const Navbar = () => {
             border-left-color: white !important;
           }
 
-          .mobile-service-item.active-mobile-service {
+          .mobile-service-item.active-mobile-service,
+          .mobile-service-item.active {
             background: rgba(255, 255, 255, 0.2) !important;
             border-left-color: white !important;
             color: white !important;
