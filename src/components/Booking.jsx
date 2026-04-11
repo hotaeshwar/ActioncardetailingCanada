@@ -310,9 +310,9 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
   const getPackagePricing = (vehicleId) => {
     const pricingMap = {
       'coupe': { silver: 180, gold: 250, diamond: 390 },
-      'sedan': { silver: 180, gold: 250, diamond: 420 },
-      'compact-suv': { silver: 195, gold: 270, diamond: 420 },
-      'large-suv': { silver: 205, gold: 290, diamond: 450 }
+      'sedan': { silver: 199, gold: 270, diamond: 420 },
+      'compact-suv': { silver: 199, gold: 270, diamond: 420 },
+      'large-suv': { silver: 215, gold: 290, diamond: 450 }
     };
     return pricingMap[vehicleId] || pricingMap['coupe'];
   };
@@ -343,7 +343,6 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
         price: pricing.gold,
         features: [
           'Silver package plus Engine Shampoo',
-          'Headliner Shampoo',
           'Hand Carnauba Wax',
           'Trunk Shampoo',
           'Complete interior and exterior detailing package',
@@ -360,7 +359,7 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
           'Paint Clay bar treatment',
           'Tar removal',
           'Paint correction polish (One stage)',
-          'Extra Charge for Pet Hairs Removal and excessive tar removal and Heavily soiled vehicles'
+          'Extra Charge for Pet Hairs Removal, excessive tar removal and heavily soiled vehicles'
         ]
       }
     ];
