@@ -1,137 +1,162 @@
 import React, { useState, useEffect } from 'react';
 import { Clock, ChevronLeft, ChevronRight, Check, Car, Truck, X, Calendar, DollarSign, Package } from 'lucide-react';
-import { pdf, Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import jsPDF from 'jspdf';
 import actionCarLogo from '../assets/images/action car logo.png';
 import { db } from '../firebase';
 import { collection, getDocs, query } from 'firebase/firestore';
 
-// PDF Styles (same as Booking component)
-const styles = StyleSheet.create({
-  page: {
-    flexDirection: 'column',
-    backgroundColor: '#FFFFFF',
-    padding: 30,
-    fontFamily: 'Helvetica'
-  },
-  header: {
-    fontSize: 24,
-    marginBottom: 20,
-    color: '#1393c4',
-    textAlign: 'center',
-    fontWeight: 'bold'
-  },
-  section: {
-    margin: 10,
-    padding: 10,
-    flexGrow: 1
-  },
-  title: {
-    fontSize: 18,
-    marginBottom: 10,
-    color: '#1393c4',
-    fontWeight: 'bold'
-  },
-  subtitle: {
-    fontSize: 14,
-    marginBottom: 5,
-    color: '#1393c4',
-    fontWeight: 'bold'
-  },
-  text: {
-    fontSize: 12,
-    marginBottom: 5,
-    color: '#333333'
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 5
-  },
-  divider: {
-    borderBottom: '1pt solid #1393c4',
-    marginVertical: 10
-  },
-  total: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1393c4',
-    marginTop: 10
-  },
-  bookingId: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: '#333333',
-    marginBottom: 10,
-    textAlign: 'center'
-  }
-});
+// PDF Generation Function using jsPDF
+const generatePDF = (bookingData, selectedVehicle, selectedPackage, selectedAddOns, selectedDate, selectedTime, bookingId, getTotalPrice) => {
+  const doc = new jsPDF();
+  let yPos = 20;
 
-// Paint Polishing PDF Component (same structure as Booking PDF)
-const PaintPolishingPDF = ({ bookingData, selectedVehicle, selectedPackage, selectedAddOns, selectedDate, selectedTime, bookingId, getTotalPrice }) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      <View style={styles.section}>
-        <Text style={styles.header}>Action Car Detailing</Text>
-        <Text style={styles.bookingId}>Booking Confirmation: {bookingId}</Text>
+  // Header
+  doc.setFontSize(24);
+  doc.setTextColor(19, 147, 196);
+  doc.text("Action Car Detailing", 105, yPos, { align: 'center' });
+  yPos += 15;
+  
+  doc.setFontSize(14);
+  doc.setTextColor(51, 51, 51);
+  doc.text(`Booking Confirmation: ${bookingId}`, 105, yPos, { align: 'center' });
+  yPos += 20;
 
-        <Text style={styles.title}>Customer Information</Text>
-        <Text style={styles.text}>Name: {bookingData.firstName} {bookingData.lastName}</Text>
-        <Text style={styles.text}>Email: {bookingData.email}</Text>
-        <Text style={styles.text}>Phone: {bookingData.phone}</Text>
-        <Text style={styles.text}>Vehicle: {bookingData.vehicleMake}</Text>
+  // Customer Information Section
+  doc.setFontSize(16);
+  doc.setTextColor(19, 147, 196);
+  doc.setFont(undefined, 'bold');
+  doc.text("Customer Information", 20, yPos);
+  yPos += 10;
+  
+  doc.setFontSize(11);
+  doc.setFont(undefined, 'normal');
+  doc.setTextColor(51, 51, 51);
+  doc.text(`Name: ${bookingData.firstName} ${bookingData.lastName}`, 20, yPos);
+  yPos += 8;
+  doc.text(`Email: ${bookingData.email}`, 20, yPos);
+  yPos += 8;
+  doc.text(`Phone: ${bookingData.phone}`, 20, yPos);
+  yPos += 8;
+  doc.text(`Vehicle: ${bookingData.vehicleMake}`, 20, yPos);
+  yPos += 15;
 
-        <View style={styles.divider} />
+  // Divider
+  doc.setDrawColor(19, 147, 196);
+  doc.line(20, yPos, 190, yPos);
+  yPos += 10;
 
-        <Text style={styles.title}>Appointment Details</Text>
-        <Text style={styles.text}>Date: {selectedDate}</Text>
-        <Text style={styles.text}>Time: {selectedTime}</Text>
+  // Appointment Details
+  doc.setFontSize(16);
+  doc.setTextColor(19, 147, 196);
+  doc.setFont(undefined, 'bold');
+  doc.text("Appointment Details", 20, yPos);
+  yPos += 10;
+  
+  doc.setFontSize(11);
+  doc.setFont(undefined, 'normal');
+  doc.setTextColor(51, 51, 51);
+  doc.text(`Date: ${selectedDate}`, 20, yPos);
+  yPos += 8;
+  doc.text(`Time: ${selectedTime}`, 20, yPos);
+  yPos += 15;
 
-        <View style={styles.divider} />
+  // Divider
+  doc.setDrawColor(19, 147, 196);
+  doc.line(20, yPos, 190, yPos);
+  yPos += 10;
 
-        <Text style={styles.title}>Service Details</Text>
-        <Text style={styles.text}>Service Type: Paint Polishing</Text>
-        <Text style={styles.text}>Vehicle Type: {selectedVehicle?.name}</Text>
-        <Text style={styles.text}>Package: {selectedPackage?.name}</Text>
-        <Text style={styles.text}>Duration: {selectedPackage?.duration}</Text>
+  // Service Details
+  doc.setFontSize(16);
+  doc.setTextColor(19, 147, 196);
+  doc.setFont(undefined, 'bold');
+  doc.text("Service Details", 20, yPos);
+  yPos += 10;
+  
+  doc.setFontSize(11);
+  doc.setFont(undefined, 'normal');
+  doc.setTextColor(51, 51, 51);
+  doc.text(`Service Type: Paint Polishing`, 20, yPos);
+  yPos += 8;
+  doc.text(`Vehicle Type: ${selectedVehicle?.name}`, 20, yPos);
+  yPos += 8;
+  doc.text(`Package: ${selectedPackage?.name}`, 20, yPos);
+  yPos += 8;
+  doc.text(`Duration: ${selectedPackage?.duration}`, 20, yPos);
+  yPos += 15;
 
-        <View style={styles.divider} />
+  // Divider
+  doc.setDrawColor(19, 147, 196);
+  doc.line(20, yPos, 190, yPos);
+  yPos += 10;
 
-        <Text style={styles.title}>Cost Breakdown</Text>
-        <View style={styles.row}>
-          <Text style={styles.text}>{selectedPackage?.name}</Text>
-          <Text style={styles.text}>${selectedPackage?.price}.00 CAD</Text>
-        </View>
+  // Cost Breakdown
+  doc.setFontSize(16);
+  doc.setTextColor(19, 147, 196);
+  doc.setFont(undefined, 'bold');
+  doc.text("Cost Breakdown", 20, yPos);
+  yPos += 10;
+  
+  doc.setFontSize(11);
+  doc.setFont(undefined, 'normal');
+  doc.setTextColor(51, 51, 51);
+  doc.text(`${selectedPackage?.name}`, 20, yPos);
+  doc.text(`$${selectedPackage?.price}.00 CAD`, 150, yPos);
+  yPos += 8;
 
-        {selectedAddOns.map((addon) => (
-          <View key={addon.id} style={styles.row}>
-            <Text style={styles.text}>+ {addon.name}</Text>
-            <Text style={styles.text}>${addon.price}.00 CAD</Text>
-          </View>
-        ))}
+  // Add-ons
+  selectedAddOns.forEach((addon) => {
+    doc.text(`+ ${addon.name}`, 20, yPos);
+    doc.text(`$${addon.price}.00 CAD`, 150, yPos);
+    yPos += 8;
+  });
 
-        <View style={styles.divider} />
+  yPos += 5;
+  doc.setDrawColor(19, 147, 196);
+  doc.line(20, yPos, 190, yPos);
+  yPos += 10;
 
-        <View style={styles.row}>
-          <Text style={styles.total}>Total Cost:</Text>
-          <Text style={styles.total}>${getTotalPrice()}.00 CAD</Text>
-        </View>
+  // Total
+  doc.setFontSize(14);
+  doc.setFont(undefined, 'bold');
+  doc.setTextColor(19, 147, 196);
+  doc.text("Total Cost:", 20, yPos);
+  doc.text(`$${getTotalPrice()}.00 CAD`, 150, yPos);
+  yPos += 20;
 
-        <View style={styles.divider} />
+  // Divider
+  doc.setDrawColor(19, 147, 196);
+  doc.line(20, yPos, 190, yPos);
+  yPos += 10;
 
-        <Text style={styles.subtitle}>Important Notes:</Text>
-        <Text style={styles.text}>• We will confirm your appointment within 24 hours</Text>
-        <Text style={styles.text}>• Please arrive on time for your scheduled appointment</Text>
-        <Text style={styles.text}>• For afternoon appointments, vehicle pickup may be the next day</Text>
-        <Text style={styles.text}>• Contact us if you need to reschedule or cancel</Text>
-        <Text style={styles.text}>• Email: actioncardetailing@gmail.com</Text>
+  // Important Notes
+  doc.setFontSize(14);
+  doc.setTextColor(19, 147, 196);
+  doc.setFont(undefined, 'bold');
+  doc.text("Important Notes:", 20, yPos);
+  yPos += 10;
+  
+  doc.setFontSize(10);
+  doc.setFont(undefined, 'normal');
+  doc.setTextColor(51, 51, 51);
+  doc.text("• We will confirm your appointment within 24 hours", 20, yPos);
+  yPos += 6;
+  doc.text("• Please arrive on time for your scheduled appointment", 20, yPos);
+  yPos += 6;
+  doc.text("• For afternoon appointments, vehicle pickup may be the next day", 20, yPos);
+  yPos += 6;
+  doc.text("• Contact us if you need to reschedule or cancel", 20, yPos);
+  yPos += 6;
+  doc.text("• Email: actioncardetailing@gmail.com", 20, yPos);
+  yPos += 15;
 
-        <Text style={[styles.text, { marginTop: 20, fontSize: 10 }]}>
-          Generated on: {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}
-        </Text>
-      </View>
-    </Page>
-  </Document>
-);
+  // Footer
+  doc.setFontSize(9);
+  doc.setTextColor(128, 128, 128);
+  doc.text(`Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}`, 20, yPos);
+
+  // Save the PDF
+  doc.save(`Action-Car-Detailing-Paint-Polishing-${bookingId}.pdf`);
+};
 
 const PaintPolishingForm = () => {
   const [selectedVehicle, setSelectedVehicle] = useState(null);
@@ -155,7 +180,7 @@ const PaintPolishingForm = () => {
     message: ''
   });
 
-  // Load blocked dates from Firebase - Updated to match Booking component structure
+  // Load blocked dates from Firebase
   useEffect(() => {
     const loadBlockedDates = async () => {
       try {
@@ -177,7 +202,7 @@ const PaintPolishingForm = () => {
     loadBlockedDates();
   }, []);
 
-  // Check if a specific date is blocked - UPDATED: Saturdays are NOT blocked
+  // Check if a specific date is blocked
   const isDateBlocked = (day) => {
     if (!day) return false;
 
@@ -209,10 +234,10 @@ const PaintPolishingForm = () => {
       return true;
     }
     
-    return false; // Saturdays and weekdays are not blocked by default
+    return false;
   };
 
-  // Check if a specific time slot is blocked - UPDATED: Saturday mornings available, afternoons blocked
+  // Check if a specific time slot is blocked
   const isTimeSlotBlocked = (time) => {
     if (!selectedDate || loadingBlockedDates) {
       return false;
@@ -236,13 +261,11 @@ const PaintPolishingForm = () => {
     
     if (blockedDateInfo) {
       if (blockedDateInfo.isAutoSunday) {
-        return true; // Sundays: all times blocked
+        return true;
       }
       
       if (blockedDateInfo.isAutoSaturday) {
         if (blockedDateInfo.blockedTill) {
-          // UPDATED: For Saturdays, only block times AT AND AFTER 12 PM
-          // This makes Saturday mornings available for booking
           return time >= blockedDateInfo.blockedTill;
         } else {
           return time >= '12:00';
@@ -250,7 +273,7 @@ const PaintPolishingForm = () => {
       }
       
       if (blockedDateInfo.type === 'full') {
-        return true; // Full day blocks
+        return true;
       }
       
       if (blockedDateInfo.type === 'saturday-partial') {
@@ -268,11 +291,10 @@ const PaintPolishingForm = () => {
     const dayOfWeekFromDate = dateObj.getDay();
     
     if (dayOfWeekFromDate === 0) {
-      return true; // Sunday: all times blocked
+      return true;
     }
     
     if (dayOfWeekFromDate === 6) {
-      // UPDATED: For Saturdays, only block times AT AND AFTER 12 PM
       return time >= '12:00';
     }
     
@@ -458,7 +480,7 @@ const PaintPolishingForm = () => {
     if (day && !isPastDate(day) && !isDateBlocked(day)) {
       const selected = `${months[currentMonth.getMonth()]} ${day}, ${currentMonth.getFullYear()}`;
       setSelectedDate(selected);
-      setSelectedTime(''); // Reset selected time when date changes
+      setSelectedTime('');
       
       setTimeout(() => {
         const timeSlots = document.querySelector('.grid.grid-cols-2.sm\\:grid-cols-3.md\\:grid-cols-4.lg\\:grid-cols-6');
@@ -492,11 +514,9 @@ const PaintPolishingForm = () => {
     }));
   };
 
-  // Generate shorter booking ID like "PPA1B2C3"
   const generateBookingId = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let result = 'PP';
-    // Add 6 characters (mix of letters and numbers)
     for (let i = 0; i < 6; i++) {
       result += chars.charAt(Math.floor(Math.random() * chars.length));
     }
@@ -512,36 +532,8 @@ const PaintPolishingForm = () => {
   const generateAndDownloadPDF = async (bookingId) => {
     setIsGeneratingPDF(true);
     try {
-      const pdfDoc = (
-        <PaintPolishingPDF
-          bookingId={bookingId}
-          selectedVehicle={selectedVehicle}
-          selectedPackage={selectedPackage}
-          selectedAddOns={selectedAddOns}
-          selectedDate={selectedDate}
-          selectedTime={selectedTime}
-          bookingData={bookingData}
-          getTotalPrice={getTotalPrice}
-        />
-      );
-
-      const blob = await pdf(pdfDoc).toBlob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `Action-Car-Detailing-Paint-Polishing-${bookingId}.pdf`;
-      a.style.display = 'none';
-
-      document.body.appendChild(a);
-      a.click();
-
-      setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }, 100);
-
+      generatePDF(bookingData, selectedVehicle, selectedPackage, selectedAddOns, selectedDate, selectedTime, bookingId, getTotalPrice);
       return true;
-
     } catch (error) {
       console.error('Error generating PDF:', error);
       return false;
@@ -550,7 +542,6 @@ const PaintPolishingForm = () => {
     }
   };
 
-  // Send only ONE email to the customer with complete cost breakdown and phone number
   const sendEmail = async (bookingId) => {
     const emailFormData = new FormData();
     
@@ -561,7 +552,6 @@ const PaintPolishingForm = () => {
     emailFormData.append('email', bookingData.email);
     emailFormData.append('reply_to', 'actioncardetailing@gmail.com');
 
-    // Create detailed cost breakdown
     const costBreakdown = `
 Package Cost:
 • ${selectedPackage.name}: $${selectedPackage.price}.00 CAD
@@ -574,7 +564,6 @@ ${selectedAddOns.map(addon => `• ${addon.name}: $${addon.price}.00 CAD`).join(
 Total Cost: $${getTotalPrice()}.00 CAD
     `;
 
-    // Single email with the desired format
     emailFormData.append('message', `
 ✅ ACTION CAR DETAILING – AUTOMATED BOOKING CONFIRMATION EMAIL
 
@@ -665,16 +654,12 @@ Passion for Detail
     const bookingId = generateBookingId();
 
     try {
-      // Generate and download PDF first
       await generateAndDownloadPDF(bookingId);
-
-      // Send only ONE email to the customer
       const emailResult = await sendEmail(bookingId);
 
       if (emailResult.success) {
         alert(`Booking submitted successfully!\n\nYour booking ID is: ${bookingId}\n\nConfirmation email has been sent and PDF has been downloaded.\n\nWe will confirm your appointment within 24 hours.`);
         
-        // Reset form
         setSelectedVehicle(null);
         setSelectedPackage(null);
         setSelectedAddOns([]);
@@ -689,7 +674,6 @@ Passion for Detail
           message: ''
         });
         
-        // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         throw new Error('Email sending failed');
