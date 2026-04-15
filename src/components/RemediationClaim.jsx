@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { CheckCircle, AlertTriangle, Droplets, Flame, Shield, Bug, Car, X, ChevronLeft, ChevronRight, ChevronDown, Phone, Mail, MapPin, Clock } from 'lucide-react';
-import { pdf, Document, Page, Text, View, StyleSheet, Image } from '@react-pdf/renderer';
+import jsPDF from 'jspdf';
 import Footer from '../components/Footer';
 import ContactForm from '../components/ContactForm';
 import References from '../components/Reference1';
@@ -11,242 +11,122 @@ import actionCarLogo from '../assets/images/action car logo.png';
 import { db } from '../firebase';
 import { collection, getDocs, query } from 'firebase/firestore';
 
-// Create styles for PDF
-const styles = StyleSheet.create({
-  page: {
-    flexDirection: 'column',
-    backgroundColor: '#FFFFFF',
-    padding: 30,
-    fontFamily: 'Helvetica'
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#FFFFFF',
-    padding: 20,
-    marginBottom: 20,
-    borderRadius: 5,
-    borderBottom: '2px solid #1393c4'
-  },
-  logo: {
-    width: 50,
-    height: 50,
-    marginRight: 15
-  },
-  headerTextContainer: {
-    flex: 1
-  },
-  headerText: {
-    color: '#1393c4',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 4
-  },
-  subHeader: {
-    color: '#1393c4',
-    fontSize: 10,
-    opacity: 0.8
-  },
-  claimId: {
-    backgroundColor: '#1393c4',
-    color: '#FFFFFF',
-    padding: 10,
-    textAlign: 'center',
-    fontSize: 12,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    borderRadius: 3
-  },
-  section: {
-    marginBottom: 15,
-    padding: 15,
-    backgroundColor: '#f8f9fa',
-    borderRadius: 5,
-    borderLeft: '3px solid #1393c4'
-  },
-  sectionTitle: {
-    fontSize: 12,
-    fontWeight: 'bold',
-    color: '#1393c4',
-    marginBottom: 8,
-    borderBottom: '1px solid #1393c4',
-    paddingBottom: 3
-  },
-  grid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap'
-  },
-  gridItem: {
-    width: '50%',
-    marginBottom: 6
-  },
-  label: {
-    fontSize: 8,
-    color: '#1393c4',
-    fontWeight: 'bold',
-    marginBottom: 2
-  },
-  value: {
-    fontSize: 8,
-    color: '#333333'
-  },
-  notes: {
-    backgroundColor: '#fff3cd',
-    borderLeft: '3px solid #ffc107',
-    padding: 8,
-    marginTop: 12,
-    borderRadius: 3
-  },
-  notesText: {
-    fontSize: 7,
-    color: '#856404'
-  },
-  footer: {
-    marginTop: 20,
-    padding: 12,
-    backgroundColor: '#f8f9fa',
-    textAlign: 'center',
-    borderRadius: 5,
-    borderTop: '2px solid #1393c4'
-  },
-  footerText: {
-    fontSize: 7,
-    color: '#666666',
-    marginBottom: 2
-  },
-  contactInfo: {
-    color: '#1393c4',
-    fontWeight: 'bold'
-  },
-  list: {
-    marginLeft: 10,
-    marginTop: 3
-  },
-  listItem: {
-    fontSize: 7,
-    marginBottom: 2
+// PDF Generation Function using jsPDF
+const generatePDF = (claimId, formData, selectedDate, selectedTime) => {
+  const doc = new jsPDF();
+  let yPos = 20;
+
+  // Add Logo (if you want to add image, you'll need to convert to base64 or use URL)
+  doc.setFontSize(18);
+  doc.setTextColor(19, 147, 196);
+  doc.text("ACTION CAR DETAILING", 20, yPos);
+  yPos += 8;
+  
+  doc.setFontSize(10);
+  doc.setTextColor(100, 100, 100);
+  doc.text("MPI Remediation Services", 20, yPos);
+  yPos += 15;
+
+  // Claim ID
+  doc.setFillColor(19, 147, 196);
+  doc.rect(20, yPos, 170, 10, 'F');
+  doc.setTextColor(255, 255, 255);
+  doc.setFontSize(11);
+  doc.text(`MPI REMEDIATION CLAIM - ${claimId}`, 25, yPos + 7);
+  yPos += 20;
+
+  // Claim Summary Section
+  doc.setTextColor(19, 147, 196);
+  doc.setFontSize(12);
+  doc.setFont(undefined, 'bold');
+  doc.text("Claim Summary", 20, yPos);
+  yPos += 8;
+  
+  doc.setFontSize(9);
+  doc.setFont(undefined, 'normal');
+  doc.setTextColor(0, 0, 0);
+  doc.text(`Claim Reference: ${claimId}`, 20, yPos);
+  yPos += 6;
+  doc.text(`Service Type: MPI Remediation Claim`, 20, yPos);
+  yPos += 6;
+  doc.text(`Appointment Date: ${selectedDate || 'N/A'}`, 20, yPos);
+  yPos += 6;
+  doc.text(`Appointment Time: ${selectedTime || 'N/A'}`, 20, yPos);
+  yPos += 12;
+
+  // Customer Information Section
+  doc.setTextColor(19, 147, 196);
+  doc.setFontSize(12);
+  doc.setFont(undefined, 'bold');
+  doc.text("Customer Information", 20, yPos);
+  yPos += 8;
+  
+  doc.setFontSize(9);
+  doc.setFont(undefined, 'normal');
+  doc.setTextColor(0, 0, 0);
+  doc.text(`Full Name: ${formData.name || 'N/A'}`, 20, yPos);
+  yPos += 6;
+  doc.text(`Email: ${formData.email || 'N/A'}`, 20, yPos);
+  yPos += 6;
+  doc.text(`Phone: ${formData.phone || 'N/A'}`, 20, yPos);
+  yPos += 6;
+  doc.text(`MPI Claim Number: ${formData.mpiClaimNo || 'N/A'}`, 20, yPos);
+  yPos += 6;
+  doc.text(`MPI Service Centre: ${formData.mpiServiceCentre || 'N/A'}`, 20, yPos);
+  yPos += 6;
+  doc.text(`Vehicle Make/Model: ${formData.vehicleMakeModel || 'N/A'}`, 20, yPos);
+  yPos += 12;
+
+  // Service Details
+  doc.setTextColor(19, 147, 196);
+  doc.setFontSize(12);
+  doc.setFont(undefined, 'bold');
+  doc.text("Service Details", 20, yPos);
+  yPos += 8;
+  
+  doc.setFontSize(9);
+  doc.setFont(undefined, 'normal');
+  doc.setTextColor(0, 0, 0);
+  doc.text(`Preferred Appointment: ${formData.preferredAppointment || 'N/A'}`, 20, yPos);
+  yPos += 8;
+  
+  if (formData.message && formData.message !== 'Tell us if your vehicle is driveable, if any other damage you have noticed') {
+    doc.text("Additional Information:", 20, yPos);
+    yPos += 5;
+    const splitMessage = doc.splitTextToSize(formData.message, 170);
+    doc.text(splitMessage, 20, yPos);
+    yPos += (splitMessage.length * 5) + 5;
   }
-});
 
-// PDF Document Component for Remediation Claims
-const RemediationPDF = ({ 
-  claimId, 
-  formData, 
-  selectedDate, 
-  selectedTime 
-}) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      {/* Header with Logo */}
-      <View style={styles.header}>
-        <Image
-          src={actionCarLogo}
-          style={styles.logo}
-        />
-        <View style={styles.headerTextContainer}>
-          <Text style={styles.headerText}>ACTION CAR DETAILING</Text>
-          <Text style={styles.subHeader}>MPI Remediation Services</Text>
-        </View>
-      </View>
+  // Important Notes
+  doc.setFillColor(255, 243, 205);
+  doc.rect(20, yPos, 170, 50, 'F');
+  doc.setTextColor(133, 100, 4);
+  doc.setFontSize(9);
+  doc.setFont(undefined, 'bold');
+  doc.text("Important Notes:", 25, yPos + 5);
+  doc.setFont(undefined, 'normal');
+  doc.setFontSize(8);
+  doc.text("• We will contact you within 24 hours to confirm your MPI remediation claim", 25, yPos + 12);
+  doc.text("• Please have your MPI claim number and vehicle available for inspection", 25, yPos + 19);
+  doc.text("• Bring all MPI documentation to your appointment", 25, yPos + 26);
+  doc.text("• Contact us if you need to reschedule or have any questions", 25, yPos + 33);
+  doc.text("• Please bring this confirmation to your appointment", 25, yPos + 40);
+  yPos += 58;
 
-      {/* Claim ID */}
-      <View style={styles.claimId}>
-        <Text>MPI REMEDIATION CLAIM - {claimId}</Text>
-      </View>
+  // Footer
+  doc.setFillColor(248, 249, 250);
+  doc.rect(20, yPos, 170, 40, 'F');
+  doc.setTextColor(100, 100, 100);
+  doc.setFontSize(8);
+  doc.text("Thank you for choosing Action Car Detailing for your MPI remediation needs", 25, yPos + 8);
+  doc.text("Email: actioncardetailing@gmail.com", 25, yPos + 16);
+  doc.text(`Claim Reference: ${claimId}`, 25, yPos + 24);
+  doc.text(`Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}`, 25, yPos + 32);
 
-      {/* Claim Summary */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Claim Summary</Text>
-        <View style={styles.grid}>
-          <View style={styles.gridItem}>
-            <Text style={styles.label}>Claim Reference:</Text>
-            <Text style={styles.value}>{claimId}</Text>
-          </View>
-          <View style={styles.gridItem}>
-            <Text style={styles.label}>Service Type:</Text>
-            <Text style={styles.value}>MPI Remediation Claim</Text>
-          </View>
-          <View style={styles.gridItem}>
-            <Text style={styles.label}>Appointment Date:</Text>
-            <Text style={styles.value}>{selectedDate || 'N/A'}</Text>
-          </View>
-          <View style={styles.gridItem}>
-            <Text style={styles.label}>Appointment Time:</Text>
-            <Text style={styles.value}>{selectedTime || 'N/A'}</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Customer Information */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Customer Information</Text>
-        <View style={styles.grid}>
-          <View style={styles.gridItem}>
-            <Text style={styles.label}>Full Name:</Text>
-            <Text style={styles.value}>{formData.name || 'N/A'}</Text>
-          </View>
-          <View style={styles.gridItem}>
-            <Text style={styles.label}>Email:</Text>
-            <Text style={styles.value}>{formData.email || 'N/A'}</Text>
-          </View>
-          <View style={styles.gridItem}>
-            <Text style={styles.label}>Phone:</Text>
-            <Text style={styles.value}>{formData.phone || 'N/A'}</Text>
-          </View>
-          <View style={styles.gridItem}>
-            <Text style={styles.label}>MPI Claim Number:</Text>
-            <Text style={styles.value}>{formData.mpiClaimNo || 'N/A'}</Text>
-          </View>
-          <View style={styles.gridItem}>
-            <Text style={styles.label}>MPI Service Centre:</Text>
-            <Text style={styles.value}>{formData.mpiServiceCentre || 'N/A'}</Text>
-          </View>
-          <View style={styles.gridItem}>
-            <Text style={styles.label}>Vehicle Make/Model:</Text>
-            <Text style={styles.value}>{formData.vehicleMakeModel || 'N/A'}</Text>
-          </View>
-        </View>
-      </View>
-
-      {/* Service Details */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Service Details</Text>
-        <View style={styles.grid}>
-          <View style={styles.gridItem}>
-            <Text style={styles.label}>Preferred Appointment:</Text>
-            <Text style={styles.value}>{formData.preferredAppointment || 'N/A'}</Text>
-          </View>
-        </View>
-        {formData.message && formData.message !== 'Tell us if your vehicle is driveable, if any other damage you have noticed' && (
-          <View style={{ marginTop: 8 }}>
-            <Text style={styles.label}>Additional Information:</Text>
-            <Text style={styles.value}>{formData.message}</Text>
-          </View>
-        )}
-      </View>
-
-      {/* Important Notes */}
-      <View style={styles.notes}>
-        <Text style={[styles.label, { color: '#856404' }]}>Important Notes:</Text>
-        <View style={styles.list}>
-          <Text style={styles.notesText}>• We will contact you within 24 hours to confirm your MPI remediation claim</Text>
-          <Text style={styles.notesText}>• Please have your MPI claim number and vehicle available for inspection</Text>
-          <Text style={styles.notesText}>• Bring all MPI documentation to your appointment</Text>
-          <Text style={styles.notesText}>• Contact us if you need to reschedule or have any questions</Text>
-          <Text style={styles.notesText}>• Please bring this confirmation to your appointment</Text>
-        </View>
-      </View>
-
-      {/* Footer */}
-      <View style={styles.footer}>
-        <Text style={styles.footerText}>Thank you for choosing <Text style={styles.contactInfo}>Action Car Detailing</Text> for your MPI remediation needs</Text>
-        <Text style={styles.footerText}>Email: <Text style={styles.contactInfo}>actioncardetailing@gmail.com</Text></Text>
-        <Text style={styles.footerText}>Claim Reference: <Text style={styles.contactInfo}>{claimId}</Text></Text>
-        <Text style={styles.footerText}>Generated on: {new Date().toLocaleDateString()} at {new Date().toLocaleTimeString()}</Text>
-      </View>
-    </Page>
-  </Document>
-);
+  // Save the PDF
+  doc.save(`MPI-Remediation-Claim-${claimId}.pdf`);
+};
 
 const RemediationClaim = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -321,6 +201,10 @@ const RemediationClaim = () => {
     
     // Convert selectedDate to YYYY-MM-DD format
     const dateParts = selectedDate.split(' ');
+    const months = [
+      'January', 'February', 'March', 'April', 'May', 'June',
+      'July', 'August', 'September', 'October', 'November', 'December'
+    ];
     const monthIndex = months.indexOf(dateParts[0]);
     const day = parseInt(dateParts[1].replace(',', ''));
     const year = parseInt(dateParts[2]);
@@ -517,7 +401,7 @@ const RemediationClaim = () => {
     }));
   };
 
-  // FIXED: Generate shorter claim ID like "REMCLA1B2C3"
+  // Generate shorter claim ID like "REMCLA1B2C3"
   const generateClaimId = () => {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     let result = 'REMCL';
@@ -528,46 +412,16 @@ const RemediationClaim = () => {
     return result;
   };
 
-  // FIXED: PDF generation with image handling
+  // PDF generation using jsPDF
   const generateAndDownloadPDF = async (claimId) => {
     setIsGeneratingPDF(true);
     try {
-      // Create the PDF document
-      const pdfDoc = (
-        <RemediationPDF
-          claimId={claimId}
-          formData={formData}
-          selectedDate={selectedDate}
-          selectedTime={selectedTime}
-        />
-      );
-
-      // Generate PDF as blob with error handling
-      const blob = await pdf(pdfDoc).toBlob();
-      
-      // Create download link
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `MPI-Remediation-Claim-${claimId}.pdf`;
-      a.style.display = 'none';
-
-      // Append to body and trigger download
-      document.body.appendChild(a);
-      a.click();
-
-      // Cleanup
-      setTimeout(() => {
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }, 100);
-
+      generatePDF(claimId, formData, selectedDate, selectedTime);
       return true;
-
     } catch (error) {
       console.error('Error generating PDF:', error);
       
-      // Fallback: Create a simple text file with image reference
+      // Fallback: Create a simple text file
       try {
         const fallbackContent = `
 ACTION CAR DETAILING - MPI REMEDIATION CLAIM
@@ -625,18 +479,17 @@ Generated on: ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeStr
     }
   };
 
-  // FIXED: Send only ONE email to the customer with the new format
+  // Send email to the customer
   const sendEmail = async (claimId) => {
     const emailFormData = new FormData();
     
     emailFormData.append('access_key', 'ba99ae3b-60cc-404c-b207-2a42e86aafb6');
-    emailFormData.append('autoresponse', 'false'); // Prevent auto-replies
+    emailFormData.append('autoresponse', 'false');
     emailFormData.append('subject', `MPI Remediation Claim Received – Confirmation Pending`);
     emailFormData.append('from_name', 'Action Car Detailing');
-    emailFormData.append('email', formData.email); // Send to customer only
+    emailFormData.append('email', formData.email);
     emailFormData.append('reply_to', 'actioncardetailing@gmail.com');
 
-    // Single email with the desired format
     emailFormData.append('message', `
 ✅ ACTION CAR DETAILING – AUTOMATED MPI REMEDIATION CLAIM CONFIRMATION
 
@@ -727,10 +580,10 @@ Passion for Detail
     const claimId = generateClaimId();
 
     try {
-      // Generate and download PDF first
-      const pdfSuccess = await generateAndDownloadPDF(claimId);
+      // Generate and download PDF
+      await generateAndDownloadPDF(claimId);
 
-      // FIXED: Send only ONE email to the customer
+      // Send email to customer
       const emailResult = await sendEmail(claimId);
 
       if (emailResult.success) {
