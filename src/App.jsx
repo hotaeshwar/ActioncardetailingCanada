@@ -175,24 +175,31 @@ function AppContent() {
   );
 }
 
-// Flash Screen Component
+// Flash Screen Component — revamped with white background
 function FlashScreen({ show, onHide }) {
   if (!show) return null;
 
   return (
-    <div 
-      className="fixed inset-0 z-[9999] flex items-center justify-center bg-gradient-to-br from-gray-900 via-black to-gray-800"
+    <div
+      className="fixed inset-0 z-[9999] flex items-center justify-center"
+      style={{ background: '#ffffff' }}
     >
-      <div className="flex flex-col items-center justify-center animate-pulse">
-        <img 
-          src={actionCarLogo} 
-          alt="Action Car Logo" 
-          className="w-64 h-64 object-contain mb-4 drop-shadow-2xl"
+      <div className="flex flex-col items-center justify-center">
+        <img
+          src={actionCarLogo}
+          alt="Action Car Logo"
+          className="w-56 h-56 object-contain mb-5"
         />
-        <div className="flex space-x-2 mt-4">
-          <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-          <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-          <div className="w-3 h-3 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+        <p className="text-sm font-medium tracking-widest text-blue-600 uppercase mb-1">
+          Action Car Detailing
+        </p>
+        <p className="text-xs text-gray-400 mb-6">
+          Winnipeg's Premier Detailing
+        </p>
+        <div className="flex space-x-2">
+          <div className="w-2.5 h-2.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+          <div className="w-2.5 h-2.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+          <div className="w-2.5 h-2.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
         </div>
       </div>
     </div>
