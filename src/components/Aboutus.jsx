@@ -3,7 +3,8 @@ import { Car, Medal, ShieldCheck, Wrench, MapPin } from 'lucide-react';
 import aboutUsVideo from '../assets/images/about us banner.mp4';
 import Footer from '../components/Footer';
 import ContactForm from '../components/ContactForm';
-import References from '../components/Reference1'; // Added References import
+import References from '../components/Reference1';
+import SEO, { KEYWORDS } from '../components/SEO';
 
 const ActionCarAbout = () => {
   const [displayedText, setDisplayedText] = useState('');
@@ -81,12 +82,12 @@ const ActionCarAbout = () => {
         setCurrentCharIndex(prev => prev + 1);
 
         if (currentCharIndex === currentPhrase.length) {
-          setTimeout(() => setIsDeleting(true), 2000); // Pause before deleting
+          setTimeout(() => setIsDeleting(true), 2000);
         }
       }
     };
 
-    const typingSpeed = isDeleting ? 75 : 150; // Slower for better readability
+    const typingSpeed = isDeleting ? 75 : 150;
     const timer = setTimeout(typewriterEffect, typingSpeed);
 
     return () => clearTimeout(timer);
@@ -122,6 +123,23 @@ const ActionCarAbout = () => {
 
   return (
     <div className="min-h-screen bg-white">
+
+      {/* SEO - Updated with comprehensive SEO component */}
+      <SEO
+        title="About Us | Best Car Detailing Winnipeg | XPEL Certified | Action Car Detailing"
+        description="Action Car Detailing Winnipeg. 14+ years experience, A+ BBB rating, MPI accredited, XPEL certified. Consumer Choice Award Winner 2026. Best car detailing services including ceramic coating, PPF and window tinting. Free quotes available. Call (204) 775-0005."
+        canonical="https://actioncardetailing.ca/about-us"
+        keywords={KEYWORDS.detailing}
+        serviceType="Professional Auto Detailing Services"
+        serviceDesc="XPEL certified auto detailing studio in Winnipeg. 14+ years experience, Consumer Choice Award Winner 2026. Offering ceramic coating, PPF, window tinting, and paintless dent removal."
+        breadcrumbs={[
+          { name: 'Home', url: 'https://actioncardetailing.ca' },
+          { name: 'About Us', url: 'https://actioncardetailing.ca/about-us' }
+        ]}
+        image="https://actioncardetailing.ca/images/about-us-og.jpg"
+      />
+      <h1 className="sr-only">About Action Car Detailing Winnipeg | XPEL Certified Installers | Best Car Detailing Near Me | Consumer Choice Award Winner 2026</h1>
+
       {/* Hero Video Section */}
       <div className="relative w-full overflow-hidden bg-white mobile-video-hero">
         <div className="absolute inset-0">
@@ -323,7 +341,7 @@ const ActionCarAbout = () => {
         </div>
       </section>
       
-      {/* References Section - Added before ContactForm */}
+      {/* References Section */}
       <References />
       
       <ContactForm />
@@ -336,7 +354,6 @@ const ActionCarAbout = () => {
           min-height: 400px;
         }
         
-        /* Mobile */
         @media (max-width: 767px) {
           .mobile-video-hero {
             height: 50vh;
@@ -345,7 +362,6 @@ const ActionCarAbout = () => {
           }
         }
         
-        /* Tablet */
         @media (min-width: 768px) and (max-width: 1023px) {
           .mobile-video-hero {
             height: 70vh;
@@ -353,7 +369,6 @@ const ActionCarAbout = () => {
           }
         }
         
-        /* Desktop */
         @media (min-width: 1024px) {
           .mobile-video-hero {
             height: 80vh;
@@ -361,7 +376,6 @@ const ActionCarAbout = () => {
           }
         }
         
-        /* Large Desktop */
         @media (min-width: 1280px) {
           .mobile-video-hero {
             height: 90vh;

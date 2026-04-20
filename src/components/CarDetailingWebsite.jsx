@@ -4,6 +4,7 @@ import Footer from '../components/Footer';
 import Booking from '../components/Booking';
 import ContactForm from '../components/ContactForm';
 import References from '../components/Reference1';
+import SEO, { KEYWORDS } from '../components/SEO';
 import googlePng from '../assets/images/google png.png';
 import detailingVideo from '../assets/images/Auto detailing Service page.mp4';
 
@@ -12,7 +13,6 @@ const CarDetailingWebsite = () => {
   const videoRef = useRef(null);
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [blockedDates, setBlockedDates] = useState([]);
-  // REMOVED: const [bookingKey, setBookingKey] = useState(Date.now());
 
   // Fetch blocked dates from Firestore
   useEffect(() => {
@@ -38,7 +38,6 @@ const CarDetailingWebsite = () => {
         
         console.log('Fetched blocked dates from Firestore:', blockedDatesList);
         setBlockedDates(blockedDatesList);
-        // REMOVED: setBookingKey(Date.now()); // This was causing the re-mount
       } catch (error) {
         console.error('Error fetching blocked dates:', error);
         console.error('Error details:', error.message);
@@ -47,15 +46,12 @@ const CarDetailingWebsite = () => {
 
     fetchBlockedDates();
     
-    // Set up real-time updates every 10 seconds
     const interval = setInterval(fetchBlockedDates, 10000);
-    
     return () => clearInterval(interval);
   }, []);
 
-  // Video handling like Hero component
+  // Video handling
   useEffect(() => {
-    // Check if screen is small or iPad
     const checkScreenSize = () => {
       const width = window.innerWidth;
       const isIPad = (
@@ -69,31 +65,23 @@ const CarDetailingWebsite = () => {
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
 
-    // Optimized video handling with performance improvements
     const video = videoRef.current;
     
     if (video) {
-      // Essential settings for smooth playback
       video.muted = true;
       video.defaultMuted = true;
       video.volume = 0;
       video.setAttribute('playsinline', 'true');
       video.setAttribute('webkit-playsinline', 'true');
-      
-      // Performance optimizations for smoother playback
       video.preload = 'metadata';
       video.poster = '';
-      
-      // Hardware acceleration and smooth rendering
       video.style.willChange = 'transform';
       video.style.backfaceVisibility = 'hidden';
       
-      // iPad-specific video adjustments to prevent stretching
       const adjustVideoFit = () => {
         const width = window.innerWidth;
         const height = window.innerHeight;
         
-        // Detect iPad devices
         const isIPad = (
           (width === 768 && height === 1024) ||
           (width === 820 && height === 1180) ||
@@ -107,11 +95,9 @@ const CarDetailingWebsite = () => {
            (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document))
         );
         
-        // Calculate aspect ratios
         const screenRatio = width / height;
-        const videoRatio = 16 / 9; // Assuming your video is 16:9
+        const videoRatio = 16 / 9;
         
-        // Base styles for all devices
         video.style.objectFit = 'cover';
         video.style.width = '100%';
         video.style.height = '100%';
@@ -120,25 +106,19 @@ const CarDetailingWebsite = () => {
         video.style.left = '0';
         video.style.transform = 'translateZ(0)';
         
-        // iPad-specific positioning to prevent stretching
         if (isIPad) {
           video.style.objectPosition = 'center center';
-          // Ensure the video covers properly without stretching
           video.style.minWidth = '100%';
           video.style.minHeight = '100%';
-        }
-        // Other devices
-        else if (screenRatio > videoRatio) {
+        } else if (screenRatio > videoRatio) {
           video.style.objectPosition = 'center center';
         } else {
           video.style.objectPosition = 'center 40%';
         }
       };
       
-      // Apply initial adjustments
       adjustVideoFit();
       
-      // Optimized event listeners with throttling
       let resizeTimeout;
       const throttledResize = () => {
         clearTimeout(resizeTimeout);
@@ -150,7 +130,6 @@ const CarDetailingWebsite = () => {
         setTimeout(adjustVideoFit, 300);
       });
       
-      // Enhanced autoplay with better error handling
       const playVideo = async () => {
         try {
           if (video.readyState >= 2) {
@@ -182,7 +161,6 @@ const CarDetailingWebsite = () => {
       
       setTimeout(playVideo, 100);
       
-      // Cleanup
       return () => {
         window.removeEventListener('resize', throttledResize);
         window.removeEventListener('orientationchange', adjustVideoFit);
@@ -195,48 +173,32 @@ const CarDetailingWebsite = () => {
     };
   }, []);
 
-  // Height calculation from Hero component
   const getContainerHeight = () => {
     if (typeof window === 'undefined') return '100vh';
     
     const width = window.innerWidth;
     const height = window.innerHeight;
     
-    // Detect iPad devices by common resolutions
     const isIPad = (
-      // iPad Mini: 768x1024
       (width === 768 && height === 1024) ||
-      // iPad Air: 820x1180  
       (width === 820 && height === 1180) ||
-      // iPad Pro 11": 834x1194
       (width === 834 && height === 1194) ||
-      // iPad Pro 12.9": 1024x1366
       (width === 1024 && height === 1366) ||
-      // Landscape orientations
       (height === 768 && width === 1024) ||
       (height === 820 && width === 1180) ||
       (height === 834 && width === 1194) ||
       (height === 1024 && width === 1366) ||
-      // General iPad detection for other cases
       (navigator.userAgent.includes('iPad') || 
        (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document))
     );
     
-    // Mobile phones (portrait)
     if (width < 768) {
       return Math.min(height * 0.6, 500);
-    }
-    // iPad specific handling
-    else if (isIPad) {
-      // For iPads, use fixed height based on width to maintain proper video aspect ratio
-      return Math.min(width * 0.5625, height * 0.6); // 0.5625 = 9/16 for 16:9 aspect ratio
-    }
-    // Other tablets and small laptops
-    else if (width < 1024) {
+    } else if (isIPad) {
+      return Math.min(width * 0.5625, height * 0.6);
+    } else if (width < 1024) {
       return Math.min(height * 0.7, 600);
-    }
-    // Desktop
-    else {
+    } else {
       return '100vh';
     }
   };
@@ -257,11 +219,10 @@ const CarDetailingWebsite = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    handleScroll(); // Check on initial render
+    handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Function to scroll to booking section
   const scrollToBooking = () => {
     const bookingSection = document.getElementById('booking-section');
     if (bookingSection) {
@@ -271,9 +232,25 @@ const CarDetailingWebsite = () => {
 
   return (
     <div className="min-h-screen bg-white">
+
+      {/* SEO - Updated with comprehensive SEO component */}
+      <SEO
+        title="Auto Detailing Winnipeg | Interior & Exterior Car Detailing | Best Car Detailing Near Me"
+        description="Best car detailing Winnipeg. Interior car detailing, exterior deep clean, car wash and detail near me, vehicle detailing near me. 14+ years experience. MPI accredited. Premium car detailing services. Free quotes available. Call (204) 775-0005."
+        canonical="https://actioncardetailing.ca/auto-detailing"
+        keywords={KEYWORDS.detailing}
+        serviceType="Professional Auto Detailing"
+        serviceDesc="Comprehensive interior and exterior car detailing services in Winnipeg. Our exclusive 5-step system includes forced air extraction, turbo brush vacuuming, biodegradable shampoo cleaning, Italian dry steam system, and final detailing. MPI accredited with 14+ years experience."
+        breadcrumbs={[
+          { name: 'Home', url: 'https://actioncardetailing.ca' },
+          { name: 'Auto Detailing', url: 'https://actioncardetailing.ca/auto-detailing' }
+        ]}
+        image="https://actioncardetailing.ca/images/auto-detailing-og.jpg"
+      />
+      <h1 className="sr-only">Auto Detailing Winnipeg | Best Car Detailing Near Me | Interior and Exterior Car Detailing Services | Vehicle Detailing Winnipeg</h1>
+
       {/* Hero Section with Video */}
       <section className="relative">
-        {/* Video Container with proper responsive sizing */}
         <div 
           className="relative w-full overflow-hidden bg-black"
           style={{ 
@@ -281,7 +258,6 @@ const CarDetailingWebsite = () => {
             minHeight: isSmallScreen ? '300px' : '400px'
           }}
         >
-          {/* Video background with proper positioning */}
           <div className="absolute inset-0 z-0" style={{ height: '100%', width: '100%' }}>
             <video
               ref={videoRef}
@@ -310,10 +286,8 @@ const CarDetailingWebsite = () => {
             />
           </div>
 
-          {/* Responsive gradient overlay */}
           <div className="absolute bottom-0 left-0 w-full h-1/4 sm:h-1/3 md:h-1/3 lg:h-1/3 bg-gradient-to-t from-black/40 to-transparent z-10" />
 
-          {/* Responsive scroll indicator */}
           <div className="absolute bottom-4 sm:bottom-6 md:bottom-8 lg:bottom-10 left-1/2 transform -translate-x-1/2 z-20">
             <div className="flex flex-col items-center">
               <span className="text-white text-xs sm:text-sm md:text-base mb-1 sm:mb-2 tracking-widest font-medium drop-shadow-md">SCROLL</span>
@@ -329,15 +303,13 @@ const CarDetailingWebsite = () => {
           </div>
         </div>
 
-        {/* Hero Content - positioned below video with reduced spacing and BOOK NOW button */}
         <div className={`animate-section transition-all duration-1000 ease-in-out ${isVisible[0] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
           <div className="bg-white py-8 sm:py-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#1393c4]">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-[#1393c4]">
                 AUTO DETAILING
-              </h1>
+              </h2>
               
-              {/* BOOK NOW Button directly below the heading */}
               <div className="mt-6 sm:mt-8">
                 <button
                   onClick={scrollToBooking}
@@ -352,7 +324,7 @@ const CarDetailingWebsite = () => {
         </div>
       </section>
 
-      {/* About Section with reduced spacing */}
+      {/* About Section */}
       <section className={`animate-section py-8 sm:py-12 bg-white transition-all duration-1000 ease-in-out ${isVisible[1] ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-8 items-center">
@@ -407,12 +379,9 @@ const CarDetailingWebsite = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Step 1 */}
             <div className="bg-white border border-[#1393c4]/20 p-4 rounded-xl shadow-lg">
               <div className="flex items-center mb-3">
-                <div className="w-8 h-8 bg-[#1393c4] text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">
-                  1
-                </div>
+                <div className="w-8 h-8 bg-[#1393c4] text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">1</div>
                 <h3 className="text-lg font-bold text-[#1393c4]">Step 1</h3>
               </div>
               <p className="text-sm text-[#1393c4] leading-relaxed">
@@ -420,12 +389,9 @@ const CarDetailingWebsite = () => {
               </p>
             </div>
 
-            {/* Step 2 */}
             <div className="bg-white border border-[#1393c4]/20 p-4 rounded-xl shadow-lg">
               <div className="flex items-center mb-3">
-                <div className="w-8 h-8 bg-[#1393c4] text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">
-                  2
-                </div>
+                <div className="w-8 h-8 bg-[#1393c4] text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">2</div>
                 <h3 className="text-lg font-bold text-[#1393c4]">Step 2</h3>
               </div>
               <p className="text-sm text-[#1393c4] leading-relaxed">
@@ -433,12 +399,9 @@ const CarDetailingWebsite = () => {
               </p>
             </div>
 
-            {/* Step 3 */}
             <div className="bg-white border border-[#1393c4]/20 p-4 rounded-xl shadow-lg">
               <div className="flex items-center mb-3">
-                <div className="w-8 h-8 bg-[#1393c4] text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">
-                  3
-                </div>
+                <div className="w-8 h-8 bg-[#1393c4] text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">3</div>
                 <h3 className="text-lg font-bold text-[#1393c4]">Step 3</h3>
               </div>
               <p className="text-sm text-[#1393c4] leading-relaxed">
@@ -446,12 +409,9 @@ const CarDetailingWebsite = () => {
               </p>
             </div>
 
-            {/* Step 4 */}
             <div className="bg-white border border-[#1393c4]/20 p-4 rounded-xl shadow-lg md:col-span-2 lg:col-span-1">
               <div className="flex items-center mb-3">
-                <div className="w-8 h-8 bg-[#1393c4] text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">
-                  4
-                </div>
+                <div className="w-8 h-8 bg-[#1393c4] text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">4</div>
                 <h3 className="text-lg font-bold text-[#1393c4]">Step 4</h3>
               </div>
               <p className="text-sm text-[#1393c4] leading-relaxed">
@@ -459,12 +419,9 @@ const CarDetailingWebsite = () => {
               </p>
             </div>
 
-            {/* Step 5 */}
             <div className="bg-white border border-[#1393c4]/20 p-4 rounded-xl shadow-lg md:col-span-2 lg:col-span-2">
               <div className="flex items-center mb-3">
-                <div className="w-8 h-8 bg-[#1393c4] text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">
-                  5
-                </div>
+                <div className="w-8 h-8 bg-[#1393c4] text-white rounded-full flex items-center justify-center font-bold text-sm mr-3">5</div>
                 <h3 className="text-lg font-bold text-[#1393c4]">Step 5</h3>
               </div>
               <p className="text-sm text-[#1393c4] leading-relaxed">
@@ -533,7 +490,7 @@ const CarDetailingWebsite = () => {
         </div>
       </section>
 
-      {/* Booking Section - FIXED: Removed key prop */}
+      {/* Booking Section */}
       <section id="booking-section" className="py-12 sm:py-16 bg-white">
         <Booking 
           isModal={false} 

@@ -5,6 +5,7 @@ import Navbar from './components/Navbar'
 import ChatBot from './components/ChatBot'
 import Footer from './components/Footer'
 import DateBlockingManager from './components/DateBlockingManager'
+import SEO from './components/SEO'
 import actionCarLogo from './assets/images/action car logo.png'
 
 // Lazy load components for better performance
@@ -124,7 +125,7 @@ function AppContent() {
           
           {/* Company Info Routes */}
           <Route path="/about-us" element={<Aboutus />} />
-		  <Route path="/about" element={<Navigate to="/about-us" replace />} />
+          <Route path="/about" element={<Navigate to="/about-us" replace />} />
           <Route path="/references" element={<References />} />
           <Route path="/testimonials" element={<Testimonials />} />
           <Route path="/giftcard" element={<GiftCard />} />
@@ -134,6 +135,11 @@ function AppContent() {
           {/* Home Route */}
           <Route path="/" element={
             <>
+              <SEO
+                title="Car Detailing Near Me in Winnipeg | Action Car Detailing"
+                description="Best car detailing Winnipeg. Interior and exterior deep clean including PPF, window tinting, and ceramic coating. We are the best car detailers near you."
+                canonical="https://actioncardetailing.ca"
+              />
               <Hero />
               <Service />
               <CustomerReview />
@@ -165,8 +171,6 @@ function AppContent() {
       </Suspense>
       
       {showNavAndChat && <ChatBot />}
-      {/* REMOVED: Footer from here to avoid duplication */}
-      {/* {showNavAndChat && location.pathname === '/' && <Footer />} */}
     </div>
   );
 }

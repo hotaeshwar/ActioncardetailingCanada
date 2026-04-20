@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { ChevronDown, Shield, Sun, Zap, Wifi, CheckCircle, Play } from 'lucide-react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { ChevronDown, Shield, Sun, Zap, Wifi, CheckCircle, Play, X } from 'lucide-react';
 import Footer from '../components/Footer';
 import Quote from '../components/Quote';
 import ContactForm from '../components/ContactForm';
 import References from '../components/Reference1';
+import SEO, { KEYWORDS } from '../components/SEO';
 // Import Window Tint Video
 import windowTintVideo from '../assets/images/window tint (1).mp4';
 
@@ -51,19 +52,42 @@ const WindowTintingSite = () => {
     "FADED INTERIORS"
   ];
 
-  // Running text animation effect
+  // Running text animation
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentText((prev) => (prev + 1) % runningTexts.length);
     }, 2000);
     return () => clearInterval(interval);
-  }, []);
+  }, [runningTexts.length]);
 
-  // Video handling effect (similar to ceramic coating)
+  // Video setup and autoplay
   useEffect(() => {
     const video = videoRef.current;
     
-    if (video) {
+    if (!video) return;
+
+    const adjustVideoFit = () => {
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const screenRatio = width / height;
+      const videoRatio = 16 / 9;
+      
+      video.style.objectFit = 'cover';
+      video.style.width = '100%';
+      video.style.height = '100%';
+      video.style.position = 'absolute';
+      video.style.top = '0';
+      video.style.left = '0';
+      video.style.transform = 'translateZ(0)';
+      
+      if (screenRatio > videoRatio) {
+        video.style.objectPosition = 'center center';
+      } else {
+        video.style.objectPosition = 'center 40%';
+      }
+    };
+    
+    const setupVideo = () => {
       video.muted = true;
       video.defaultMuted = true;
       video.volume = 0;
@@ -74,125 +98,84 @@ const WindowTintingSite = () => {
       video.style.willChange = 'transform';
       video.style.backfaceVisibility = 'hidden';
       
-      const adjustVideoFit = () => {
-        const width = window.innerWidth;
-        const height = window.innerHeight;
-        const screenRatio = width / height;
-        const videoRatio = 16 / 9;
-        
-        video.style.objectFit = 'cover';
-        video.style.width = '100%';
-        video.style.height = '100%';
-        video.style.position = 'absolute';
-        video.style.top = '0';
-        video.style.left = '0';
-        video.style.transform = 'translateZ(0)';
-        
-        if (screenRatio > videoRatio) {
-          video.style.objectPosition = 'center center';
-        } else {
-          video.style.objectPosition = 'center 40%';
-        }
-      };
-      
       adjustVideoFit();
       
-      let resizeTimeout;
-      const throttledResize = () => {
-        clearTimeout(resizeTimeout);
-        resizeTimeout = setTimeout(adjustVideoFit, 100);
-      };
-      
-      window.addEventListener('resize', throttledResize);
-      window.addEventListener('orientationchange', () => {
-        setTimeout(adjustVideoFit, 300);
-      });
-      
-      // Add video event listeners
-      video.addEventListener('canplay', () => {
-        setIsVideoPlaying(true);
-      });
-      
-      video.addEventListener('playing', () => {
-        setIsVideoPlaying(true);
-      });
-      
-      video.addEventListener('pause', () => {
-        setIsVideoPlaying(false);
-      });
-      
-      const playVideo = async () => {
-        try {
-          if (video.readyState >= 2) {
-            const playPromise = video.play();
-            
-            if (playPromise !== undefined) {
-              playPromise.then(() => {
-                setIsVideoPlaying(true);
-              }).catch(() => {
-                // Add user interaction listeners for mobile autoplay
-                const enableVideo = async () => {
-                  try {
-                    await video.play();
-                    setIsVideoPlaying(true);
-                    document.removeEventListener('click', enableVideo);
-                    document.removeEventListener('touchstart', enableVideo);
-                  } catch (err) {
-                    // Silent fail for mobile browsers
-                  }
-                };
-                
-                document.addEventListener('click', enableVideo, { once: true });
-                document.addEventListener('touchstart', enableVideo, { once: true });
-              });
+      video.addEventListener('canplay', () => setIsVideoPlaying(true));
+      video.addEventListener('playing', () => setIsVideoPlaying(true));
+      video.addEventListener('pause', () => setIsVideoPlaying(false));
+    };
+    
+    const playVideo = async () => {
+      try {
+        if (video.readyState >= 2) {
+          await video.play();
+          setIsVideoPlaying(true);
+        } else {
+          video.addEventListener('loadeddata', async () => {
+            try {
+              await video.play();
+              setIsVideoPlaying(true);
+            } catch (error) {
+              // Silent fail for mobile browsers
             }
-          } else {
-            video.addEventListener('loadeddata', async () => {
-              try {
-                await video.play();
-                setIsVideoPlaying(true);
-              } catch (error) {
-                // Silent fail for mobile browsers
-              }
-            }, { once: true });
-          }
-        } catch (error) {
-          // Silent fail for mobile browsers
+          }, { once: true });
         }
-      };
-      
-      setTimeout(playVideo, 100);
-      
-      return () => {
-        window.removeEventListener('resize', throttledResize);
-        window.removeEventListener('orientationchange', adjustVideoFit);
-        clearTimeout(resizeTimeout);
-      };
-    }
+      } catch (error) {
+        // Silent fail - user interaction may be required
+        const enableVideo = async () => {
+          try {
+            await video.play();
+            setIsVideoPlaying(true);
+            document.removeEventListener('click', enableVideo);
+            document.removeEventListener('touchstart', enableVideo);
+          } catch (err) {
+            // Silent fail
+          }
+        };
+        
+        document.addEventListener('click', enableVideo, { once: true });
+        document.addEventListener('touchstart', enableVideo, { once: true });
+      }
+    };
+    
+    setupVideo();
+    
+    let resizeTimeout;
+    const throttledResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(adjustVideoFit, 100);
+    };
+    
+    window.addEventListener('resize', throttledResize);
+    window.addEventListener('orientationchange', () => {
+      setTimeout(adjustVideoFit, 300);
+    });
+    
+    setTimeout(playVideo, 100);
+    
+    return () => {
+      window.removeEventListener('resize', throttledResize);
+      window.removeEventListener('orientationchange', adjustVideoFit);
+      clearTimeout(resizeTimeout);
+    };
   }, []);
 
-  // Height calculation with mobile-first approach (same as ceramic coating)
-  const getContainerHeight = () => {
+  const getContainerHeight = useCallback(() => {
     if (typeof window === 'undefined') return '100vh';
     
     const width = window.innerWidth;
     const height = window.innerHeight;
     
-    // Mobile phones
     if (width < 768) {
-      return Math.min(height * 0.6, 500) + 'px';
-    }
-    // Tablets and small laptops
-    else if (width < 1024) {
-      return Math.min(height * 0.7, 600) + 'px';
-    }
-    // Desktop
-    else {
+      return `${Math.min(height * 0.6, 500)}px`;
+    } else if (width < 1024) {
+      return `${Math.min(height * 0.7, 600)}px`;
+    } else {
       return '100vh';
     }
-  };
+  }, []);
 
-  // Intersection Observer for scroll animations (similar to ceramic coating)
+  // Intersection Observer for cards
   useEffect(() => {
     const observerOptions = {
       threshold: 0.1,
@@ -231,8 +214,9 @@ const WindowTintingSite = () => {
         'Color Stability - Dyed film that maintains its appearance over time'
       ],
       grade: 'GOOD',
-      logo: 'https://actioncardetailing.ca/wp-content/uploads/2021/05/cs1.jpg.webp',
-      carImage: ColorStableCarImage
+      logo: XpelLogo,
+      carImage: ColorStableCarImage,
+      productImage: ColorStableImage
     },
     'prime-hp': {
       name: 'Prime HP',
@@ -245,8 +229,9 @@ const WindowTintingSite = () => {
         'Crystal Clear Signal - Clear Communication in today\'s digital world'
       ],
       grade: 'BETTER',
-      logo: 'https://actioncardetailing.ca/wp-content/uploads/2021/05/image14.jpg.webp',
-      carImage: PrimeHpCarImage
+      logo: XpelLogo,
+      carImage: PrimeHpCarImage,
+      productImage: PrimeHpImage
     },
     'nano-ceramic': {
       name: 'NANO-CERAMIC (IR)',
@@ -259,8 +244,9 @@ const WindowTintingSite = () => {
         'Crystal Clear Signal - No interference with radio, cellular, or Bluetooth'
       ],
       grade: 'BEST',
-      logo: 'https://actioncardetailing.ca/wp-content/uploads/2021/05/image17.png',
-      carImage: NanoCeramicCarImage
+      logo: XpelLogo,
+      carImage: NanoCeramicCarImage,
+      productImage: NanoCeramicImage
     }
   };
 
@@ -286,7 +272,7 @@ const WindowTintingSite = () => {
         }
 
         @keyframes blink {
-          0%, 50% { border-color: '#1393c4'; }
+          0%, 50% { border-color: #1393c4; }
           51%, 100% { border-color: transparent; }
         }
 
@@ -507,12 +493,27 @@ const WindowTintingSite = () => {
         }
       `}</style>
 
-      {/* Hero Video Section - Updated to match ceramic coating layout */}
+      {/* SEO - Updated with comprehensive SEO component */}
+      <SEO
+        title="Window Tinting Winnipeg | XPEL Window Tint | Best Car Window Tint Near Me"
+        description="Expert car window tint installations in Winnipeg. XPEL window tint, automotive window tint, auto window tint and window films. Ceramic window tint for maximum UV protection and heat rejection. Lifetime warranty. Free quotes available. Call (204) 775-0005."
+        canonical="https://actioncardetailing.ca/window-tinting"
+        keywords={KEYWORDS.windowTint}
+        serviceType="XPEL Window Tinting"
+        serviceDesc="Professional XPEL window tint installation in Winnipeg. Available in Prime Color Stable, Prime HP, and Nano-Ceramic (IR) films. 99% UV protection, heat rejection up to 88%, and lifetime warranty."
+        breadcrumbs={[
+          { name: 'Home', url: 'https://actioncardetailing.ca' },
+          { name: 'Window Tinting', url: 'https://actioncardetailing.ca/window-tinting' }
+        ]}
+        image="https://actioncardetailing.ca/images/window-tint-og.jpg"
+      />
+      <h1 className="sr-only">Expert Window Tinting Installers in Winnipeg | Best Car Window Tint Near Me | XPEL Automotive Window Tint</h1>
+
+      {/* Hero Video Section */}
       <section 
         className="relative overflow-hidden"
         style={{ height: getContainerHeight() }}
       >
-        {/* Background Video */}
         <video
           ref={videoRef}
           className="absolute top-0 left-0 w-full h-full object-cover"
@@ -534,25 +535,23 @@ const WindowTintingSite = () => {
           Your browser does not support the video tag.
         </video>
 
-        {/* Gradient Overlay - similar to ceramic coating */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
 
-        {/* Content - centered similar to ceramic coating */}
         <div className="relative h-full flex items-center">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl">
-              {/* Optional: You can add title overlay here if needed */}
+              {/* Optional title overlay */}
             </div>
           </div>
         </div>
       </section>
 
-      {/* Hero Content Section - positioned below video */}
+      {/* Hero Content Section */}
       <section className="bg-white py-12 sm:py-16 md:py-20">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h1 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 leading-tight" style={{ color: '#1393c4' }}>
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 sm:mb-6 leading-tight" style={{ color: '#1393c4' }}>
             WINDOW TINTING
-          </h1>
+          </h2>
           <p className="text-base sm:text-lg md:text-xl mb-3 sm:mb-4 font-medium" style={{ color: '#1393c4' }}>Say Goodbye To...</p>
           <div className="h-10 sm:h-12 mb-4 sm:mb-6">
             <h3 className="text-2xl sm:text-3xl md:text-4xl font-bold typewriter" style={{ color: '#1393c4' }}>
@@ -585,6 +584,7 @@ const WindowTintingSite = () => {
                   src={TintLevelsImage}
                   alt="Tint Levels"
                   className="why-tinting-image"
+                  loading="lazy"
                 />
               </div>
             </div>
@@ -606,7 +606,7 @@ const WindowTintingSite = () => {
                   }`}
                 >
                   <div className="flex items-center mb-3">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{ backgroundColor: '#1393c4' }}>
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0" style={{ backgroundColor: '#1393c4' }}>
                       <Sun className="text-white" size={16} />
                     </div>
                     <h4 className="font-bold text-base sm:text-lg" style={{ color: '#1393c4' }}>Superior Heat Rejection</h4>
@@ -621,7 +621,7 @@ const WindowTintingSite = () => {
                   }`}
                 >
                   <div className="flex items-center mb-3">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{ backgroundColor: '#1393c4' }}>
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0" style={{ backgroundColor: '#1393c4' }}>
                       <Shield className="text-white" size={16} />
                     </div>
                     <h4 className="font-bold text-base sm:text-lg" style={{ color: '#1393c4' }}>UV Ray Protection</h4>
@@ -636,12 +636,12 @@ const WindowTintingSite = () => {
                   }`}
                 >
                   <div className="flex items-center mb-3">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{ backgroundColor: '#1393c4' }}>
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0" style={{ backgroundColor: '#1393c4' }}>
                       <Zap className="text-white" size={16} />
                     </div>
                     <h4 className="font-bold text-base sm:text-lg" style={{ color: '#1393c4' }}>Greater Clarity</h4>
                   </div>
-                  <p className="text-xs sm:text-sm" style={{ color: '#1393c4' }}>Advanced nano construction in XPEL PRIMETM XR provides superior performance without reducing outbound visibility</p>
+                  <p className="text-xs sm:text-sm" style={{ color: '#1393c4' }}>Advanced nano construction in XPEL PRIME XR provides superior performance without reducing outbound visibility</p>
                 </div>
 
                 <div 
@@ -651,7 +651,7 @@ const WindowTintingSite = () => {
                   }`}
                 >
                   <div className="flex items-center mb-3">
-                    <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3" style={{ backgroundColor: '#1393c4' }}>
+                    <div className="w-8 h-8 rounded-full flex items-center justify-center mr-3 flex-shrink-0" style={{ backgroundColor: '#1393c4' }}>
                       <Wifi className="text-white" size={16} />
                     </div>
                     <h4 className="font-bold text-base sm:text-lg" style={{ color: '#1393c4' }}>Crystal Clear Signal</h4>
@@ -691,6 +691,7 @@ const WindowTintingSite = () => {
                     src={step.image}
                     alt={step.title}
                     className="w-full rounded mb-3 sm:mb-4"
+                    loading="lazy"
                   />
                   {index === 0 && (
                     <div className="space-y-2">
@@ -713,10 +714,11 @@ const WindowTintingSite = () => {
                       {tintOptions.map((tint) => (
                         <button
                           key={tint}
-                          className={`px-2 sm:px-3 py-1 sm:py-2 rounded text-xs sm:text-sm ${selectedTint === tint
-                            ? 'text-white'
-                            : 'hover:opacity-80'
-                            }`}
+                          className={`px-2 sm:px-3 py-1 sm:py-2 rounded text-xs sm:text-sm transition-all duration-200 ${
+                            selectedTint === tint
+                              ? 'text-white'
+                              : 'hover:opacity-80'
+                          }`}
                           style={{
                             backgroundColor: selectedTint === tint ? '#1393c4' : '#f0f9ff',
                             color: selectedTint === tint ? 'white' : '#1393c4'
@@ -752,11 +754,15 @@ const WindowTintingSite = () => {
               <div 
                 className="video-thumbnail-container"
                 onClick={() => setShowVideo(true)}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => e.key === 'Enter' && setShowVideo(true)}
               >
                 <img
                   src={YouTubeThumbnail}
                   alt="XPEL PRIME Window Film Video"
                   className="video-thumbnail"
+                  loading="lazy"
                 />
                 <div className="video-overlay">
                   <div className="video-play-button">
@@ -769,17 +775,17 @@ const WindowTintingSite = () => {
         </div>
       </section>
 
-      {/* What Film Section - Film Cards Only */}
+      {/* What Film Section */}
       <section className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="container mx-auto px-4">
           <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-4 leading-tight" style={{ color: '#1393c4' }}>
             1. WHAT FILM?
           </h2>
           <p className="text-center max-w-4xl mx-auto mb-6 sm:mb-8 text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: '#1393c4' }}>
-            Many shops offering window tint will quote you pricing based on their film just to get you in the door. Once there, they educate you on films and upsell you after you realize the kind of film you desire and the number of windows you really need ( legal), thus you end up spending much more then you originally thought.
+            Many shops offering window tint will quote you pricing based on their film just to get you in the door. Once there, they educate you on films and upsell you after you realize the kind of film you desire and the number of windows you really need (legal), thus you end up spending much more then you originally thought.
           </p>
           <p className="text-center max-w-4xl mx-auto mb-12 sm:mb-16 text-sm sm:text-base md:text-lg font-semibold" style={{ color: '#1393c4' }}>
-            We are with all of our Pricing and Options as we treat our clients as we like to be treated; no surprises! The Color Stable, Ceramic  Nano Ceramic choice simply comes down to budget  both  lines we carry are quality, products.
+            We are transparent with all of our Pricing and Options as we treat our clients as we like to be treated; no surprises! The Color Stable, Ceramic Nano Ceramic choice simply comes down to budget - both lines we carry are quality products.
           </p>
 
           <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
@@ -792,7 +798,6 @@ const WindowTintingSite = () => {
                 }`}
               >
                 <div className="p-4 sm:p-6 flex-1 flex flex-col">
-                  {/* Film Title */}
                   <div className="text-center mb-3 sm:mb-4">
                     <h3 className="text-lg sm:text-xl md:text-xl font-bold mb-1 sm:mb-2 min-h-[28px]" style={{ color: '#1393c4' }}>{film.name}</h3>
                     <div className="min-h-[44px] mb-2 sm:mb-3">
@@ -801,45 +806,42 @@ const WindowTintingSite = () => {
                       )}
                     </div>
 
-                    {/* XPEL Logo */}
                     <div className="mb-3 sm:mb-4">
                       <img
-                        src={XpelLogo}
+                        src={film.logo}
                         alt="XPEL Logo"
                         className="xpel-logo"
+                        loading="lazy"
                       />
                     </div>
                   </div>
 
-                  {/* Product Image */}
-                  <div className="mb-3 sm:mb-4 flex items-center justify-center" style={{ height: '100px sm:128px' }}>
+                  <div className="mb-3 sm:mb-4 flex items-center justify-center min-h-[100px] sm:min-h-[128px]">
                     <img
-                      src={key === 'prime-cs' ? ColorStableImage : key === 'prime-hp' ? PrimeHpImage : NanoCeramicImage}
+                      src={film.productImage}
                       alt={`${film.name} Product`}
                       className="w-full h-full object-contain rounded-lg"
+                      loading="lazy"
                     />
                   </div>
 
-                  {/* Car Image */}
-                  <div className="mb-3 sm:mb-4 flex items-center justify-center" style={{ height: '150px sm:180px' }}>
+                  <div className="mb-3 sm:mb-4 flex items-center justify-center min-h-[150px] sm:min-h-[180px]">
                     <img
                       src={film.carImage}
                       alt={`${film.name} Car`}
                       className="w-full h-full object-contain rounded-lg"
+                      loading="lazy"
                     />
                   </div>
 
-                  {/* Grade */}
                   <div className="text-center text-xl sm:text-2xl font-black mb-3 sm:mb-4" style={{ color: '#1393c4' }}>
                     {film.grade}
                   </div>
 
-                  {/* Description */}
                   <p className="text-xs leading-relaxed mb-3 sm:mb-4 flex-grow" style={{ color: '#1393c4' }}>
                     {film.description}
                   </p>
 
-                  {/* Features */}
                   <div className="space-y-1 sm:space-y-2 mt-auto">
                     {film.features.map((feature, idx) => (
                       <div key={idx} className="flex items-start space-x-1 sm:space-x-2">
@@ -862,7 +864,7 @@ const WindowTintingSite = () => {
             2. WHAT COVERAGE?
           </h2>
           <p className="text-center max-w-4xl mx-auto mb-8 sm:mb-12 md:mb-16 text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: '#1393c4' }}>
-            For maximum UV Protection, heat rejection, and  we recommend doing as much as the budget allows. A chain is only as strong as its weakest link and for the highest levels of interior protection consider all glass. Many think that factory "privacy" glass is a protective tint unfortunately it is shaded for looks only and does not help with UV or Heat.
+            For maximum UV Protection, heat rejection, we recommend doing as much as the budget allows. A chain is only as strong as its weakest link and for the highest levels of interior protection consider all glass. Many think that factory "privacy" glass is a protective tint - unfortunately it is shaded for looks only and does not help with UV or Heat.
           </p>
 
           <div className="grid md:grid-cols-2 gap-6 sm:gap-8">
@@ -881,6 +883,7 @@ const WindowTintingSite = () => {
                     src={item.image}
                     alt={item.title}
                     className="w-full max-w-md mx-auto mb-4 sm:mb-6"
+                    loading="lazy"
                   />
                   <button
                     onClick={() => setShowQuote(true)}
@@ -918,7 +921,8 @@ const WindowTintingSite = () => {
                   src={WhatShadeImage}
                   alt="Window Tint Simulator - Click to access XPEL interactive simulator"
                   className="w-full max-w-4xl mx-auto rounded-lg cursor-pointer"
-                  style={{ height: '300px sm:400px', objectFit: 'contain' }}
+                  style={{ height: 'auto', maxHeight: '400px', objectFit: 'contain' }}
+                  loading="lazy"
                 />
               </a>
             </div>
@@ -935,9 +939,9 @@ const WindowTintingSite = () => {
 
           <div className="grid md:grid-cols-3 gap-6 sm:gap-8">
             {[
-              { number: "1", title: "WE PREP", image: PrepImage, description: "Using Xpels DAP software and the best patterns available we all film for a precise fit. We then thermally shrink each panel onto the glass and shave all edges for a smooth install." },
-              { number: "2", title: "WE PLOT", image: InstallImage, description: "WE PLOT With XPEL's Design Access Program (DAP), we create a perfect blueprint for your vehicle's glass. Every cut is digitally mapped to match your exact year, make, and model, ensuring maximum coverage and precision. This plotting process eliminates the need for risky hand-cutting on your vehicle, preserving your glass and trim while setting the stage for a flawless installation." },
-              { number: "3", title: "WE EXECUTE", image: ExecuteImage, description: "We don't take and aren't a 'volume' shop that rushes the jobs in and out to remain profitable; Rather that goes the extra mile to help you choose the right film, make the install as dust-free as possible, and return the vehicle cleaner than we received it. We want you to find value in how we treat both you and your vehicle, ultimately earning your repeat and referral business." }
+              { number: "1", title: "WE PREP", image: PrepImage, description: "Using XPEL's DAP software and the best patterns available, we apply film for a precise fit. We then thermally shrink each panel onto the glass and shave all edges for a smooth install." },
+              { number: "2", title: "WE PLOT", image: InstallImage, description: "With XPEL's Design Access Program (DAP), we create a perfect blueprint for your vehicle's glass. Every cut is digitally mapped to match your exact year, make, and model, ensuring maximum coverage and precision. This plotting process eliminates the need for risky hand-cutting on your vehicle, preserving your glass and trim while setting the stage for a flawless installation." },
+              { number: "3", title: "WE EXECUTE", image: ExecuteImage, description: "We aren't a 'volume' shop that rushes jobs in and out to remain profitable. Rather, we go the extra mile to help you choose the right film, make the install as dust-free as possible, and return the vehicle cleaner than we received it. We want you to find value in how we treat both you and your vehicle, ultimately earning your repeat and referral business." }
             ].map((step, index) => (
               <div 
                 key={index}
@@ -953,6 +957,7 @@ const WindowTintingSite = () => {
                     src={step.image}
                     alt={step.title}
                     className="w-full h-40 sm:h-48 object-cover"
+                    loading="lazy"
                   />
                 </div>
                 <p className="text-sm sm:text-base md:text-lg leading-relaxed" style={{ color: '#1393c4' }}>
@@ -1006,7 +1011,7 @@ const WindowTintingSite = () => {
               onClick={() => setShowQuote(false)}
               aria-label="Close modal"
             >
-              ×
+              <X size={20} />
             </button>
             <Quote isOpen={showQuote} onClose={() => setShowQuote(false)} />
           </div>
@@ -1022,7 +1027,7 @@ const WindowTintingSite = () => {
               onClick={() => setShowVideo(false)}
               aria-label="Close video"
             >
-              ×
+              <X size={20} />
             </button>
             <iframe
               width="800"
@@ -1032,7 +1037,7 @@ const WindowTintingSite = () => {
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-              className="rounded-lg"
+              className="rounded-lg max-w-full"
             ></iframe>
           </div>
         </div>

@@ -3,8 +3,8 @@ import { Play, Check, Shield, Star, Droplets, Settings, HardHat, Sun, Atom, Beak
 import Footer from '../components/Footer';
 import ContactForm from '../components/ContactForm';
 import References from '../components/Reference1';
-// ADD THIS IMPORT
 import DateBlockingManager from '../components/DateBlockingManager';
+import SEO, { KEYWORDS } from '../components/SEO';
 
 // Import Ceramic Coating Video and Images from src/assets/
 import ceramicCoatingVideo from '../assets/images/Ceramic coating (1).mp4';
@@ -76,7 +76,6 @@ const CeramicCoatingQuoteModal = ({ isOpen, onClose, selectedPackage }) => {
   ];
 
   useEffect(() => {
-    // Set the selected package when modal opens
     if (selectedPackage && isOpen) {
       setSelectedProtectionLevel(selectedPackage);
     }
@@ -157,10 +156,10 @@ ${formData.message || 'No additional message provided'}
 
 IMPORTANT INFORMATION
 
-• We will review your ceramic coating quote request within 24 hours
-• You'll receive a customized quote based on your vehicle and selected protection level
-• Our team will contact you to discuss appointment scheduling
-• Contact us if you need to modify your request
+- We will review your ceramic coating quote request within 24 hours
+- You'll receive a customized quote based on your vehicle and selected protection level
+- Our team will contact you to discuss appointment scheduling
+- Contact us if you need to modify your request
 
 CONTACT DETAILS
 
@@ -205,7 +204,6 @@ Passion for Detail
       if (emailResult.success) {
         alert(`✅ Ceramic Coating Quote Request Submitted Successfully!\n\nYour Quote ID: ${quoteId}\n\nThank you for your interest! We'll review your information and get back to you within 24 hours with a customized quote.\n\nConfirmation email has been sent to: ${formData.email}`);
         
-        // Reset form
         setFormData({
           name: '',
           phone: '',
@@ -241,18 +239,15 @@ Passion for Detail
         </button>
         
         <div className="p-4 sm:p-6">
-          {/* Header */}
           <div className="text-center mb-4 sm:mb-6">
             <h2 className="text-xl sm:text-2xl font-bold" style={{ color: '#1393c4' }}>GET CERAMIC COATING QUOTE</h2>
             <p style={{ color: '#1393c4' }} className="text-sm sm:text-base">Fill out the form below to receive a customized quote for ceramic coating.</p>
           </div>
 
-          {/* Contact Information */}
           <div className="mb-4 sm:mb-6">
             <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4" style={{ color: '#1393c4' }}>1. CONTACT INFORMATION</h3>
             
             <div className="space-y-3 sm:space-y-4">
-              {/* Name Field */}
               <div>
                 <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2" style={{ color: '#1393c4' }}>Name *</label>
                 <div className="relative">
@@ -270,7 +265,6 @@ Passion for Detail
                 </div>
               </div>
 
-              {/* Phone Field */}
               <div>
                 <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2" style={{ color: '#1393c4' }}>Phone *</label>
                 <div className="relative">
@@ -288,7 +282,6 @@ Passion for Detail
                 </div>
               </div>
 
-              {/* Email Field */}
               <div>
                 <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2" style={{ color: '#1393c4' }}>Email *</label>
                 <div className="relative">
@@ -306,7 +299,6 @@ Passion for Detail
                 </div>
               </div>
 
-              {/* Make and Model Field */}
               <div>
                 <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2" style={{ color: '#1393c4' }}>Vehicle Make and Model *</label>
                 <div className="relative">
@@ -326,7 +318,6 @@ Passion for Detail
             </div>
           </div>
 
-          {/* Protection Level Selection */}
           <div className="mb-4 sm:mb-6">
             <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4" style={{ color: '#1393c4' }}>2. CHOOSE YOUR PROTECTION LEVEL *</h3>
             
@@ -394,7 +385,6 @@ Passion for Detail
             </div>
           </div>
 
-          {/* Additional Message */}
           <div className="mb-4 sm:mb-6">
             <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4" style={{ color: '#1393c4' }}>3. ADDITIONAL MESSAGE (OPTIONAL)</h3>
             <textarea
@@ -408,7 +398,6 @@ Passion for Detail
             />
           </div>
 
-          {/* Submit Button */}
           <div className="text-center">
             <button
               onClick={handleSubmit}
@@ -439,11 +428,8 @@ const CeramicCoatings = ({ setCurrentView }) => {
   const [selectedPackage, setSelectedPackage] = useState('');
   const [visibleCards, setVisibleCards] = useState(new Set());
   const cardRefs = useRef([]);
-  
-  // ADD THIS STATE FOR DATE BLOCKING MODAL
   const [showDateManager, setShowDateManager] = useState(false);
 
-  // Video handling effect
   useEffect(() => {
     const video = videoRef.current;
     
@@ -492,7 +478,6 @@ const CeramicCoatings = ({ setCurrentView }) => {
         setTimeout(adjustVideoFit, 300);
       });
       
-      // Add video event listeners
       video.addEventListener('canplay', () => {
         setIsVideoPlaying(true);
       });
@@ -514,7 +499,6 @@ const CeramicCoatings = ({ setCurrentView }) => {
               playPromise.then(() => {
                 setIsVideoPlaying(true);
               }).catch(() => {
-                // Add user interaction listeners for mobile autoplay
                 const enableVideo = async () => {
                   try {
                     await video.play();
@@ -555,28 +539,21 @@ const CeramicCoatings = ({ setCurrentView }) => {
     }
   }, []);
 
-  // Height calculation with mobile-first approach
   const getContainerHeight = () => {
     if (typeof window === 'undefined') return '100vh';
     
     const width = window.innerWidth;
     const height = window.innerHeight;
     
-    // Mobile phones
     if (width < 768) {
       return Math.min(height * 0.6, 500) + 'px';
-    }
-    // Tablets and small laptops
-    else if (width < 1024) {
+    } else if (width < 1024) {
       return Math.min(height * 0.7, 600) + 'px';
-    }
-    // Desktop
-    else {
+    } else {
       return '100vh';
     }
   };
 
-  // Intersection Observer for scroll animations
   useEffect(() => {
     const observerOptions = {
       threshold: 0.1,
@@ -601,7 +578,6 @@ const CeramicCoatings = ({ setCurrentView }) => {
     return () => observer.disconnect();
   }, []);
 
-  // Benefits data with icons
   const benefits = [
     {
       icon: <Shield className="w-6 h-6 sm:w-8 sm:h-8" style={{ color: '#ffffff' }} />,
@@ -635,7 +611,6 @@ const CeramicCoatings = ({ setCurrentView }) => {
     }
   ];
 
-  // Package tiers with premium styling
   const packages = [
     {
       name: "FUSION PLUS LITE",
@@ -687,7 +662,6 @@ const CeramicCoatings = ({ setCurrentView }) => {
     }
   ];
 
-  // Process steps with enhanced visuals and proper spacing
   const processSteps = [
     {
       icon: <Beaker className="w-8 h-8 sm:w-10 sm:h-10" style={{ color: '#ffffff' }} />,
@@ -726,19 +700,34 @@ const CeramicCoatings = ({ setCurrentView }) => {
     setIsQuoteModalOpen(true);
   };
 
-  // ADD THIS FUNCTION TO HANDLE DATE MANAGER CLICK
   const handleOpenDateManager = () => {
     setShowDateManager(true);
   };
 
   return (
     <div className="min-h-screen bg-white">
+
+      {/* SEO - Updated with comprehensive SEO component */}
+      <SEO
+        title="Ceramic Coating Winnipeg | XPEL Fusion Plus | Best Auto Ceramic Coating Near Me"
+        description="Professional ceramic coating in Winnipeg. XPEL Fusion Plus certified installers. Get premium car paint protection, hydrophobic coating & vehicle detailing near me. Free quotes available. Call (204) 775-0005."
+        canonical="https://actioncardetailing.ca/ceramic-coating"
+        keywords={KEYWORDS.ceramic}
+        serviceType="XPEL Fusion Plus Ceramic Coating"
+        serviceDesc="Professional ceramic coating installation using XPEL Fusion Plus technology. Available with 1-year, 4-year, and 8-year warranty options for maximum paint protection."
+        breadcrumbs={[
+          { name: 'Home', url: 'https://actioncardetailing.ca' },
+          { name: 'Ceramic Coating', url: 'https://actioncardetailing.ca/ceramic-coating' }
+        ]}
+        image="https://actioncardetailing.ca/images/ceramic-coating-og.jpg"
+      />
+      <h1 className="sr-only">Ceramic Coating Near Me in Winnipeg | Best Auto Ceramic Coating for Cars</h1>
+
       {/* Hero Section with Video Background */}
       <section 
         className="relative overflow-hidden"
         style={{ height: getContainerHeight() }}
       >
-        {/* Background Video */}
         <video
           ref={videoRef}
           className="absolute top-0 left-0 w-full h-full object-cover"
@@ -760,14 +749,11 @@ const CeramicCoatings = ({ setCurrentView }) => {
           Your browser does not support the video tag.
         </video>
 
-        {/* Gradient Overlay */}
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
 
-        {/* Content */}
         <div className="relative h-full flex items-center">
           <div className="container mx-auto px-4">
             <div className="max-w-3xl">
-              {/* ADD ADMIN BUTTON */}
               <button
                 onClick={handleOpenDateManager}
                 className="absolute top-4 right-4 bg-[#1393c4] hover:bg-[#0d7aa1] text-white px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 z-10"
@@ -949,7 +935,6 @@ const CeramicCoatings = ({ setCurrentView }) => {
       <section className="py-12 sm:py-16 md:py-20 bg-white">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="bg-white rounded-lg sm:rounded-xl md:rounded-2xl shadow-lg sm:shadow-xl md:shadow-2xl overflow-hidden border border-gray-200">
-            {/* Top Section - Protect Your Vehicle */}
             <div className="p-4 sm:p-6 md:p-8 lg:p-12 bg-white">
               <div className="flex flex-col lg:flex-row items-center">
                 <div className="lg:w-1/2 mb-6 sm:mb-8 lg:mb-0">
@@ -1035,7 +1020,6 @@ const CeramicCoatings = ({ setCurrentView }) => {
               </div>
             </div>
 
-            {/* Bottom Section - Fusion Plus Details */}
             <div className="bg-white p-4 sm:p-6 md:p-8 lg:p-12 border-t border-gray-200">
               <div className="flex flex-col lg:flex-row items-center">
                 <div className="lg:w-1/2 mb-6 sm:mb-8 lg:mb-0">
@@ -1093,7 +1077,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
         </div>
       </section>
 
-      {/* ADD DATE BLOCKING MANAGER MODAL */}
+      {/* Date Blocking Manager Modal */}
       {showDateManager && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-2 sm:p-4">
           <div className="bg-white rounded-lg max-w-4xl w-full max-h-[90vh] overflow-y-auto relative shadow-2xl mx-2 sm:mx-0">
@@ -1117,7 +1101,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
         selectedPackage={selectedPackage}
       />
 
-      {/* Footer Component */}
+      {/* Footer */}
       <Footer />
     </div>
   );

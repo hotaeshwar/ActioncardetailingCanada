@@ -9,6 +9,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import awardHome from '../assets/images/awardhome.png';
 import insuranceImg from '../assets/images/insurance.png';
+import SEO, { KEYWORDS } from '../components/SEO';
 
 const CarDetailing = () => {
   const [selectedCard, setSelectedCard] = useState(null);
@@ -126,6 +127,23 @@ const CarDetailing = () => {
 
   return (
     <div className="w-full bg-gray-50 py-12 sm:py-16 lg:py-20">
+
+      {/* SEO - Updated with comprehensive SEO component */}
+      <SEO
+        title="Car Detailing Winnipeg | Best Car Detailing Near Me | Action Car Detailing"
+        description="Professional car detailing Winnipeg. Interior car detailing near me, exterior car detailing, car wash and detail near me, vehicle detailing near me. Best car detailers in Winnipeg MB. MPI accredited with 14+ years experience. Free quotes available. Call (204) 775-0005."
+        canonical="https://actioncardetailing.ca/car-detailing"
+        keywords={KEYWORDS.detailing}
+        serviceType="Professional Car Detailing"
+        serviceDesc="Comprehensive interior and exterior car detailing services in Winnipeg. MPI accredited with over 14 years of experience. Award-winning service with transparent pricing and no hidden fees."
+        breadcrumbs={[
+          { name: 'Home', url: 'https://actioncardetailing.ca' },
+          { name: 'Car Detailing', url: 'https://actioncardetailing.ca/car-detailing' }
+        ]}
+        image="https://actioncardetailing.ca/images/car-detailing-og.jpg"
+      />
+      <h1 className="sr-only">Car Detailing Winnipeg | Best Car Detailing Near Me | Professional Interior and Exterior Car Detailing Services | Vehicle Detailing Winnipeg MB</h1>
+
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 sm:mb-16">
           <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-black mb-4 tracking-wide">
@@ -148,7 +166,7 @@ const CarDetailing = () => {
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-6 lg:gap-8 max-w-7xl mx-auto">
           {cardData.map((card) => (
             <div key={card.id} className="card-wrapper" style={{ minHeight: isMobile ? '200px' : '320px' }}>
-              {/* Desktop Flip Card - Hidden on Mobile & Tablet */}
+              {/* Desktop Flip Card */}
               <div className="hidden xl:block group h-full" style={{ perspective: '1000px' }}>
                 <div 
                   className="flip-card-inner relative w-full h-full transition-transform duration-700"
@@ -243,7 +261,7 @@ const CarDetailing = () => {
                 </div>
               </div>
 
-              {/* Mobile & Tablet Card - Opens Modal */}
+              {/* Mobile & Tablet Card */}
               <div 
                 className="block xl:hidden mobile-card bg-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 flex flex-col items-center justify-center border border-gray-100 cursor-pointer active:scale-95"
                 onClick={() => handleCardClick(card)}
@@ -291,7 +309,7 @@ const CarDetailing = () => {
           ))}
         </div>
 
-        {/* Modal - For Mobile & Tablet */}
+        {/* Modal */}
         {selectedCard && isMobile && (
           <div 
             className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 animate-fadeIn"
@@ -304,7 +322,6 @@ const CarDetailing = () => {
               className="bg-white rounded-2xl max-w-lg w-full max-h-[85vh] overflow-hidden shadow-2xl transform transition-all duration-300 scale-100 animate-slideUp"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Modal Header */}
               <div className="flex items-center justify-between p-5 sm:p-6 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-white">
                 <div className="flex items-center flex-1">
                   {selectedCard.customImage ? (
@@ -343,7 +360,6 @@ const CarDetailing = () => {
                 </button>
               </div>
 
-              {/* Modal Content */}
               <div className="p-5 sm:p-6 overflow-y-auto" style={{ maxHeight: 'calc(85vh - 100px)' }}>
                 <p className="text-sm sm:text-base lg:text-lg mb-5 sm:mb-6 leading-relaxed" style={{ color: '#1393c4' }}>
                   {selectedCard.backContent}
@@ -367,7 +383,6 @@ const CarDetailing = () => {
                 </div>
               </div>
 
-              {/* Modal Footer */}
               <div className="p-4 sm:p-5 border-t border-gray-100 bg-gray-50">
                 <button
                   onClick={closeModal}

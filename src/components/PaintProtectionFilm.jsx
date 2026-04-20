@@ -3,20 +3,19 @@ import { ChevronDown, ChevronUp, Play, Shield, Star, Award, Clock, Zap, X } from
 import Footer from '../components/Footer';
 import PaintPolishingForm from '../components/PaintPolishingForm';
 import Quote from '../components/Quote';
-import References from '../components/Reference1'; // Added References import
+import References from '../components/Reference1';
+import SEO, { KEYWORDS } from '../components/SEO';
 import PPFVideo from '../assets/images/PPFHomepage.mp4';
 
 import InstallImage from '../assets/images/Install.png';
 import PrepImage from '../assets/images/Prep.png';
 import ExecuteImage from '../assets/images/Execute.png';
-// Import package images
 import BumperImage from '../assets/images/Bumper.png';
 import EconomyImage from '../assets/images/economy.png';
 import FullFrontImage from '../assets/images/fullfront.png';
 import OffsetImage from '../assets/images/offset.png';
 import ContactForm from '../components/ContactForm';
 
-// Import the required images
 import EnjoyPeaceImage from '../assets/images/Enjoy Peace of Mind and Protect Your Investment.png';
 import WhyXpelImage from '../assets/images/Why XPEL.png';
 import TeslaXpelImage from '../assets/images/Tesla with xpel.png';
@@ -48,9 +47,7 @@ const PaintProtectionFilm = () => {
     return () => clearInterval(interval);
   }, []);
 
-  // Video handling effect (same as Hero component)
   useEffect(() => {
-    // Check if screen is small or iPad
     const checkScreenSize = () => {
       const width = window.innerWidth;
       const isIPad = (
@@ -64,31 +61,23 @@ const PaintProtectionFilm = () => {
     checkScreenSize();
     window.addEventListener('resize', checkScreenSize);
 
-    // Optimized video handling with performance improvements
     const video = videoRef.current;
     
     if (video) {
-      // Essential settings for smooth playback
       video.muted = true;
       video.defaultMuted = true;
       video.volume = 0;
       video.setAttribute('playsinline', 'true');
       video.setAttribute('webkit-playsinline', 'true');
-      
-      // Performance optimizations for smoother playback
       video.preload = 'metadata';
       video.poster = '';
-      
-      // Hardware acceleration and smooth rendering
       video.style.willChange = 'transform';
       video.style.backfaceVisibility = 'hidden';
       
-      // iPad-specific video adjustments to prevent stretching
       const adjustVideoFit = () => {
         const width = window.innerWidth;
         const height = window.innerHeight;
         
-        // Detect iPad devices
         const isIPad = (
           (width === 768 && height === 1024) ||
           (width === 820 && height === 1180) ||
@@ -102,11 +91,9 @@ const PaintProtectionFilm = () => {
            (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document))
         );
         
-        // Calculate aspect ratios
         const screenRatio = width / height;
-        const videoRatio = 16 / 9; // Assuming your video is 16:9
+        const videoRatio = 16 / 9;
         
-        // Base styles for all devices
         video.style.objectFit = 'cover';
         video.style.width = '100%';
         video.style.height = '100%';
@@ -115,25 +102,19 @@ const PaintProtectionFilm = () => {
         video.style.left = '0';
         video.style.transform = 'translateZ(0)';
         
-        // iPad-specific positioning to prevent stretching
         if (isIPad) {
           video.style.objectPosition = 'center center';
-          // Ensure the video covers properly without stretching
           video.style.minWidth = '100%';
           video.style.minHeight = '100%';
-        }
-        // Other devices
-        else if (screenRatio > videoRatio) {
+        } else if (screenRatio > videoRatio) {
           video.style.objectPosition = 'center center';
         } else {
           video.style.objectPosition = 'center 40%';
         }
       };
       
-      // Apply initial adjustments
       adjustVideoFit();
       
-      // Optimized event listeners with throttling
       let resizeTimeout;
       const throttledResize = () => {
         clearTimeout(resizeTimeout);
@@ -145,7 +126,6 @@ const PaintProtectionFilm = () => {
         setTimeout(adjustVideoFit, 300);
       });
       
-      // Enhanced autoplay with better error handling
       const playVideo = async () => {
         try {
           if (video.readyState >= 2) {
@@ -177,7 +157,6 @@ const PaintProtectionFilm = () => {
       
       setTimeout(playVideo, 100);
       
-      // Cleanup
       return () => {
         window.removeEventListener('resize', throttledResize);
         window.removeEventListener('orientationchange', adjustVideoFit);
@@ -190,53 +169,36 @@ const PaintProtectionFilm = () => {
     };
   }, []);
 
-  // iPad-specific height calculation to prevent stretching
   const getContainerHeight = () => {
     if (typeof window === 'undefined') return '100vh';
     
     const width = window.innerWidth;
     const height = window.innerHeight;
     
-    // Detect iPad devices by common resolutions
     const isIPad = (
-      // iPad Mini: 768x1024
       (width === 768 && height === 1024) ||
-      // iPad Air: 820x1180  
       (width === 820 && height === 1180) ||
-      // iPad Pro 11": 834x1194
       (width === 834 && height === 1194) ||
-      // iPad Pro 12.9": 1024x1366
       (width === 1024 && height === 1366) ||
-      // Landscape orientations
       (height === 768 && width === 1024) ||
       (height === 820 && width === 1180) ||
       (height === 834 && width === 1194) ||
       (height === 1024 && width === 1366) ||
-      // General iPad detection for other cases
       (navigator.userAgent.includes('iPad') || 
        (navigator.userAgent.includes('Macintosh') && 'ontouchend' in document))
     );
     
-    // Mobile phones (portrait)
     if (width < 768) {
       return Math.min(height * 0.6, 500);
-    }
-    // iPad specific handling
-    else if (isIPad) {
-      // For iPads, use fixed height based on width to maintain proper video aspect ratio
-      return Math.min(width * 0.5625, height * 0.6); // 0.5625 = 9/16 for 16:9 aspect ratio
-    }
-    // Other tablets and small laptops
-    else if (width < 1024) {
+    } else if (isIPad) {
+      return Math.min(width * 0.5625, height * 0.6);
+    } else if (width < 1024) {
       return Math.min(height * 0.7, 600);
-    }
-    // Desktop
-    else {
+    } else {
       return '100vh';
     }
   };
 
-  // Smooth scroll animation effect
   useEffect(() => {
     const handleScroll = () => {
       cardRefs.current.forEach((card, index) => {
@@ -244,22 +206,19 @@ const PaintProtectionFilm = () => {
           const rect = card.getBoundingClientRect();
           const windowHeight = window.innerHeight;
 
-          // Check if card is in viewport (with some offset for better UX)
           if (rect.top < windowHeight * 0.9 && rect.bottom > 0) {
             if (!visibleCards.has(index)) {
               setTimeout(() => {
                 setVisibleCards(prev => new Set([...prev, index]));
-              }, index * 50); // Reduced delay for faster appearance
+              }, index * 50);
             }
           }
         }
       });
     };
 
-    // Initial check
     handleScroll();
 
-    // Add scroll listener with throttling
     let ticking = false;
     const throttledScroll = () => {
       if (!ticking) {
@@ -445,9 +404,25 @@ const PaintProtectionFilm = () => {
 
   return (
     <div className="min-h-screen bg-white">
+
+      {/* SEO - Updated with comprehensive SEO component */}
+      <SEO
+        title="Paint Protection Film Winnipeg | XPEL PPF | Best Auto Paint Protection Near Me"
+        description="XPEL paint protection film near me in Winnipeg. Best PPF installers for car paint protection film, auto paint protection near me, and paint protection film Canada. 10-year warranty. Free quotes available. Call (204) 775-0005."
+        canonical="https://actioncardetailing.ca/paint-protection-film"
+        keywords={KEYWORDS.ppf}
+        serviceType="XPEL Paint Protection Film"
+        serviceDesc="Professional XPEL paint protection film installation in Winnipeg. Self-healing PPF with 10-year warranty. Protects against rock chips, scratches, and road debris."
+        breadcrumbs={[
+          { name: 'Home', url: 'https://actioncardetailing.ca' },
+          { name: 'Paint Protection Film', url: 'https://actioncardetailing.ca/paint-protection-film' }
+        ]}
+        image="https://actioncardetailing.ca/images/ppf-og.jpg"
+      />
+      <h1 className="sr-only">XPEL Paint Protection Film Winnipeg | Best PPF Installers Near Me for Car Paint Protection</h1>
+
       {/* Hero Section with Video */}
       <section className="bg-black">
-        {/* Hero Video - FIXED to match Hero component */}
         <div 
           className="relative w-full overflow-hidden bg-black"
           style={{ 
@@ -455,7 +430,6 @@ const PaintProtectionFilm = () => {
             minHeight: isSmallScreen ? '300px' : '400px'
           }}
         >
-          {/* Video background - NO stretching approach */}
           <div className="absolute inset-0 z-0" style={{ height: '100%', width: '100%' }}>
             <video
               ref={videoRef}
@@ -484,10 +458,8 @@ const PaintProtectionFilm = () => {
             />
           </div>
 
-          {/* Responsive gradient overlay */}
           <div className="absolute bottom-0 left-0 w-full h-1/4 sm:h-1/3 md:h-1/3 lg:h-1/3 bg-gradient-to-t from-black/40 to-transparent z-10" />
 
-          {/* Responsive scroll indicator */}
           <div className="absolute bottom-4 sm:bottom-6 md:bottom-8 lg:bottom-10 left-1/2 transform -translate-x-1/2 z-20">
             <div className="flex flex-col items-center">
               <span className="text-white text-sm mb-2 tracking-widest font-medium drop-shadow-md">SCROLL</span>
@@ -571,11 +543,10 @@ const PaintProtectionFilm = () => {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <p className="max-w-4xl mx-auto text-lg leading-relaxed" style={{ color: '#1393c4' }}>
-              Below you will find our Paint Protection Film options.These packages are custom-tailored to your vehicle's needs. Our PPF installation comes with a 10 Year Manufacturer Warranty, self-healing properties and is installed by trained and experienced technicians.
+              Below you will find our Paint Protection Film options. These packages are custom-tailored to your vehicle's needs. Our PPF installation comes with a 10 Year Manufacturer Warranty, self-healing properties and is installed by trained and experienced technicians.
             </p>
           </div>
 
-          {/* Video Section */}
           <div className="max-w-4xl mx-auto mb-16">
             <h3 className="text-xl font-bold text-center mb-8" style={{ color: '#1393c4' }}>
               WATCH VIDEO
@@ -807,7 +778,7 @@ const PaintProtectionFilm = () => {
               </h2>
               <div className="space-y-4 mb-8" style={{ color: '#1393c4' }}>
                 <p className="text-sm">We get it. The thought of rock chips, scratches, weathering, oxidation, UV rays, stains, and fading creates STRESS and ANXIETY.</p>
-                <p className="text-sm">Fact- There is  a 100% chance that doing nothing will ensure inevitable damage!</p>
+                <p className="text-sm">Fact- There is a 100% chance that doing nothing will ensure inevitable damage!</p>
                 <p className="text-lg font-semibold">We Provide The Peace of mind you and your vehicle deserve</p>
               </div>
               <button
@@ -827,7 +798,7 @@ const PaintProtectionFilm = () => {
         <div className="container mx-auto px-4 text-center">
           <p className="leading-relaxed max-w-4xl mx-auto mb-8 text-sm" style={{ color: '#1393c4' }}>
             When you pay for a product with extensive warranties, you want to use a solid company for the service. The world's top paint
-            protection films offer up to 10 years of warranty. You need a company with a long history of successful projects and,just as
+            protection films offer up to 10 years of warranty. You need a company with a long history of successful projects and, just as
             importantly, future longevity. Yes, films are guaranteed based on the quality of the film itself. However, it's the shop that
             guarantees the work done. You want a company like us because you know we will be here, doing what we do, and standing by our
             products. Our meticulous attention to detail here at <span className="font-bold" style={{ color: '#1393c4' }}>ACTION CAR DETAILING</span> is sure to keep your mind at ease. You can rest
@@ -903,7 +874,7 @@ const PaintProtectionFilm = () => {
         </div>
       </section>
 
-      {/* References Section - Added before ContactForm */}
+      {/* References Section */}
       <References />
 
       {/* Contact Form Section */}
