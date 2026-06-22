@@ -8,7 +8,7 @@ const nextConfig = {
   },
   webpack(config) {
     // Add loader for video and image files using our custom loader.cjs
-    config.module.rules.push({
+    config.module.rules.unshift({
       test: /\.(png|jpe?g|gif|svg|webp|avif|mp4|webm|ogg|swf|ogv)$/i,
       loader: path.resolve('./loader.cjs'),
     });
