@@ -289,7 +289,7 @@ const Navbar = () => {
           </div>
         )}
 
-        <style jsx>{`
+        <style dangerouslySetInnerHTML={{ __html: `
           :root {
             --vivid-ozone: #00BFFF;
             --vivid-ozone-secondary: #1E90FF;
@@ -477,7 +477,7 @@ const Navbar = () => {
             color: white !important;
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
           }
-        `}</style>
+        ` }} />
       </nav>
     </>
   );
