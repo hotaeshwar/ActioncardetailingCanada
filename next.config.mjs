@@ -1,4 +1,19 @@
 import path from 'path';
+import fs from 'fs';
+
+// Programmatically create symlink/junction in public/src pointing to src
+const linkPath = path.resolve('./public/src');
+const targetPath = path.resolve('./src');
+
+if (!fs.existsSync(linkPath)) {
+  try {
+    const type = process.platform === 'win32' ? 'junction' : 'dir';
+    fs.symlinkSync(targetPath, linkPath, type);
+    console.log('Successfully created public/src symlink/junction');
+  } catch (err) {
+    console.error('Failed to create public/src symlink/junction:', err);
+  }
+}
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
