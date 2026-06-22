@@ -2,6 +2,8 @@ import path from 'path';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
+  trailingSlash: true,
   reactStrictMode: true,
   images: {
     disableStaticImages: true,
@@ -14,30 +16,6 @@ const nextConfig = {
     });
 
     return config;
-  },
-  async redirects() {
-    return [
-      {
-        source: '/about',
-        destination: '/about-us',
-        permanent: true,
-      },
-      {
-        source: '/paint-protection-film',
-        destination: '/',
-        permanent: true,
-      },
-      {
-        source: '/home',
-        destination: '/',
-        permanent: true,
-      },
-      {
-        source: '/index.html',
-        destination: '/',
-        permanent: true,
-      },
-    ];
   },
 };
 
