@@ -60,7 +60,7 @@ const Navbar = () => {
     { name: 'PAINT CORRECTION POLISHING', to: '/paint-correction-polishing', internal: true },
     { name: 'WINDOW TINTING', to: '/window-tinting', internal: true },
     { name: 'CERAMIC COATING', to: '/ceramic-coating', internal: true },
-    { name: 'PAINT PROTECTION FILM', to: '/paint-protection-film', internal: true },
+    // { name: 'PAINT PROTECTION FILM', to: '/paint-protection-film', internal: true },
     { name: 'REMEDIATION CLAIMS', to: '/remediation-claim', internal: true },
   ];
 

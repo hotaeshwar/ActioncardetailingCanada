@@ -54,6 +54,7 @@ const ServicesSection = () => {
       mediaType: 'video',
       description: 'Beat the heat and drive in comfort with XPEL PRIME tint—engineered to block the suns glare and 99% of UV rays while keeping your view crystal clear. Ceramic tech cuts up to 80% heat, protects interiors, and lasts a lifetime without peeling or fading all flawlessly fitted, just for your ride.'
     },
+    /*
     {
       id: 'paint-protection-film',
       title: 'Paint Protection Film',
@@ -61,6 +62,7 @@ const ServicesSection = () => {
       mediaType: 'video',
       description: 'Our PPF is like invisible armor—shrugging off rock chips, scratches, and daily wear while magically healing minor marks. Custom-fit to vanish on your paint, it keeps your car flawless longer, boosts resale value, and cuts down on washes. Plus, its backed by XPELs 10-year warranty. Drive bold. Stay protected.'
     },
+    */
     {
       id: 'dent-repair',
       title: 'Dent Repair',

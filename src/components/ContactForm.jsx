@@ -24,7 +24,7 @@ const ContactForm = () => {
         { value: 'paint-correction-polishing', label: 'Paint Correction Polishing' },
         { value: 'window-tinting', label: 'Window Tinting' },
         { value: 'ceramic-coating', label: 'Ceramic Coating' },
-        { value: 'paint-protection-film', label: 'Paint Protection Film' },
+        // { value: 'paint-protection-film', label: 'Paint Protection Film' },
         { value: 'remediation-claims', label: 'Remediation Claims' }
     ];
 

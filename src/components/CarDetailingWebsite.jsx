@@ -339,7 +339,7 @@ const CarDetailingWebsite = () => {
 
               <div className="bg-white p-4 rounded-lg border-l-4 border-[#1393c4]">
                 <p className="text-base text-[#1393c4] font-medium">
-                  Action car Detailing offers a very thorough, deep cleaning of interior and exterior. We specialize in Auto Detailing, Ceramic Coating, Window Tinting, and Paint Protection Film (PPF).
+                  Action car Detailing offers a very thorough, deep cleaning of interior and exterior. We specialize in Auto Detailing, Ceramic Coating, and Window Tinting.
                 </p>
               </div>
             </div>

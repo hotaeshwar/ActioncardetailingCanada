@@ -25,8 +25,7 @@ const BusinessDescription = ({ setCurrentView }) => {
                 <span className="font-semibold">Locally owned and operated since 2011</span>, we specialize in 
                 <span className="font-medium"> Auto Detailing</span>, 
                 <span className="font-medium"> Ceramic Coating</span>, 
-                <span className="font-medium"> Window Tinting</span>, 
-                <span className="font-medium"> Paint Protection Film (PPF)</span>, and 
+                <span className="font-medium"> Window Tinting</span>, and 
                 <span className="font-medium"> Paintless Dent Removal</span>.
               </p>
               

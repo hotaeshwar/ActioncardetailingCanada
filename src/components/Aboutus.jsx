@@ -45,7 +45,7 @@ const ActionCarAbout = () => {
   const services = [
     'Auto Detailing',
     'Ceramic Coating',
-    'Paint Protection Film (PPF)',
+    // 'Paint Protection Film (PPF)',
     'Window Tinting',
     'Paintless Dent Removal'
   ];

@@ -109,7 +109,7 @@ function AppContent() {
           <Route path="/paint-correction-polishing" element={<PaintCorrection />} />
           <Route path="/window-tinting" element={<WindowTintingSite />} />
           <Route path="/ceramic-coating" element={<CeramicCoatings />} />
-          <Route path="/paint-protection-film" element={<PaintProtectionFilm />} />
+          <Route path="/paint-protection-film" element={<Navigate to="/" replace />} />
           <Route path="/dent-repair" element={<DentRepairComponent />} />
           <Route path="/car-detailing" element={<CarDetailing />} />
           
