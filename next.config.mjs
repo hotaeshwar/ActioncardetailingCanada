@@ -4,14 +4,12 @@ const nextConfig = {
   images: {
     disableStaticImages: true,
   },
-  webpack(config, { isServer }) {
-    // Add loader for video and image files to return direct URL strings (similar to Vite)
+  webpack(config) {
+    // Add loader for video and image files using Webpack 5's asset/resource
+    // without custom paths so Next.js's dev server handles asset URLs correctly.
     config.module.rules.push({
       test: /\.(png|jpe?g|gif|svg|webp|avif|mp4|webm|ogg|swf|ogv)$/i,
       type: 'asset/resource',
-      generator: {
-        filename: 'static/media/[name].[hash][ext]',
-      },
     });
 
     return config;
