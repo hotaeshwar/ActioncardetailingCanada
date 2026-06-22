@@ -1,16 +1,18 @@
+"use client";
+
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 
 const BusinessDescription = ({ setCurrentView }) => {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const handleAboutClick = () => {
     // If setCurrentView prop is provided (for backward compatibility)
     if (setCurrentView) {
       setCurrentView('about');
     } else {
-      // Use React Router navigation
-      navigate('/about-us');
+      // Use Next.js Router navigation
+      router.push('/about-us');
     }
   };
 

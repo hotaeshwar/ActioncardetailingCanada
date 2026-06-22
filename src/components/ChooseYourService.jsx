@@ -1,8 +1,10 @@
+"use client";
+
 import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { Gift } from 'lucide-react';
 
-// Import images and videos
+// Import images
 import car1 from '../assets/images/car1.jpg';
 import car3 from '../assets/images/car3.jpg';
 import car4 from '../assets/images/car4.jpg';
@@ -11,28 +13,19 @@ import wash2 from '../assets/images/wash2.png';
 import beforeAfterImage from '../assets/images/before-and-after-dent-repair.png';
 
 // Import custom auto detailing assets
-import autoDetailingVideo from '../assets/images/Auto detailing Service page.mp4';
 import autoDetailingImage from '../assets/images/autodetailing.png';
 
 // Import custom paint correction assets
-import paintCorrectionVideo from '../assets/images/Paint Correction Polishing (1).mp4';
 import paintCorrectionImage from '../assets/images/paint correction polishing.png';
 
 // Import custom window tinting assets
-import windowTintingVideo from '../assets/images/WindowtintHomepage.mp4';
 import windowTintingImage from '../assets/images/windowtint.png';
-
-// Import custom ceramic coating assets
-import ceramicCoatingVideo from '../assets/images/Ceramic Coating Home page.mp4';
-
-// Import custom paint protection film assets
-import paintProtectionVideo from '../assets/images/PPF Home page.mp4';
 
 // Import MPI Claims assets
 import insuranceLogo from '../assets/images/insurance.png';
 
 const ChooseYourService = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const [isSmallScreen, setIsSmallScreen] = useState(false);
   const [activeCard, setActiveCard] = useState(null);
   const touchTimerRef = useRef(null);
@@ -103,14 +96,14 @@ const ChooseYourService = () => {
   const handleServiceClick = (serviceName) => {
     const service = servicesData[serviceName];
     if (service?.linkTo) {
-      navigate(service.linkTo);
+      router.push(service.linkTo);
     } else {
       console.log("No page available for:", service.title);
     }
   };
 
   const handleGiftClick = () => {
-    navigate('/giftcard');
+    router.push('/giftcard');
   };
 
   const handleTouchStart = (e, serviceName) => {

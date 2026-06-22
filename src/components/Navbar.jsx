@@ -1,5 +1,8 @@
+"use client";
+
 import { useState, useEffect, useRef } from 'react';
-import { NavLink, useNavigate, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import { useRouter, usePathname } from 'next/navigation';
 import actionCarLogo from '../assets/images/action car logo.png';
 import awardLogo from '../assets/images/awardhome.png';
 
@@ -9,8 +12,8 @@ const Navbar = () => {
   const [servicesDropdownOpen, setServicesDropdownOpen] = useState(false);
   const [mobileServicesDropdownOpen, setMobileServicesDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const navigate = useNavigate();
-  const location = useLocation();
+  const router = useRouter();
+  const pathname = usePathname();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -21,7 +24,7 @@ const Navbar = () => {
   };
 
   const isServiceActive = (path) => {
-    return location.pathname === path || location.pathname.startsWith(path + '/');
+    return pathname === path || pathname?.startsWith(path + '/');
   };
 
   useEffect(() => {
@@ -72,7 +75,7 @@ const Navbar = () => {
             <div className="flex items-center justify-between h-28 sm:h-32 md:h-36 lg:h-28 xl:h-32 relative px-2 sm:px-3 md:px-4">
 
               {/* Logo - Left side */}
-              <div className="flex-shrink-0 transform transition-transform hover:scale-105 cursor-pointer z-10 lg:w-80 lg:flex lg:justify-start lg:-ml-4 min-w-0 flex items-center" onClick={() => navigate('/')}>
+              <div className="flex-shrink-0 transform transition-transform hover:scale-105 cursor-pointer z-10 lg:w-80 lg:flex lg:justify-start lg:-ml-4 min-w-0 flex items-center" onClick={() => router.push('/')}>
                 <img
                   className="h-16 sm:h-20 md:h-24 lg:h-20 xl:h-24 w-auto filter drop-shadow-lg max-w-[140px] xs:max-w-[160px] sm:max-w-[180px] md:max-w-[220px] lg:max-w-[240px] xl:max-w-[280px] object-contain"
                   src={actionCarLogo}
@@ -108,15 +111,12 @@ const Navbar = () => {
                         </svg>
                       </button>
                     ) : link.internal ? (
-                      <NavLink
-                        to={link.to}
-                        end={link.exact}
-                        className={({ isActive }) =>
-                          `mafia-nav-link text-xs ${isActive ? 'active-nav' : ''}`
-                        }
+                      <Link
+                        href={link.to}
+                        className={`mafia-nav-link text-xs ${pathname === link.to ? 'active-nav' : ''}`}
                       >
                         <span>{link.name}</span>
-                      </NavLink>
+                      </Link>
                     ) : (
                       <a
                         href={link.to}
@@ -133,21 +133,19 @@ const Navbar = () => {
                       <div className="vivid-ozone-dropdown absolute mt-2 w-56 lg:w-60 xl:w-64 rounded-md shadow-2xl overflow-hidden z-20">
                         <div className="py-1">
                           {serviceItems.map((service) => (
-                            <NavLink
+                            <Link
                               key={service.name}
-                              to={service.to}
+                              href={service.to}
                               onClick={() => {
                                 setServicesDropdownOpen(false);
                                 setIsMenuOpen(false);
                               }}
-                              className={({ isActive }) =>
-                                `service-menu-item w-full text-left block px-4 py-3 text-sm text-white transition-all duration-200 border-l-4 border-transparent ${
-                                  isActive ? 'active-service-item' : ''
-                                }`
-                              }
+                              className={`service-menu-item w-full text-left block px-4 py-3 text-sm text-white transition-all duration-200 border-l-4 border-transparent ${
+                                pathname === service.to ? 'active-service-item' : ''
+                              }`}
                             >
                               {service.name}
-                            </NavLink>
+                            </Link>
                           ))}
                         </div>
                       </div>
@@ -247,38 +245,33 @@ const Navbar = () => {
                       {mobileServicesDropdownOpen && (
                         <div className="pl-4 sm:pl-6 md:pl-8 space-y-1">
                           {serviceItems.map((service) => (
-                            <NavLink
+                            <Link
                               key={service.name}
-                              to={service.to}
+                              href={service.to}
                               onClick={() => {
                                 setIsMenuOpen(false);
                                 setMobileServicesDropdownOpen(false);
                               }}
-                              className={({ isActive }) =>
-                                `mobile-service-item w-full text-left block px-3 sm:px-4 py-2 sm:py-3 rounded-md text-xs sm:text-sm md:text-base font-medium text-gray-200 transition-all duration-200 border-l-2 ${
-                                  isActive ? 'active-mobile-service' : ''
-                                }`
-                              }
+                              className={`mobile-service-item w-full text-left block px-3 sm:px-4 py-2 sm:py-3 rounded-md text-xs sm:text-sm md:text-base font-medium text-gray-200 transition-all duration-200 border-l-2 ${
+                                pathname === service.to ? 'active-mobile-service' : ''
+                              }`}
                             >
                               {service.name}
-                            </NavLink>
+                            </Link>
                           ))}
                         </div>
                       )}
                     </>
                   ) : link.internal ? (
-                    <NavLink
-                      to={link.to}
-                      end={link.exact}
-                      className={({ isActive }) =>
-                        `mobile-nav-item w-full text-left block px-3 sm:px-4 py-2 sm:py-3 rounded-md text-sm sm:text-base md:text-lg font-medium text-white transition-all duration-200 ${
-                          isActive ? 'active-mobile-nav' : ''
-                        }`
-                      }
+                    <Link
+                      href={link.to}
+                      className={`mobile-nav-item w-full text-left block px-3 sm:px-4 py-2 sm:py-3 rounded-md text-sm sm:text-base md:text-lg font-medium text-white transition-all duration-200 ${
+                        pathname === link.to ? 'active-mobile-nav' : ''
+                      }`}
                       onClick={() => setIsMenuOpen(false)}
                     >
                       {link.name}
-                    </NavLink>
+                    </Link>
                   ) : (
                     <a
                       href={link.to}
