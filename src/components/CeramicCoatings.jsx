@@ -6,7 +6,6 @@ import References from '../components/Reference1';
 import DateBlockingManager from '../components/DateBlockingManager';
 import SEO, { KEYWORDS } from '../components/SEO';
 
-// Import Ceramic Coating Video and Images from src/assets/
 import ceramicCoatingVideo from '../assets/images/Ceramic coating (1).mp4';
 import financeitLogo from '../assets/images/financeit.jpg.webp';
 import fusionPlusLite from '../assets/images/XPEL FUSION PLUS LITE COATING.webp';
@@ -15,7 +14,6 @@ import fusionPlusPremium from '../assets/images/XPEL FUSION PLUS PREMIUM COATING
 import protectVehicleLogo from '../assets/images/PROTECT YOUR VEHICLE WITH XPEL FUSION PLUS CERAMIC COATING.webp';
 import fusionPlusProcess from '../assets/images/FUSION PLUS ceamic coating.webp';
 
-// Ceramic Coating Quote Modal Component
 const CeramicCoatingQuoteModal = ({ isOpen, onClose, selectedPackage }) => {
   const [formData, setFormData] = useState({
     name: '',
@@ -29,7 +27,6 @@ const CeramicCoatingQuoteModal = ({ isOpen, onClose, selectedPackage }) => {
   const [openDropdown, setOpenDropdown] = useState(null);
   const [selectedProtectionLevel, setSelectedProtectionLevel] = useState('');
 
-  // Ceramic Coating Packages
   const protectionLevels = [
     {
       id: 'fusion-plus-lite',
@@ -83,10 +80,7 @@ const CeramicCoatingQuoteModal = ({ isOpen, onClose, selectedPackage }) => {
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
+    setFormData(prev => ({ ...prev, [name]: value }));
   };
 
   const handleProtectionLevelSelect = (levelId) => {
@@ -109,7 +103,6 @@ const CeramicCoatingQuoteModal = ({ isOpen, onClose, selectedPackage }) => {
 
   const sendEmail = async (quoteId) => {
     const emailFormData = new FormData();
-    
     emailFormData.append('access_key', 'ba99ae3b-60cc-404c-b207-2a42e86aafb6');
     emailFormData.append('autoresponse', 'false');
     emailFormData.append('subject', `Ceramic Coating Quote Request – Confirmation Pending`);
@@ -180,7 +173,6 @@ Passion for Detail
         method: 'POST',
         body: emailFormData
       });
-
       const data = await response.json();
       return data;
     } catch (error) {
@@ -203,14 +195,7 @@ Passion for Detail
 
       if (emailResult.success) {
         alert(`✅ Ceramic Coating Quote Request Submitted Successfully!\n\nYour Quote ID: ${quoteId}\n\nThank you for your interest! We'll review your information and get back to you within 24 hours with a customized quote.\n\nConfirmation email has been sent to: ${formData.email}`);
-        
-        setFormData({
-          name: '',
-          phone: '',
-          email: '',
-          makeModel: '',
-          message: ''
-        });
+        setFormData({ name: '', phone: '', email: '', makeModel: '', message: '' });
         setSelectedProtectionLevel('');
         onClose();
       } else {
@@ -237,7 +222,7 @@ Passion for Detail
         >
           <X className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: '#1393c4' }} />
         </button>
-        
+
         <div className="p-4 sm:p-6">
           <div className="text-center mb-4 sm:mb-6">
             <h2 className="text-xl sm:text-2xl font-bold" style={{ color: '#1393c4' }}>GET CERAMIC COATING QUOTE</h2>
@@ -246,7 +231,6 @@ Passion for Detail
 
           <div className="mb-4 sm:mb-6">
             <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4" style={{ color: '#1393c4' }}>1. CONTACT INFORMATION</h3>
-            
             <div className="space-y-3 sm:space-y-4">
               <div>
                 <label className="block text-xs sm:text-sm font-medium mb-1 sm:mb-2" style={{ color: '#1393c4' }}>Name *</label>
@@ -320,7 +304,6 @@ Passion for Detail
 
           <div className="mb-4 sm:mb-6">
             <h3 className="text-base sm:text-lg font-bold mb-3 sm:mb-4" style={{ color: '#1393c4' }}>2. CHOOSE YOUR PROTECTION LEVEL *</h3>
-            
             <div className="mb-3 sm:mb-4">
               <button
                 onClick={toggleDropdown}
@@ -328,49 +311,38 @@ Passion for Detail
                 style={{ borderColor: '#1393c4', backgroundColor: '#f8fafc' }}
               >
                 <span className="font-semibold text-base sm:text-lg truncate pr-2" style={{ color: '#1393c4' }}>
-                  {selectedProtectionLevel 
+                  {selectedProtectionLevel
                     ? protectionLevels.find(level => level.id === selectedProtectionLevel)?.title
                     : 'Select Protection Level'}
                 </span>
                 {openDropdown === 'protection' ? <ChevronUp style={{ color: '#1393c4' }} /> : <ChevronDown style={{ color: '#1393c4' }} />}
               </button>
-              
+
               {openDropdown === 'protection' && (
                 <div className="mt-2 border rounded-lg overflow-hidden max-h-48 sm:max-h-60 overflow-y-auto" style={{ borderColor: '#1393c4' }}>
                   {protectionLevels.map((level) => (
                     <div
                       key={level.id}
                       onClick={() => handleProtectionLevelSelect(level.id)}
-                      className={`p-3 sm:p-4 border-b last:border-b-0 cursor-pointer transition-colors duration-200 ${
-                        selectedProtectionLevel === level.id 
-                          ? 'text-white' 
-                          : 'hover:bg-blue-50'
-                      }`}
-                      style={{ 
+                      className={`p-3 sm:p-4 border-b last:border-b-0 cursor-pointer transition-colors duration-200 ${selectedProtectionLevel === level.id ? 'text-white' : 'hover:bg-blue-50'
+                        }`}
+                      style={{
                         backgroundColor: selectedProtectionLevel === level.id ? '#1393c4' : 'white',
                         borderColor: '#1393c4'
                       }}
                     >
                       <div className="flex justify-between items-start mb-1 sm:mb-2">
-                        <h3 className={`font-bold text-sm sm:text-lg ${
-                          selectedProtectionLevel === level.id ? 'text-white' : ''
-                        }`} style={{ color: selectedProtectionLevel === level.id ? 'white' : '#1393c4' }}>
+                        <h3 className="font-bold text-sm sm:text-lg" style={{ color: selectedProtectionLevel === level.id ? 'white' : '#1393c4' }}>
                           {level.title}
                         </h3>
-                        <span className={`font-semibold text-xs sm:text-sm ${
-                          selectedProtectionLevel === level.id ? 'text-white' : ''
-                        }`} style={{ color: selectedProtectionLevel === level.id ? 'white' : '#1393c4' }}>
+                        <span className="font-semibold text-xs sm:text-sm" style={{ color: selectedProtectionLevel === level.id ? 'white' : '#1393c4' }}>
                           {level.warranty}
                         </span>
                       </div>
-                      <p className={`text-xs sm:text-sm mb-1 sm:mb-2 ${
-                        selectedProtectionLevel === level.id ? 'text-blue-100' : ''
-                      }`} style={{ color: selectedProtectionLevel === level.id ? '#dbeafe' : '#1393c4' }}>
+                      <p className="text-xs sm:text-sm mb-1 sm:mb-2" style={{ color: selectedProtectionLevel === level.id ? '#dbeafe' : '#1393c4' }}>
                         {level.description}
                       </p>
-                      <div className={`text-xs ${
-                        selectedProtectionLevel === level.id ? 'text-blue-100' : ''
-                      }`} style={{ color: selectedProtectionLevel === level.id ? '#dbeafe' : '#1393c4' }}>
+                      <div className="text-xs" style={{ color: selectedProtectionLevel === level.id ? '#dbeafe' : '#1393c4' }}>
                         <ul className="list-disc list-inside space-y-0.5 sm:space-y-1">
                           {level.features.slice(0, 2).map((feature, idx) => (
                             <li key={idx} className="truncate">{feature}</li>
@@ -402,15 +374,13 @@ Passion for Detail
             <button
               onClick={handleSubmit}
               disabled={!isFormValid || isSubmitting}
-              className={`w-full py-3 sm:py-4 rounded-xl font-bold text-white transition-all duration-300 shadow-lg text-sm sm:text-base ${
-                isFormValid && !isSubmitting
-                  ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 hover:scale-105 active:scale-95'
-                  : 'bg-gray-300 cursor-not-allowed'
-              }`}
+              className={`w-full py-3 sm:py-4 rounded-xl font-bold text-white transition-all duration-300 shadow-lg text-sm sm:text-base ${isFormValid && !isSubmitting
+                ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 hover:scale-105 active:scale-95'
+                : 'bg-gray-300 cursor-not-allowed'
+                }`}
             >
               {isSubmitting ? 'Submitting...' : 'GET MY QUOTE'}
             </button>
-            
             <p className="text-xs mt-2 sm:mt-3 px-2" style={{ color: '#1393c4' }}>
               We'll review your request and get back to you within 24 hours with a customized quote.
             </p>
@@ -432,7 +402,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
 
   useEffect(() => {
     const video = videoRef.current;
-    
+
     if (video) {
       video.muted = true;
       video.defaultMuted = true;
@@ -440,16 +410,15 @@ const CeramicCoatings = ({ setCurrentView }) => {
       video.setAttribute('playsinline', 'true');
       video.setAttribute('webkit-playsinline', 'true');
       video.preload = 'auto';
-      video.poster = '';
       video.style.willChange = 'transform';
       video.style.backfaceVisibility = 'hidden';
-      
+
       const adjustVideoFit = () => {
         const width = window.innerWidth;
         const height = window.innerHeight;
         const screenRatio = width / height;
         const videoRatio = 16 / 9;
-        
+
         video.style.objectFit = 'cover';
         video.style.width = '100%';
         video.style.height = '100%';
@@ -457,44 +426,35 @@ const CeramicCoatings = ({ setCurrentView }) => {
         video.style.top = '0';
         video.style.left = '0';
         video.style.transform = 'translateZ(0)';
-        
+
         if (screenRatio > videoRatio) {
           video.style.objectPosition = 'center center';
         } else {
           video.style.objectPosition = 'center 40%';
         }
       };
-      
+
       adjustVideoFit();
-      
+
       let resizeTimeout;
       const throttledResize = () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(adjustVideoFit, 100);
       };
-      
+
       window.addEventListener('resize', throttledResize);
       window.addEventListener('orientationchange', () => {
         setTimeout(adjustVideoFit, 300);
       });
-      
-      video.addEventListener('canplay', () => {
-        setIsVideoPlaying(true);
-      });
-      
-      video.addEventListener('playing', () => {
-        setIsVideoPlaying(true);
-      });
-      
-      video.addEventListener('pause', () => {
-        setIsVideoPlaying(false);
-      });
-      
+
+      video.addEventListener('canplay', () => setIsVideoPlaying(true));
+      video.addEventListener('playing', () => setIsVideoPlaying(true));
+      video.addEventListener('pause', () => setIsVideoPlaying(false));
+
       const playVideo = async () => {
         try {
           if (video.readyState >= 2) {
             const playPromise = video.play();
-            
             if (playPromise !== undefined) {
               playPromise.then(() => {
                 setIsVideoPlaying(true);
@@ -505,11 +465,8 @@ const CeramicCoatings = ({ setCurrentView }) => {
                     setIsVideoPlaying(true);
                     document.removeEventListener('click', enableVideo);
                     document.removeEventListener('touchstart', enableVideo);
-                  } catch (err) {
-                    // Silent fail for mobile browsers
-                  }
+                  } catch (err) { }
                 };
-                
                 document.addEventListener('click', enableVideo, { once: true });
                 document.addEventListener('touchstart', enableVideo, { once: true });
               });
@@ -519,18 +476,14 @@ const CeramicCoatings = ({ setCurrentView }) => {
               try {
                 await video.play();
                 setIsVideoPlaying(true);
-              } catch (error) {
-                // Silent fail for mobile browsers
-              }
+              } catch (error) { }
             }, { once: true });
           }
-        } catch (error) {
-          // Silent fail for mobile browsers
-        }
+        } catch (error) { }
       };
-      
+
       setTimeout(playVideo, 100);
-      
+
       return () => {
         window.removeEventListener('resize', throttledResize);
         window.removeEventListener('orientationchange', adjustVideoFit);
@@ -541,24 +494,15 @@ const CeramicCoatings = ({ setCurrentView }) => {
 
   const getContainerHeight = () => {
     if (typeof window === 'undefined') return '100vh';
-    
     const width = window.innerWidth;
     const height = window.innerHeight;
-    
-    if (width < 768) {
-      return Math.min(height * 0.6, 500) + 'px';
-    } else if (width < 1024) {
-      return Math.min(height * 0.7, 600) + 'px';
-    } else {
-      return '100vh';
-    }
+    if (width < 768) return Math.min(height * 0.6, 500) + 'px';
+    else if (width < 1024) return Math.min(height * 0.7, 600) + 'px';
+    else return '100vh';
   };
 
   useEffect(() => {
-    const observerOptions = {
-      threshold: 0.1,
-      rootMargin: '0px 0px -50px 0px'
-    };
+    const observerOptions = { threshold: 0.1, rootMargin: '0px 0px -50px 0px' };
 
     const observerCallback = (entries) => {
       entries.forEach(entry => {
@@ -570,11 +514,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
     };
 
     const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    cardRefs.current.forEach(ref => {
-      if (ref) observer.observe(ref);
-    });
-
+    cardRefs.current.forEach(ref => { if (ref) observer.observe(ref); });
     return () => observer.disconnect();
   }, []);
 
@@ -707,7 +647,6 @@ const CeramicCoatings = ({ setCurrentView }) => {
   return (
     <div className="min-h-screen bg-white">
 
-      {/* SEO - Updated with comprehensive SEO component */}
       <SEO
         title="Ceramic Coating Winnipeg | XPEL Fusion Plus | Best Auto Ceramic Coating Near Me"
         description="Professional ceramic coating in Winnipeg. XPEL Fusion Plus certified installers. Get premium car paint protection, hydrophobic coating & vehicle detailing near me. Free quotes available. Call (204) 775-0005."
@@ -724,7 +663,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
       <h1 className="sr-only">Ceramic Coating Near Me in Winnipeg | Best Auto Ceramic Coating for Cars</h1>
 
       {/* Hero Section with Video Background */}
-      <section 
+      <section
         className="relative overflow-hidden"
         style={{ height: getContainerHeight() }}
       >
@@ -751,18 +690,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
 
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent" />
 
-        <div className="relative h-full flex items-center">
-          <div className="container mx-auto px-4">
-            <div className="max-w-3xl">
-              <button
-                onClick={handleOpenDateManager}
-                className="absolute top-4 right-4 bg-[#1393c4] hover:bg-[#0d7aa1] text-white px-4 py-2 rounded-lg shadow-lg hover:shadow-xl transition-all duration-200 z-10"
-              >
-                Admin: Manage Dates
-              </button>
-            </div>
-          </div>
-        </div>
+
       </section>
 
       {/* Benefits Section */}
@@ -783,9 +711,8 @@ const CeramicCoatings = ({ setCurrentView }) => {
               <div
                 key={index}
                 ref={el => cardRefs.current[index] = el}
-                className={`group bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-md sm:shadow-lg hover:shadow-xl sm:hover:shadow-2xl transition-all duration-500 transform ${
-                  visibleCards.has(index) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
-                }`}
+                className={`group bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 md:p-8 shadow-md sm:shadow-lg hover:shadow-xl sm:hover:shadow-2xl transition-all duration-500 transform ${visibleCards.has(index) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
+                  }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <div
@@ -824,9 +751,8 @@ const CeramicCoatings = ({ setCurrentView }) => {
               <div
                 key={index}
                 ref={el => cardRefs.current[benefits.length + index] = el}
-                className={`relative bg-white rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden shadow-lg sm:shadow-xl hover:shadow-2xl transition-all duration-500 transform ${
-                  visibleCards.has(benefits.length + index) ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-4 sm:translate-y-10 opacity-0 scale-95'
-                } ${pkg.popular ? 'ring-2 sm:ring-4 ring-blue-400 md:scale-105' : ''}`}
+                className={`relative bg-white rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden shadow-lg sm:shadow-xl hover:shadow-2xl transition-all duration-500 transform ${visibleCards.has(benefits.length + index) ? 'translate-y-0 opacity-100 scale-100' : 'translate-y-4 sm:translate-y-10 opacity-0 scale-95'
+                  } ${pkg.popular ? 'ring-2 sm:ring-4 ring-blue-400 md:scale-105' : ''}`}
                 style={{ transitionDelay: `${index * 150}ms` }}
               >
                 {pkg.popular && (
@@ -838,11 +764,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
                 )}
 
                 <div className={`h-48 sm:h-56 md:h-64 bg-gradient-to-br ${pkg.gradient} relative overflow-hidden`}>
-                  <img
-                    src={pkg.image}
-                    alt={pkg.name}
-                    className="w-full h-full object-contain p-4 sm:p-6"
-                  />
+                  <img src={pkg.image} alt={pkg.name} className="w-full h-full object-contain p-4 sm:p-6" />
                 </div>
 
                 <div className="p-4 sm:p-6 md:p-8">
@@ -850,9 +772,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
                     {pkg.name}
                   </h3>
                   <div className="flex items-baseline gap-1 sm:gap-2 mb-3 sm:mb-4 md:mb-6">
-                    <span className="text-2xl sm:text-3xl md:text-4xl font-bold" style={{ color: '#1393c4' }}>
-                      {pkg.duration}
-                    </span>
+                    <span className="text-2xl sm:text-3xl md:text-4xl font-bold" style={{ color: '#1393c4' }}>{pkg.duration}</span>
                     <span className="text-sm sm:text-base" style={{ color: '#1393c4' }}>warranty</span>
                   </div>
 
@@ -867,9 +787,8 @@ const CeramicCoatings = ({ setCurrentView }) => {
 
                   <button
                     onClick={() => handleGetPricingClick(pkg.id)}
-                    className={`w-full py-2 sm:py-3 md:py-4 rounded-lg sm:rounded-xl font-bold text-white transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg text-sm sm:text-base ${
-                      pkg.popular ? 'bg-gradient-to-r from-cyan-500 to-blue-600' : 'bg-gradient-to-r from-blue-500 to-cyan-600'
-                    }`}
+                    className={`w-full py-2 sm:py-3 md:py-4 rounded-lg sm:rounded-xl font-bold text-white transition-all duration-300 hover:scale-105 active:scale-95 shadow-lg text-sm sm:text-base ${pkg.popular ? 'bg-gradient-to-r from-cyan-500 to-blue-600' : 'bg-gradient-to-r from-blue-500 to-cyan-600'
+                      }`}
                   >
                     GET PRICING
                   </button>
@@ -898,28 +817,20 @@ const CeramicCoatings = ({ setCurrentView }) => {
               <div
                 key={index}
                 ref={el => cardRefs.current[benefits.length + packages.length + index] = el}
-                className={`flex flex-col gap-3 sm:gap-4 bg-gray-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:bg-gray-100 transition-all duration-500 transform ${
-                  visibleCards.has(benefits.length + packages.length + index) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
-                }`}
+                className={`flex flex-col gap-3 sm:gap-4 bg-gray-50 rounded-xl sm:rounded-2xl p-4 sm:p-6 hover:bg-gray-100 transition-all duration-500 transform ${visibleCards.has(benefits.length + packages.length + index) ? 'translate-y-0 opacity-100' : 'translate-y-4 sm:translate-y-10 opacity-0'
+                  }`}
                 style={{ transitionDelay: `${index * 100}ms` }}
               >
                 <div className="flex items-center gap-3 sm:gap-4">
                   <div
                     className="flex-shrink-0 w-12 h-12 sm:w-14 sm:h-14 md:w-16 md:h-16 rounded-lg sm:rounded-xl flex items-center justify-center shadow-lg"
-                    style={{ background: `#1393c4` }}
+                    style={{ background: '#1393c4' }}
                   >
                     {step.icon}
                   </div>
                   <div className="flex items-center gap-1 sm:gap-2">
-                    <span
-                      className="text-xl sm:text-2xl font-bold"
-                      style={{ color: '#1393c4' }}
-                    >
-                      {step.step}
-                    </span>
-                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold break-words" style={{ color: '#1393c4' }}>
-                      {step.title}
-                    </h3>
+                    <span className="text-xl sm:text-2xl font-bold" style={{ color: '#1393c4' }}>{step.step}</span>
+                    <h3 className="text-lg sm:text-xl md:text-2xl font-bold break-words" style={{ color: '#1393c4' }}>{step.title}</h3>
                   </div>
                 </div>
                 <p className="text-sm sm:text-base leading-relaxed break-words hyphens-auto" style={{ color: '#1393c4' }}>
@@ -942,79 +853,32 @@ const CeramicCoatings = ({ setCurrentView }) => {
                     PROTECT YOUR VEHICLE WITH XPEL FUSION PLUS CERAMIC COATING
                   </h2>
                   <div className="space-y-3 sm:space-y-4">
-                    <div
-                      className="flex items-center space-x-2 sm:space-x-3 hover:translate-x-1 sm:hover:translate-x-2 transition-transform duration-300 cursor-pointer"
-                      onClick={() => setCurrentView('fusion-plus-lite')}
-                    >
-                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3] break-words" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
-                        FUSION PLUS LITE
-                      </span>
-                    </div>
-                    <div 
-                      className="flex items-center space-x-2 sm:space-x-3 hover:translate-x-1 sm:hover:translate-x-2 transition-transform duration-300 cursor-pointer"
-                      onClick={() => setCurrentView('fusion-plus-paint-ppf')}
-                    >
-                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3] break-words" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
-                        FUSION PLUS PAINT & PPF
-                      </span>
-                    </div>
-                    <div 
-                      className="flex items-center space-x-2 sm:space-x-3 hover:translate-x-1 sm:hover:translate-x-2 transition-transform duration-300 cursor-pointer"
-                      onClick={() => setCurrentView('fusion-plus-premium')}
-                    >
-                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3] break-words" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
-                        FUSION PLUS PREMIUM
-                      </span>
-                    </div>
-                    <div 
-                      className="flex items-center space-x-2 sm:space-x-3 hover:translate-x-1 sm:hover:translate-x-2 transition-transform duration-300 cursor-pointer"
-                      onClick={() => setCurrentView('fusion-plus-wheel-caliper')}
-                    >
-                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3] break-words" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
-                        FUSION PLUS WHEEL & CALIPER
-                      </span>
-                    </div>
-                    <div 
-                      className="flex items-center space-x-2 sm:space-x-3 hover:translate-x-1 sm:hover:translate-x-2 transition-transform duration-300 cursor-pointer"
-                      onClick={() => setCurrentView('fusion-plus-glass')}
-                    >
-                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3] break-words" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
-                        FUSION PLUS GLASS
-                      </span>
-                    </div>
-                    <div 
-                      className="flex items-center space-x-2 sm:space-x-3 hover:translate-x-1 sm:hover:translate-x-2 transition-transform duration-300 cursor-pointer"
-                      onClick={() => setCurrentView('fusion-plus-plastic-trims')}
-                    >
-                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3] break-words" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
-                        FUSION PLUS PLASTIC & TRIMS
-                      </span>
-                    </div>
-                    <div 
-                      className="flex items-center space-x-2 sm:space-x-3 hover:translate-x-1 sm:hover:translate-x-2 transition-transform duration-300 cursor-pointer"
-                      onClick={() => setCurrentView('fusion-plus-upholstery')}
-                    >
-                      <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
-                      <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3] break-words" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
-                        FUSION PLUS UPHOLSTERY
-                      </span>
-                    </div>
+                    {[
+                      { label: 'FUSION PLUS LITE', view: 'fusion-plus-lite' },
+                      { label: 'FUSION PLUS PAINT & PPF', view: 'fusion-plus-paint-ppf' },
+                      { label: 'FUSION PLUS PREMIUM', view: 'fusion-plus-premium' },
+                      { label: 'FUSION PLUS WHEEL & CALIPER', view: 'fusion-plus-wheel-caliper' },
+                      { label: 'FUSION PLUS GLASS', view: 'fusion-plus-glass' },
+                      { label: 'FUSION PLUS PLASTIC & TRIMS', view: 'fusion-plus-plastic-trims' },
+                      { label: 'FUSION PLUS UPHOLSTERY', view: 'fusion-plus-upholstery' },
+                    ].map(({ label, view }) => (
+                      <div
+                        key={view}
+                        className="flex items-center space-x-2 sm:space-x-3 hover:translate-x-1 sm:hover:translate-x-2 transition-transform duration-300 cursor-pointer"
+                        onClick={() => setCurrentView(view)}
+                      >
+                        <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full" style={{ background: '#1393c4' }}></span>
+                        <span className="font-semibold text-sm sm:text-base md:text-lg underline transition-colors hover:text-[#0f7ba3] break-words" style={{ color: '#1393c4', textDecorationColor: '#1393c4' }}>
+                          {label}
+                        </span>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
                 <div className="lg:w-1/2 lg:pl-8 xl:pl-12">
                   <div className="max-w-xs sm:max-w-sm md:max-w-md mx-auto hover:scale-105 transition-transform duration-300">
-                    <img
-                      src={protectVehicleLogo}
-                      alt="XPEL Logo"
-                      className="w-full h-auto object-contain drop-shadow-lg"
-                    />
+                    <img src={protectVehicleLogo} alt="XPEL Logo" className="w-full h-auto object-contain drop-shadow-lg" />
                   </div>
                 </div>
               </div>
@@ -1027,26 +891,22 @@ const CeramicCoatings = ({ setCurrentView }) => {
                     FUSION PLUS
                     <span className="block text-lg sm:text-xl md:text-2xl break-words" style={{ color: '#1393c4' }}>CERAMIC COATING</span>
                   </h2>
-
                   <div className="space-y-3 sm:space-y-4 text-sm sm:text-base">
                     <p className="leading-relaxed bg-gray-50 p-3 sm:p-4 rounded-lg break-words" style={{ color: '#1393c4' }}>
                       Developed to perform in a wide variety of surface types, <span className="font-bold break-words" style={{ color: '#1393c4' }}>FUSION PLUS</span> Ceramic Coating offers unrivaled gloss, superior hydrophobic protection, and improved scratch resistance.
                     </p>
                   </div>
-
                   <div className="mt-4 sm:mt-6 md:mt-8 space-y-2 sm:space-y-3">
-                    <div className="flex items-center space-x-2 sm:space-x-3 bg-gray-50 p-2 sm:p-3 rounded-lg hover:bg-gray-100 transition-colors">
-                      <span className="text-lg sm:text-xl font-bold" style={{ color: '#1393c4' }}>+</span>
-                      <span className="font-semibold text-sm sm:text-base break-words" style={{ color: '#1393c4' }}>Provides protection from the elements</span>
-                    </div>
-                    <div className="flex items-center space-x-2 sm:space-x-3 bg-gray-50 p-2 sm:p-3 rounded-lg hover:bg-gray-100 transition-colors">
-                      <span className="text-lg sm:text-xl font-bold" style={{ color: '#1393c4' }}>+</span>
-                      <span className="font-semibold text-sm sm:text-base break-words" style={{ color: '#1393c4' }}>Repels water, dirt & road grime</span>
-                    </div>
-                    <div className="flex items-center space-x-2 sm:space-x-3 bg-gray-50 p-2 sm:p-3 rounded-lg hover:bg-gray-100 transition-colors">
-                      <span className="text-lg sm:text-xl font-bold" style={{ color: '#1393c4' }}>+</span>
-                      <span className="font-semibold text-sm sm:text-base break-words" style={{ color: '#1393c4' }}>Resist stains & chemical etching</span>
-                    </div>
+                    {[
+                      'Provides protection from the elements',
+                      'Repels water, dirt & road grime',
+                      'Resist stains & chemical etching',
+                    ].map((item) => (
+                      <div key={item} className="flex items-center space-x-2 sm:space-x-3 bg-gray-50 p-2 sm:p-3 rounded-lg hover:bg-gray-100 transition-colors">
+                        <span className="text-lg sm:text-xl font-bold" style={{ color: '#1393c4' }}>+</span>
+                        <span className="font-semibold text-sm sm:text-base break-words" style={{ color: '#1393c4' }}>{item}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
@@ -1062,7 +922,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
           </div>
         </div>
       </section>
-      
+
       {/* References Section */}
       <section className="py-12 sm:py-16 bg-gradient-to-br from-sky-100 via-white to-sky-50">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -1095,13 +955,12 @@ const CeramicCoatings = ({ setCurrentView }) => {
       )}
 
       {/* Ceramic Coating Quote Modal */}
-      <CeramicCoatingQuoteModal 
+      <CeramicCoatingQuoteModal
         isOpen={isQuoteModalOpen}
         onClose={() => setIsQuoteModalOpen(false)}
         selectedPackage={selectedPackage}
       />
 
-      {/* Footer */}
       <Footer />
     </div>
   );
