@@ -52,7 +52,7 @@ const CeramicCoatingQuoteModal = ({ isOpen, onClose, selectedPackage }) => {
         "PPF-safe formula",
         "Superior chemical resistance",
         "Maximum gloss enhancement",
-        "Paint correction included"
+        
       ]
     },
     {
@@ -65,9 +65,8 @@ const CeramicCoatingQuoteModal = ({ isOpen, onClose, selectedPackage }) => {
         "8-year warranty protection",
         "Ultimate scratch resistance",
         "Premium hydrophobic coating",
-        "Complete paint correction",
-        "Full vehicle coverage",
-        "Complimentary maintenance kit"
+         "Full vehicle coverage"
+        
       ]
     }
   ];
