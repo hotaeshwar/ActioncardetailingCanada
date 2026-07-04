@@ -574,8 +574,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
         "4-year warranty coverage",
         "PPF-safe formula",
         "Superior chemical resistance",
-        "Maximum gloss enhancement",
-        "Paint correction included"
+        "Maximum gloss enhancement"
       ],
       image: fusionPlusPaintPPF,
       gradient: "from-cyan-500 to-blue-600",
@@ -590,9 +589,7 @@ const CeramicCoatings = ({ setCurrentView }) => {
         "8-year warranty protection",
         "Ultimate scratch resistance",
         "Premium hydrophobic coating",
-        "Complete paint correction",
-        "Full vehicle coverage",
-        "Complimentary maintenance kit"
+        "Full vehicle coverage"
       ],
       image: fusionPlusPremium,
       gradient: "from-blue-600 to-indigo-700",
