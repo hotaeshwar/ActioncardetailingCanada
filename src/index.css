@@ -1,2 +1,11 @@
 @import "tailwindcss";
 
+@theme {
+  --color-primary: #1393c4;
+  --color-primary-dark: #0f7ba3;
+  --color-primary-light: #e8f6fb;
+}
+
+:root {
+  --color-brand: #1393c4;
+}

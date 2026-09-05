@@ -742,7 +742,7 @@ Passion for Detail
             <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">2. PAINT POLISHING PACKAGES</h2>
             <p className="text-[#1393c4]">Which paint polishing service is best for your vehicle?</p>
             {!selectedVehicle && (
-              <p className="text-[#1393c4]text-sm mt-2">Please select a vehicle type above first</p>
+              <p className="text-[#1393c4] text-sm mt-2">Please select a vehicle type above first</p>
             )}
           </div>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">

@@ -123,6 +123,18 @@ const CardSliderCarousel = () => {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (event) => {
+      // Don't intercept keyboard shortcuts if the user is typing in form fields
+      const target = event.target;
+      const tagName = target?.tagName?.toLowerCase();
+      if (
+        tagName === 'input' ||
+        tagName === 'textarea' ||
+        tagName === 'select' ||
+        target?.isContentEditable
+      ) {
+        return;
+      }
+
       if (event.key === 'ArrowLeft') {
         prevSlide();
       } else if (event.key === 'ArrowRight') {
