@@ -109,24 +109,22 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
   };
 
   const vehicleTypes = [
-    { id: 'coupe', name: 'Coupe (2 doors)', icon: Car },
-    { id: 'sedan', name: 'Sedan (4 doors)', icon: Car },
-    { id: 'compact-suv', name: 'Compact Small SUV', icon: Truck },
-    { id: 'large-suv', name: 'Large SUV/Van/Truck', icon: Truck }
+    { id: 'sedan', name: 'Sedan / Small SUV', icon: Car },
+    { id: 'truck', name: 'Truck', icon: Truck },
+    { id: 'large-suv', name: 'Large SUV / Van', icon: Truck }
   ];
 
   const getPackagePricing = (vehicleId) => {
     const pricingMap = {
-      'coupe': { silver: 180, gold: 250, diamond: 390 },
-      'sedan': { silver: 199, gold: 270, diamond: 420 },
-      'compact-suv': { silver: 199, gold: 270, diamond: 420 },
-      'large-suv': { silver: 215, gold: 290, diamond: 450 }
+      'sedan': { silver: 249, gold: 329, diamond: 499 },
+      'truck': { silver: 279, gold: 359, diamond: 599 },
+      'large-suv': { silver: 299, gold: 389, diamond: 599 }
     };
-    return pricingMap[vehicleId] || pricingMap['coupe'];
+    return pricingMap[vehicleId] || pricingMap['sedan'];
   };
 
   const getWashPackages = () => {
-    const pricing = selectedVehicle ? getPackagePricing(selectedVehicle.id) : getPackagePricing('coupe');
+    const pricing = selectedVehicle ? getPackagePricing(selectedVehicle.id) : getPackagePricing('sedan');
     return [
       {
         id: 'silver',
@@ -150,7 +148,7 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
         price: pricing.gold,
         features: [
           'Silver package plus Engine Shampoo',
-          'Hand Carnauba Wax',
+          'Hand Express Wax',
           'Trunk Shampoo',
           'Complete interior and exterior detailing package',
           'Extra Charge for Pet Hairs Removal and Heavily soiled vehicles'
@@ -172,32 +170,51 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
     ];
   };
 
-  const addOnOptions = [
-    { id: 'pet-removal', name: 'Pet hairs removal', price: 0, duration: '30min', description: 'As per estimate' },
-    { id: 'headliner-shampoo', name: 'Headliner shampoo (1 Hour)', price: 30, duration: '60min', description: 'Complete cleaning of headliners.' },
-    { id: 'carnauba-wax', name: 'Carnauba wax (4 months protection) (30 min)', price: 40, duration: '30min', description: 'The carnauba wax repels water and, consequently, most contaminants. When applied to paint surface, carnauba retains these characteristics. Therefore, an application of a carnauba-based car wax to your vehicle will protect it from UV rays, heat, moisture, oxidation, and environmental contamination.' },
-    { id: 'engine-shampoo', name: 'Engine shampoo (40 min)', price: 60, duration: '40min', description: 'Engine Degreased, rinsed, steam cleaned and dressed.' },
-    { id: 'headlight', name: 'Headlights Restoration (30 min)', price: 80, duration: '30min', description: 'Headlight restoration removes dull, yellowed headlight build up. We clean and restore your headlights with our dry sanding, wet sanding, polishing techniques for maximum visibility. We seal the headlight for long lasting protection.' },
-    { id: 'odor', name: 'Odor Elimination and sanitization (180 min)', price: 80, duration: '180min', description: 'We use Ozone treatment for Odour elimination. Ozone treatment is the use of the ozone (O3) to remove odour, bacteria and viruses. Ozone treatment is the best method for removing stubborn odour.' },
-    { id: 'paint-sealant', name: 'Paint sealant (6 months protection) (40 min)', price: 50, duration: '40min', description: 'Paint sealant is a fully synthetic product designed to protect paint surfaces while providing a mirror-like shine. A sealant is chemically engineered to bond to the surface, it will last longer than traditional wax while providing protection against paint-killer like sap, acid rain and UV rays.' },
-    { id: 'paint-decontamination', name: 'Paint Decontamination (20 minutes)', price: 30, duration: '20min', description: 'Removing iron deposits and road dust' },
-    { id: 'fabric', name: 'Fabric protector (carpet and seats) (40 min)', price: 80, duration: '40min', description: '3M scotchgard coating protects fibers and prevents stains from penetrating into fabric. Fabric protector repels oil, water and alcohol. Fabric protector bonds to individual fibers and forms a barrier against all contaminants. 3M Scotchgard fabric protection is a long-lasting stain resistant coating which will protect your interior detailing job for months.' },
-    { id: 'decontamination', name: 'Decontamination Wash (30 min)', price: 30, duration: '30min', description: 'Deep cleaning wash to remove contaminants and prepare the vehicle surface.' },
-    { id: 'paint-correction-1', name: 'Paint correction (One stage) (2 Hours)', price: 150, duration: '2hr', description: 'This service is designed for vehicles that are looking for paint refinement rather than paint perfection. A vehicle that is in great shape already and only requires one stage polishing step to remove minor wash marks and light swirls Or for the customer who wants to enhance the gloss of their paint work, but less concerned with getting every scratch and swirl removed. One stage enhancement polish is a great cost-effective alternative to multi stage correction. We can usually remove 50% of swirls, and light defects. There are different variables that can dictate just how much correction you can safely achieve in a One stage correction process.' },
-    { id: 'paint-correction-2', name: 'Paint correction (Two stage) (60 min)', price: 300, duration: '60min', description: 'This process involve light compounding machine polishing steps to remove the worst defects, swirl marks, oxidation, and then followed by a polishing stage to refine the finish and improve the gloss and clarity. The paint type and condition also dictate the level of correction, but typically this service will get rid of 60%-70% of all defects' },
-    { id: 'paint-correction-3', name: 'Paint correction (Three stage) (120 min)', price: 450, duration: '120min', description: 'This process involve medium and light compounding machine polishing steps to remove the worst defects, swirl marks, oxidation, and then followed by a polishing stage to refine the finish and improve the gloss and clarity. The paint type and condition also dictate the level of correction, but typically this service will get rid of 70%-80% of all defects' },
-    { id: 'paint-correction-4', name: 'Paint correction (Four stage) (240 min)', price: 600, duration: '240min', description: 'With multi stage paint correction, you\'re significantly improving the finish by removing all of the swirls, and all but the heaviest of scratches and defects. Depend on the condition of the paint we may have to wet-sand to remove deep scratches and orange peel. This process involve 3 or more heavy compounding machine polishing steps to remove the worst defects, swirl marks, oxidation, and then followed by a polishing stage to refine the finish and improve the gloss and clarity. The paint type and condition also dictate the level of correction, but typically this service will get rid of 80-90% of all defects.' }
+  const rawAddOnOptions = [
+    { id: 'pet-removal', name: 'Pet hairs removal', prices: { sedan: 0, truck: 0, 'large-suv': 0 }, duration: '30min', description: 'As per estimate' },
+    { id: 'headliner-shampoo', name: 'Headliner shampoo (1 Hour)', prices: { sedan: 40, truck: 40, 'large-suv': 40 }, duration: '60min', description: 'Complete cleaning of headliners.' },
+    { id: 'carnauba-wax', name: 'Carnauba wax (4 months protection) (30 min)', prices: { sedan: 80, truck: 90, 'large-suv': 90 }, duration: '30min', description: 'The carnauba wax repels water and, consequently, most contaminants. When applied to paint surface, carnauba retains these characteristics. Therefore, an application of a carnauba-based car wax to your vehicle will protect it from UV rays, heat, moisture, oxidation, and environmental contamination.' },
+    { id: 'engine-shampoo', name: 'Engine Detail / Shampoo (40 min)', prices: { sedan: 60, truck: 80, 'large-suv': 80 }, duration: '40min', description: 'Engine Degreased, rinsed, steam cleaned and dressed.' },
+    { id: 'headlight', name: 'Headlights Restoration (30 min)', prices: { sedan: 80, truck: 80, 'large-suv': 80 }, duration: '30min', description: 'Headlight restoration removes dull, yellowed headlight build up. We clean and restore your headlights with our dry sanding, wet sanding, polishing techniques for maximum visibility. We seal the headlight for long lasting protection.' },
+    { id: 'odor', name: 'Odor Elimination and sanitization (180 min)', prices: { sedan: 80, truck: 80, 'large-suv': 80 }, duration: '180min', description: 'We use Ozone treatment for Odour elimination. Ozone treatment is the use of the ozone (O3) to remove odour, bacteria and viruses. Ozone treatment is the best method for removing stubborn odour.' },
+    { id: 'fabric', name: 'Fabric protector (carpet and seats) (40 min)', prices: { sedan: 80, truck: 80, 'large-suv': 100 }, duration: '40min', description: '3M scotchgard coating protects fibers and prevents stains from penetrating into fabric. Fabric protector repels oil, water and alcohol. Fabric protector bonds to individual fibers and forms a barrier against all contaminants. 3M Scotchgard fabric protection is a long-lasting stain resistant coating which will protect your interior detailing job for months.' },
+    { id: 'decontamination', name: 'Decontamination Wash (30 min)', prices: { sedan: 40, truck: 50, 'large-suv': 50 }, duration: '30min', description: 'Deep cleaning wash to remove contaminants and prepare the vehicle surface.' },
+    { id: 'paint-correction-1', name: 'Paint correction polish one stage (2 Hours)', prices: { sedan: 250, truck: 290, 'large-suv': 290 }, duration: '2hr', description: 'This service is designed for vehicles that are looking for paint refinement rather than paint perfection. A vehicle that is in great shape already and only requires one stage polishing step to remove minor wash marks and light swirls Or for the customer who wants to enhance the gloss of their paint work, but less concerned with getting every scratch and swirl removed. One stage enhancement polish is a great cost-effective alternative to multi stage correction. We can usually remove 50% of swirls, and light defects. There are different variables that can dictate just how much correction you can safely achieve in a One stage correction process.' },
+    { id: 'paint-correction-2', name: 'Paint correction polishing two stage (60 min)', prices: { sedan: 450, truck: 499, 'large-suv': 499 }, diamondPrices: { sedan: 250, truck: 290, 'large-suv': 290 }, duration: '60min', description: 'This process involve light compounding machine polishing steps to remove the worst defects, swirl marks, oxidation, and then followed by a polishing stage to refine the finish and improve the gloss and clarity. The paint type and condition also dictate the level of correction, but typically this service will get rid of 60%-70% of all defects' },
+    { id: 'paint-correction-3', name: 'Paint correction polishing three stage (120 min)', prices: { sedan: 650, truck: 699, 'large-suv': 699 }, diamondPrices: { sedan: 450, truck: 499, 'large-suv': 499 }, duration: '120min', description: 'This process involve medium and light compounding machine polishing steps to remove the worst defects, swirl marks, oxidation, and then followed by a polishing stage to refine the finish and improve the gloss and clarity. The paint type and condition also dictate the level of correction, but typically this service will get rid of 70%-80% of all defects' },
+    { id: 'paint-correction-4', name: 'Paint correction polishing four stage (240 min)', prices: { sedan: 650, truck: 699, 'large-suv': 699 }, diamondPrices: { sedan: 650, truck: 699, 'large-suv': 699 }, duration: '240min', description: 'With multi stage paint correction, you\'re significantly improving the finish by removing all of the swirls, and all but the heaviest of scratches and defects. Depend on the condition of the paint we may have to wet-sand to remove deep scratches and orange peel. This process involve 3 or more heavy compounding machine polishing steps to remove the worst defects, swirl marks, oxidation, and then followed by a polishing stage to refine the finish and improve the gloss and clarity. The paint type and condition also dictate the level of correction, but typically this service will get rid of 80-90% of all defects.' }
   ];
+
+  const getAddOnPrice = (addon, vehicleId, packageId) => {
+    const vId = vehicleId || 'sedan';
+    const pkgId = packageId || selectedPackage?.id || 'silver';
+    if (pkgId === 'diamond' && addon.diamondPrices) {
+      return addon.diamondPrices[vId] ?? addon.diamondPrices['sedan'] ?? 0;
+    }
+    if (addon.prices) {
+      return addon.prices[vId] ?? addon.prices['sedan'] ?? 0;
+    }
+    return addon.price || 0;
+  };
 
   const getAvailableAddOns = () => {
     if (!selectedPackage) return [];
-    const silverPackageAddOns = ['pet-removal', 'headliner-shampoo', 'carnauba-wax', 'engine-shampoo', 'headlight', 'odor', 'paint-sealant', 'paint-decontamination', 'fabric', 'decontamination', 'paint-correction-1', 'paint-correction-2', 'paint-correction-3'];
-    const goldPackageAddOns = ['pet-removal', 'headlight', 'odor', 'fabric', 'decontamination', 'paint-correction-1', 'paint-correction-2', 'paint-correction-3', 'paint-correction-4'];
-    const diamondPackageAddOns = ['pet-removal', 'headlight', 'odor', 'fabric', 'paint-correction-2', 'paint-correction-3', 'paint-correction-4'];
-    if (selectedPackage.name === 'Silver Package') return addOnOptions.filter(addon => silverPackageAddOns.includes(addon.id));
-    if (selectedPackage.name === 'Gold Package') return addOnOptions.filter(addon => goldPackageAddOns.includes(addon.id));
-    if (selectedPackage.name === 'Diamond Package') return addOnOptions.filter(addon => diamondPackageAddOns.includes(addon.id));
-    return addOnOptions;
+    const vehicleId = selectedVehicle?.id || 'sedan';
+    const packageId = selectedPackage?.id || 'silver';
+
+    const silverPackageAddOns = ['pet-removal', 'headliner-shampoo', 'carnauba-wax', 'engine-shampoo', 'headlight', 'odor', 'fabric', 'decontamination', 'paint-correction-1', 'paint-correction-2', 'paint-correction-3'];
+    const goldPackageAddOns = ['pet-removal', 'carnauba-wax', 'headlight', 'odor', 'fabric', 'paint-correction-1', 'paint-correction-2', 'paint-correction-3'];
+    const diamondPackageAddOns = ['pet-removal', 'carnauba-wax', 'headlight', 'odor', 'fabric', 'paint-correction-2', 'paint-correction-3', 'paint-correction-4'];
+
+    let filtered = rawAddOnOptions;
+    if (selectedPackage.name === 'Silver Package') filtered = rawAddOnOptions.filter(addon => silverPackageAddOns.includes(addon.id));
+    else if (selectedPackage.name === 'Gold Package') filtered = rawAddOnOptions.filter(addon => goldPackageAddOns.includes(addon.id));
+    else if (selectedPackage.name === 'Diamond Package') filtered = rawAddOnOptions.filter(addon => diamondPackageAddOns.includes(addon.id));
+
+    return filtered.map(addon => ({
+      ...addon,
+      price: getAddOnPrice(addon, vehicleId, packageId)
+    }));
   };
 
   const availableAddOns = getAvailableAddOns();
@@ -605,7 +622,7 @@ Passion for Detail
             <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">1. VEHICLE TYPE</h2>
             <p className="text-[#1393c4]">Select your vehicle type below.</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto">
             {vehicleTypes.map((vehicle) => {
               const IconComponent = vehicle.icon;
               const isSelected = selectedVehicle?.id === vehicle.id;

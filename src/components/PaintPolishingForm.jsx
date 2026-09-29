@@ -302,60 +302,57 @@ const PaintPolishingForm = () => {
   };
 
   const vehicleTypes = [
-    { id: 'coupe', name: 'Coupe (2 doors)', icon: Car },
-    { id: 'sedan', name: 'Sedan (4 doors)', icon: Car },
-    { id: 'compact-suv', name: 'Compact Small SUV', icon: Truck },
-    { id: 'large-suv', name: 'Large SUV/Van/Truck', icon: Truck }
+    { id: 'sedan', name: 'Sedan / Small SUV', icon: Car },
+    { id: 'truck', name: 'Truck', icon: Truck },
+    { id: 'large-suv', name: 'Large SUV / Van', icon: Truck }
   ];
 
   const getPackagePricing = (vehicleId) => {
     const pricingMap = {
-      'coupe': { oneStage: 200, twoStage: 380, threeStage: 560, fourStage: 740 },
-      'sedan': { oneStage: 230, twoStage: 440, threeStage: 650, fourStage: 860 },
-      'compact-suv': { oneStage: 230, twoStage: 440, threeStage: 650, fourStage: 860 },
-      'large-suv': { oneStage: 250, twoStage: 480, threeStage: 710, fourStage: 940 }
+      'sedan': { oneStage: 299, twoStage: 499, threeStage: 699, fourStage: 899 },
+      'truck': { oneStage: 349, twoStage: 549, threeStage: 749, fourStage: 949 },
+      'large-suv': { oneStage: 349, twoStage: 549, threeStage: 749, fourStage: 949 }
     };
-    return pricingMap[vehicleId] || pricingMap['coupe'];
+    return pricingMap[vehicleId] || pricingMap['sedan'];
   };
 
   const getWashPackages = () => {
-    const pricing = selectedVehicle ? getPackagePricing(selectedVehicle.id) : getPackagePricing('coupe');
+    const pricing = selectedVehicle ? getPackagePricing(selectedVehicle.id) : getPackagePricing('sedan');
     
     return [
       {
         id: 'one-stage',
         name: 'One Stage Paint Correction Polish',
-        duration: '3 Hours',
+        duration: '180 min (3 Hours)',
         price: pricing.oneStage,
-        description: 'Paint correction (One stage) (3 Hours)'
+        description: 'Paint correction (One stage) (180 min)'
       },
       {
         id: 'two-stage',
         name: 'Two Stage Paint Correction Polish',
-        duration: '5 Hours',
+        duration: '240 min (4 Hours)',
         price: pricing.twoStage,
-        description: 'Paint correction (Two stage) (5 Hours)'
+        description: 'Paint correction (Two stage) (240 min)'
       },
       {
         id: 'three-stage',
         name: 'Three Stage Paint Correction Polish',
-        duration: '7 Hours',
+        duration: '300 min (5 Hours)',
         price: pricing.threeStage,
-        description: 'Paint correction (Three stage) (7 Hours)'
+        description: 'Paint correction (Three stage) (300 min)'
       },
       {
         id: 'four-stage',
         name: 'Four Stage Paint Correction Polish',
-        duration: '8-12 Hours',
+        duration: '360 min (6 Hours)',
         price: pricing.fourStage,
-        description: 'Paint correction (Four stage) (8-12 Hours)'
+        description: 'Paint correction (Four stage) (360 min)'
       }
     ];
   };
 
   const addOnOptions = [
-    { id: 'wax', name: 'WAX', price: 40, duration: '0min' },
-    { id: 'paint-sealant', name: 'Paint Sealant Wax', price: 50, duration: '0min' }
+    { id: 'wax', name: 'WAX', price: 40, duration: '30min' }
   ];
 
   const timeSlots = [
@@ -702,7 +699,7 @@ Passion for Detail
             <h2 className="text-2xl sm:text-3xl font-bold text-[#1393c4] mb-4">1. VEHICLE TYPE</h2>
             <p className="text-[#1393c4]">Select your vehicle type below.</p>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto">
             {vehicleTypes.map((vehicle) => {
               const IconComponent = vehicle.icon;
               const isSelected = selectedVehicle?.id === vehicle.id;
