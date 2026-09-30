@@ -171,6 +171,7 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
         price: pricing.diamond,
         features: [
           'Gold package plus Paint Decontamination wash',
+          'Headliner Shampoo',
           'Paint Clay bar treatment',
           'Tar removal',
           'Paint correction polish (One stage)',
