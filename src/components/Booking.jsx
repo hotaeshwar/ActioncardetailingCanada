@@ -16,6 +16,7 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
   const [expandedPackageDescriptions, setExpandedPackageDescriptions] = useState({});
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+  const [showAfternoonPopup, setShowAfternoonPopup] = useState(false);
   const [lastSelectedAddOn, setLastSelectedAddOn] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isScrolling, setIsScrolling] = useState(false);
@@ -156,6 +157,7 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
         price: pricing.gold,
         features: [
           'Silver package plus Engine Shampoo',
+          'Headliner Shampoo',
           'Hand Express Wax',
           'Trunk Shampoo',
           'Complete interior and exterior detailing package',
@@ -180,7 +182,7 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
   };
 
   const rawAddOnOptions = [
-    { id: 'headliner-shampoo', name: 'Headliner shampoo (1 Hour)', prices: { sedan: 40, truck: 40, 'large-suv': 40 }, duration: '60min', description: 'Complete cleaning of headliners.' },
+    { id: 'headliner-shampoo', name: 'Headliner shampoo (1 Hour)', prices: { sedan: 40, truck: 50, 'large-suv': 50 }, duration: '60min', description: 'Complete cleaning of headliners.' },
     { id: 'carnauba-wax', name: 'Carnauba wax (4 months protection) (30 min)', prices: { sedan: 80, truck: 90, 'large-suv': 90 }, duration: '30min', description: 'The carnauba wax repels water and, consequently, most contaminants. When applied to paint surface, carnauba retains these characteristics. Therefore, an application of a carnauba-based car wax to your vehicle will protect it from UV rays, heat, moisture, oxidation, and environmental contamination.' },
     { id: 'engine-shampoo', name: 'Engine Detail / Shampoo (40 min)', prices: { sedan: 60, truck: 80, 'large-suv': 80 }, duration: '40min', description: 'Engine Degreased, rinsed, steam cleaned and dressed.' },
     { id: 'headlight', name: 'Headlights Restoration (30 min)', prices: { sedan: 80, truck: 80, 'large-suv': 80 }, duration: '30min', description: 'Headlight restoration removes dull, yellowed headlight build up. We clean and restore your headlights with our dry sanding, wet sanding, polishing techniques for maximum visibility. We seal the headlight for long lasting protection.' },
@@ -466,7 +468,9 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
   const handleTimeSelect = (time) => {
     if (!isTimeSlotBlocked(time)) {
       setSelectedTime(time);
-      if (!isModal && selectedDate && time && !isScrolling) {
+      if (time >= '12:00') {
+        setShowAfternoonPopup(true);
+      } else if (!isModal && selectedDate && time && !isScrolling) {
         setIsScrolling(true);
         setTimeout(() => {
           const summarySection = document.getElementById('summary-section');
@@ -730,6 +734,42 @@ Passion for Detail
                     <button onClick={() => handleAddOnPopupResponse(true)} className="flex-1 bg-[#1393c4] text-white py-3 px-6 rounded-xl font-semibold hover:bg-[#0d7aa1] transition-colors duration-300">Yes, Add More</button>
                     <button onClick={() => handleAddOnPopupResponse(false)} className="flex-1 border-2 border-[#1393c4] text-[#1393c4] py-3 px-6 rounded-xl font-semibold hover:bg-[#1393c4] hover:text-white transition-colors duration-300">No, Continue</button>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showAfternoonPopup && (
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <div className="fixed inset-0 bg-black bg-opacity-50 transition-opacity" onClick={() => setShowAfternoonPopup(false)}></div>
+              <div className="relative transform overflow-hidden rounded-2xl bg-white p-6 sm:p-8 text-left shadow-2xl transition-all w-full max-w-md border border-[#1393c4]">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-blue-50 border-2 border-[#1393c4] rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Clock className="w-8 h-8 text-[#1393c4]" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-[#1393c4] mb-3">Afternoon Booking Notice</h3>
+                  <p className="text-gray-700 text-base leading-relaxed mb-6">
+                    Please note that for bookings scheduled at or after <span className="font-bold text-[#1393c4]">12:00 PM</span>, your vehicle will be ready for pickup the <span className="font-bold text-[#1393c4]">next day</span>.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowAfternoonPopup(false);
+                      if (!isModal && selectedDate && selectedTime && !isScrolling) {
+                        setIsScrolling(true);
+                        setTimeout(() => {
+                          const summarySection = document.getElementById('summary-section');
+                          if (summarySection) summarySection.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
+                          setTimeout(() => setIsScrolling(false), 1000);
+                        }, 150);
+                      }
+                    }}
+                    className="w-full bg-[#1393c4] text-white py-3 px-6 rounded-xl font-semibold hover:bg-[#0d7aa1] transition-colors duration-300 shadow-md"
+                  >
+                    I Understand
+                  </button>
                 </div>
               </div>
             </div>

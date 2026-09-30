@@ -166,6 +166,7 @@ const PaintPolishingForm = () => {
   const [selectedTime, setSelectedTime] = useState('');
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [showAddOnPopup, setShowAddOnPopup] = useState(false);
+  const [showAfternoonPopup, setShowAfternoonPopup] = useState(false);
   const [lastSelectedAddOn, setLastSelectedAddOn] = useState(null);
   const [expandedPackageDescriptions, setExpandedPackageDescriptions] = useState({});
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
@@ -370,7 +371,7 @@ const PaintPolishingForm = () => {
     { id: 'fabric', name: 'Fabric protector (carpet and seats) (40 min)', prices: { sedan: 80, truck: 80, 'large-suv': 100 }, duration: '40min' },
     { id: 'engine-shampoo', name: 'Engine Detail / Shampoo (40 min)', prices: { sedan: 60, truck: 80, 'large-suv': 80 }, duration: '40min' },
     { id: 'decontamination', name: 'Decontamination Wash (30 min)', prices: { sedan: 40, truck: 50, 'large-suv': 50 }, duration: '30min' },
-    { id: 'headliner-shampoo', name: 'Headliner shampoo (1 Hour)', prices: { sedan: 40, truck: 40, 'large-suv': 40 }, duration: '60min' }
+    { id: 'headliner-shampoo', name: 'Headliner shampoo (1 Hour)', prices: { sedan: 40, truck: 50, 'large-suv': 50 }, duration: '60min' }
   ];
 
   const getAddOnOptions = () => {
@@ -519,8 +520,9 @@ const PaintPolishingForm = () => {
   const handleTimeSelect = (time) => {
     if (!isTimeSlotBlocked(time)) {
       setSelectedTime(time);
-      
-      if (selectedDate && time) {
+      if (time >= '12:00') {
+        setShowAfternoonPopup(true);
+      } else if (selectedDate && time) {
         setTimeout(() => {
           const summarySection = document.getElementById('summary-section');
           if (summarySection) {
@@ -861,6 +863,46 @@ Passion for Detail
                       No, Continue
                     </button>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Afternoon Notice Modal */}
+        {showAfternoonPopup && (
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4 text-center">
+              <div 
+                className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+                onClick={() => setShowAfternoonPopup(false)}
+              ></div>
+              <div className="relative transform overflow-hidden rounded-2xl bg-white p-6 sm:p-8 text-left shadow-2xl transition-all w-full max-w-md border border-[#1393c4]">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-blue-50 border-2 border-[#1393c4] rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Clock className="w-8 h-8 text-[#1393c4]" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-[#1393c4] mb-3">Afternoon Booking Notice</h3>
+                  <p className="text-gray-700 text-base leading-relaxed mb-6">
+                    Please note that for bookings scheduled at or after <span className="font-bold text-[#1393c4]">12:00 PM</span>, your vehicle will be ready for pickup the <span className="font-bold text-[#1393c4]">next day</span>.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowAfternoonPopup(false);
+                      if (selectedDate && selectedTime) {
+                        setTimeout(() => {
+                          const summarySection = document.getElementById('summary-section');
+                          if (summarySection) {
+                            summarySection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                          }
+                        }, 150);
+                      }
+                    }}
+                    className="w-full bg-[#1393c4] text-white py-3 px-6 rounded-xl font-semibold hover:bg-[#0d7aa1] transition-colors duration-300 shadow-md"
+                  >
+                    I Understand
+                  </button>
                 </div>
               </div>
             </div>
