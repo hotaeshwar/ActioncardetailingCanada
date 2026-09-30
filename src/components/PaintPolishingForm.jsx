@@ -167,6 +167,7 @@ const PaintPolishingForm = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [showAddOnPopup, setShowAddOnPopup] = useState(false);
   const [lastSelectedAddOn, setLastSelectedAddOn] = useState(null);
+  const [expandedPackageDescriptions, setExpandedPackageDescriptions] = useState({});
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [blockedDates, setBlockedDates] = useState({});
@@ -179,6 +180,13 @@ const PaintPolishingForm = () => {
     vehicleMake: '',
     message: ''
   });
+
+  const togglePackageDescription = (id) => {
+    setExpandedPackageDescriptions(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
 
   // Load blocked dates from Firebase
   useEffect(() => {
@@ -309,9 +317,9 @@ const PaintPolishingForm = () => {
 
   const getPackagePricing = (vehicleId) => {
     const pricingMap = {
-      'sedan': { oneStage: 299, twoStage: 499, threeStage: 699, fourStage: 899 },
-      'truck': { oneStage: 349, twoStage: 549, threeStage: 749, fourStage: 949 },
-      'large-suv': { oneStage: 349, twoStage: 549, threeStage: 749, fourStage: 949 }
+      'sedan': { oneStage: 250, twoStage: 450, threeStage: 650, fourStage: 650 },
+      'truck': { oneStage: 290, twoStage: 499, threeStage: 699, fourStage: 699 },
+      'large-suv': { oneStage: 290, twoStage: 499, threeStage: 699, fourStage: 699 }
     };
     return pricingMap[vehicleId] || pricingMap['sedan'];
   };
@@ -325,35 +333,55 @@ const PaintPolishingForm = () => {
         name: 'One Stage Paint Correction Polish',
         duration: '180 min (3 Hours)',
         price: pricing.oneStage,
-        description: 'Paint correction (One stage) (180 min)'
+        description: 'Paint correction (One stage) (180 min)',
+        readMore: 'This service is designed for vehicles that are looking for paint refinement rather than paint perfection. A vehicle that is in great shape already and only requires one stage polishing step to remove minor wash marks and light swirls or for the customer who wants to enhance the gloss of their paint work, but less concerned with getting every scratch and swirl removed, One stage enhancement polish is a great cost-effective alternative to multi stage correction. We can usually remove 50% of swirls, and light defects. There are different variables that can dictate just how much correction you can safely achieve in a One stage correction process.'
       },
       {
         id: 'two-stage',
         name: 'Two Stage Paint Correction Polish',
         duration: '240 min (4 Hours)',
         price: pricing.twoStage,
-        description: 'Paint correction (Two stage) (240 min)'
+        description: 'Paint correction (Two stage) (240 min)',
+        readMore: 'This process involve light compounding machine polishing steps to remove the worst defects, swirl marks, oxidation, and then followed by a polishing stage to refine the finish and improve the gloss and clarity. The paint type and condition also dictate the level of correction, but typically this service will get rid of 60%-70% of all defects.'
       },
       {
         id: 'three-stage',
         name: 'Three Stage Paint Correction Polish',
         duration: '300 min (5 Hours)',
         price: pricing.threeStage,
-        description: 'Paint correction (Three stage) (300 min)'
+        description: 'Paint correction (Three stage) (300 min)',
+        readMore: 'This process involve medium and light compounding machine polishing steps to remove the worst defects, swirl marks, oxidation, and then followed by a polishing stage to refine the finish and improve the gloss and clarity. The paint type and condition also dictate the level of correction, but typically this service will get rid of 70%-80% of all defects.'
       },
       {
         id: 'four-stage',
         name: 'Four Stage Paint Correction Polish',
         duration: '360 min (6 Hours)',
         price: pricing.fourStage,
-        description: 'Paint correction (Four stage) (360 min)'
+        description: 'Paint correction (Four stage) (360 min)',
+        readMore: 'With multi stage paint correction, you\'re significantly improving the finish by removing all of the swirls, and all but the heaviest of scratches and defects. Depend on the condition of the paint we may have to wet-sand to remove deep scratches and orange peel. This process involve 3 or more heavy compounding machine polishing steps to remove the worst defects, swirl marks, oxidation, and then followed by a polishing stage to refine the finish and improve the gloss and clarity. The paint type and condition also dictate the level of correction, but typically this service will get rid of 80-90% of all defects.'
       }
     ];
   };
 
-  const addOnOptions = [
-    { id: 'wax', name: 'WAX', price: 40, duration: '30min' }
+  const rawAddOnOptions = [
+    { id: 'carnauba-wax', name: 'Carnauba wax (4 months protection) (30 min)', prices: { sedan: 80, truck: 90, 'large-suv': 90 }, duration: '30min' },
+    { id: 'headlight', name: 'Headlights Restoration (30 min)', prices: { sedan: 80, truck: 80, 'large-suv': 80 }, duration: '30min' },
+    { id: 'odor', name: 'Odor Elimination and sanitization (180 min)', prices: { sedan: 80, truck: 80, 'large-suv': 80 }, duration: '180min' },
+    { id: 'fabric', name: 'Fabric protector (carpet and seats) (40 min)', prices: { sedan: 80, truck: 80, 'large-suv': 100 }, duration: '40min' },
+    { id: 'engine-shampoo', name: 'Engine Detail / Shampoo (40 min)', prices: { sedan: 60, truck: 80, 'large-suv': 80 }, duration: '40min' },
+    { id: 'decontamination', name: 'Decontamination Wash (30 min)', prices: { sedan: 40, truck: 50, 'large-suv': 50 }, duration: '30min' },
+    { id: 'headliner-shampoo', name: 'Headliner shampoo (1 Hour)', prices: { sedan: 40, truck: 40, 'large-suv': 40 }, duration: '60min' }
   ];
+
+  const getAddOnOptions = () => {
+    const vId = selectedVehicle?.id || 'sedan';
+    return rawAddOnOptions.map(addon => ({
+      ...addon,
+      price: addon.prices[vId] ?? addon.prices['sedan'] ?? 0
+    }));
+  };
+
+  const addOnOptions = getAddOnOptions();
 
   const timeSlots = [
     '08:00', '08:30', '09:00', '09:30', '10:00', '10:30',
@@ -771,6 +799,25 @@ Passion for Detail
                 </div>
                 <div className="text-center">
                   <p className="text-sm text-[#1393c4]">{pkg.description}</p>
+                  {pkg.readMore && (
+                    <div className="pt-2 border-t border-blue-100 mt-3 text-left">
+                      {expandedPackageDescriptions[pkg.id] && (
+                        <p className="text-sm text-[#1393c4] leading-relaxed mb-2">
+                          {pkg.readMore}
+                        </p>
+                      )}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          togglePackageDescription(pkg.id);
+                        }}
+                        className="text-xs sm:text-sm font-bold text-[#1393c4] hover:text-[#0d7aa1] hover:underline flex items-center focus:outline-none mx-auto sm:mx-0"
+                      >
+                        {expandedPackageDescriptions[pkg.id] ? 'Show Less' : 'Read More'}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}

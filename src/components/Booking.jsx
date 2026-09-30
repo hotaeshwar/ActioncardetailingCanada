@@ -14,6 +14,7 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
   const [priceAnimation, setPriceAnimation] = useState(false);
   const [showAllAddOns, setShowAllAddOns] = useState(false);
   const [expandedDescriptions, setExpandedDescriptions] = useState({});
+  const [expandedPackageDescriptions, setExpandedPackageDescriptions] = useState({});
   const [showConfirmationModal, setShowConfirmationModal] = useState(false);
   const [lastSelectedAddOn, setLastSelectedAddOn] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,6 +29,13 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
     vehicleMake: '',
     message: ''
   });
+
+  const togglePackageDescription = (id) => {
+    setExpandedPackageDescriptions(prev => ({
+      ...prev,
+      [id]: !prev[id]
+    }));
+  };
 
   useEffect(() => {
     const loadBlockedDatesData = async () => {
@@ -165,13 +173,13 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
           'Tar removal',
           'Paint correction polish (One stage)',
           'Extra Charge for Pet Hairs Removal, excessive tar removal and heavily soiled vehicles'
-        ]
+        ],
+        readMore: 'This service is designed for vehicles that are looking for paint refinement rather than paint perfection. A vehicle that is in great shape already and only requires one stage polishing step to remove minor wash marks and light swirls or for the customer who wants to enhance the gloss of their paint work, but less concerned with getting every scratch and swirl removed, One stage enhancement polish is a great cost-effective alternative to multi stage correction. We can usually remove 50% of swirls, and light defects. There are different variables that can dictate just how much correction you can safely achieve in a One stage correction process.'
       }
     ];
   };
 
   const rawAddOnOptions = [
-    { id: 'pet-removal', name: 'Pet hairs removal', prices: { sedan: 0, truck: 0, 'large-suv': 0 }, duration: '30min', description: 'As per estimate' },
     { id: 'headliner-shampoo', name: 'Headliner shampoo (1 Hour)', prices: { sedan: 40, truck: 40, 'large-suv': 40 }, duration: '60min', description: 'Complete cleaning of headliners.' },
     { id: 'carnauba-wax', name: 'Carnauba wax (4 months protection) (30 min)', prices: { sedan: 80, truck: 90, 'large-suv': 90 }, duration: '30min', description: 'The carnauba wax repels water and, consequently, most contaminants. When applied to paint surface, carnauba retains these characteristics. Therefore, an application of a carnauba-based car wax to your vehicle will protect it from UV rays, heat, moisture, oxidation, and environmental contamination.' },
     { id: 'engine-shampoo', name: 'Engine Detail / Shampoo (40 min)', prices: { sedan: 60, truck: 80, 'large-suv': 80 }, duration: '40min', description: 'Engine Degreased, rinsed, steam cleaned and dressed.' },
@@ -187,8 +195,8 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
 
   const getAddOnPrice = (addon, vehicleId, packageId) => {
     const vId = vehicleId || 'sedan';
-    const pkgId = packageId || selectedPackage?.id || 'silver';
-    if (pkgId === 'diamond' && addon.diamondPrices) {
+    const pkgId = packageId || selectedPackage?.id || (selectedPackage?.name === 'Diamond Package' ? 'diamond' : 'silver');
+    if ((pkgId === 'diamond' || selectedPackage?.name === 'Diamond Package') && addon.diamondPrices) {
       return addon.diamondPrices[vId] ?? addon.diamondPrices['sedan'] ?? 0;
     }
     if (addon.prices) {
@@ -200,16 +208,16 @@ const Booking = ({ isModal = false, blockedDates = [] }) => {
   const getAvailableAddOns = () => {
     if (!selectedPackage) return [];
     const vehicleId = selectedVehicle?.id || 'sedan';
-    const packageId = selectedPackage?.id || 'silver';
+    const packageId = selectedPackage?.id || (selectedPackage?.name === 'Diamond Package' ? 'diamond' : selectedPackage?.name === 'Gold Package' ? 'gold' : 'silver');
 
-    const silverPackageAddOns = ['pet-removal', 'headliner-shampoo', 'carnauba-wax', 'engine-shampoo', 'headlight', 'odor', 'fabric', 'decontamination', 'paint-correction-1', 'paint-correction-2', 'paint-correction-3'];
-    const goldPackageAddOns = ['pet-removal', 'carnauba-wax', 'headlight', 'odor', 'fabric', 'paint-correction-1', 'paint-correction-2', 'paint-correction-3'];
-    const diamondPackageAddOns = ['pet-removal', 'carnauba-wax', 'headlight', 'odor', 'fabric', 'paint-correction-2', 'paint-correction-3', 'paint-correction-4'];
+    const silverPackageAddOns = ['headliner-shampoo', 'carnauba-wax', 'engine-shampoo', 'headlight', 'odor', 'fabric', 'decontamination', 'paint-correction-1', 'paint-correction-2', 'paint-correction-3'];
+    const goldPackageAddOns = ['carnauba-wax', 'headlight', 'odor', 'fabric', 'paint-correction-1', 'paint-correction-2', 'paint-correction-3'];
+    const diamondPackageAddOns = ['carnauba-wax', 'headlight', 'odor', 'fabric', 'paint-correction-2', 'paint-correction-3', 'paint-correction-4'];
 
     let filtered = rawAddOnOptions;
-    if (selectedPackage.name === 'Silver Package') filtered = rawAddOnOptions.filter(addon => silverPackageAddOns.includes(addon.id));
-    else if (selectedPackage.name === 'Gold Package') filtered = rawAddOnOptions.filter(addon => goldPackageAddOns.includes(addon.id));
-    else if (selectedPackage.name === 'Diamond Package') filtered = rawAddOnOptions.filter(addon => diamondPackageAddOns.includes(addon.id));
+    if (selectedPackage.name === 'Silver Package' || selectedPackage.id === 'silver') filtered = rawAddOnOptions.filter(addon => silverPackageAddOns.includes(addon.id));
+    else if (selectedPackage.name === 'Gold Package' || selectedPackage.id === 'gold') filtered = rawAddOnOptions.filter(addon => goldPackageAddOns.includes(addon.id));
+    else if (selectedPackage.name === 'Diamond Package' || selectedPackage.id === 'diamond') filtered = rawAddOnOptions.filter(addon => diamondPackageAddOns.includes(addon.id));
 
     return filtered.map(addon => ({
       ...addon,
@@ -680,6 +688,25 @@ Passion for Detail
                   {pkg.features.map((feature, index) => (
                     <p key={index} className="text-sm text-[#1393c4] leading-relaxed">{feature}</p>
                   ))}
+                  {pkg.readMore && (
+                    <div className="pt-2 border-t border-blue-100 mt-3 text-left">
+                      {expandedPackageDescriptions[pkg.id] && (
+                        <p className="text-sm text-[#1393c4] leading-relaxed mb-2">
+                          {pkg.readMore}
+                        </p>
+                      )}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          togglePackageDescription(pkg.id);
+                        }}
+                        className="text-xs sm:text-sm font-bold text-[#1393c4] hover:text-[#0d7aa1] hover:underline flex items-center focus:outline-none"
+                      >
+                        {expandedPackageDescriptions[pkg.id] ? 'Show Less' : 'Read More'}
+                      </button>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
