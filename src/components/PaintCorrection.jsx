@@ -548,7 +548,7 @@ const PaintCorrection = () => {
               </h3>
               <div className="flex items-center justify-center space-x-2 mb-6">
                 <span className="text-lg" style={{ color: '#1393c4' }}>starting at</span>
-                <span className="text-4xl font-bold" style={{ color: '#1393c4' }}>$250</span>
+                <span className="text-4xl font-bold" style={{ color: '#1393c4' }}>$299</span>
               </div>
             </div>
           </div>

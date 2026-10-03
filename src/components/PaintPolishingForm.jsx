@@ -318,9 +318,9 @@ const PaintPolishingForm = () => {
 
   const getPackagePricing = (vehicleId) => {
     const pricingMap = {
-      'sedan': { oneStage: 250, twoStage: 450, threeStage: 650, fourStage: 650 },
-      'truck': { oneStage: 290, twoStage: 499, threeStage: 699, fourStage: 699 },
-      'large-suv': { oneStage: 290, twoStage: 499, threeStage: 699, fourStage: 699 }
+      'sedan': { oneStage: 299, twoStage: 499, threeStage: 699, fourStage: 899 },
+      'truck': { oneStage: 349, twoStage: 549, threeStage: 749, fourStage: 949 },
+      'large-suv': { oneStage: 349, twoStage: 549, threeStage: 749, fourStage: 949 }
     };
     return pricingMap[vehicleId] || pricingMap['sedan'];
   };
